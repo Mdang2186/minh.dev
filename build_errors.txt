@@ -1,0 +1,325 @@
+﻿
+> my-site@0.1.0 build
+> next build
+
+▲ Next.js 16.1.0 (Turbopack)
+
+  Creating an optimized production build ...
+node.exe : 
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo      
+        : NotSpecified  
+  : (:String) [], Rem   
+ oteException
+    + FullyQualifiedErr 
+   orId : NativeComman  
+  dError
+ 
+> Build error occurred
+Error: Turbopack build 
+failed with 3 errors:
+./app/globals.css
+Error evaluating 
+Node.js code
+CssSyntaxError: D:\VISUA
+LSTUDIOCODE\MyPortfolio_
+DoCongMinh\my-site\app\g
+lobals.css:1:1: The 
+`bg-background` class 
+does not exist. If 
+`bg-background` is a 
+custom class, make sure 
+it is defined within a 
+`@layer` directive.
+    at Input.error (node
+_modules/postcss/lib/inp
+ut.js:135:16) [D:\VISUAL
+STUDIOCODE\MyPortfolio_D
+oCongMinh\my-site\.next\
+build\chunks\node_module
+s_fe693df6._.js:4651:22]
+    at AtRule.error (nod
+e_modules/postcss/lib/no
+de.js:146:32) [D:\VISUAL
+STUDIOCODE\MyPortfolio_D
+oCongMinh\my-site\.next\
+build\chunks\node_module
+s_fe693df6._.js:928:38]
+    [at processApply (D:
+\VISUALSTUDIOCODE\MyPort
+folio_DoCongMinh\my-site
+\node_modules\tailwindcs
+s\lib\lib\expandApplyAtR
+ules.js:380:29)]
+    [at D:\VISUALSTUDIOC
+ODE\MyPortfolio_DoCongMi
+nh\my-site\node_modules\
+tailwindcss\lib\lib\expa
+ndApplyAtRules.js:551:9]
+    [at D:\VISUALSTUDIOC
+ODE\MyPortfolio_DoCongMi
+nh\my-site\node_modules\
+tailwindcss\lib\processT
+ailwindFeatures.js:55:50
+]
+    [at async plugins (D
+:\VISUALSTUDIOCODE\MyPor
+tfolio_DoCongMinh\my-sit
+e\node_modules\tailwindc
+ss\lib\plugin.js:38:17)]
+    at async 
+LazyResult.runAsync (nod
+e_modules/postcss/lib/la
+zy-result.js:293:11) [D:
+\VISUALSTUDIOCODE\MyPort
+folio_DoCongMinh\my-site
+\.next\build\chunks\node
+_modules_fe693df6._.js:6
+206:21]
+    at async transform (
+turbopack:///[turbopack-
+node]/transforms/postcss
+.ts:70:34) [D:\VISUALSTU
+DIOCODE\MyPortfolio_DoCo
+ngMinh\my-site\.next\bui
+ld\chunks\[root-of-the-s
+erver]__51225daf._.js:14
+7:36]
+    at async run (turbop
+ack:///[turbopack-node]/
+ipc/evaluate.ts:92:23) [
+D:\VISUALSTUDIOCODE\MyPo
+rtfolio_DoCongMinh\my-si
+te\.next\build\chunks\[r
+oot-of-the-server]__9749
+41ed._.js:443:31]
+
+Import trace:
+  Client Component 
+Browser:
+    ./app/globals.css 
+[Client Component 
+Browser]
+    ./app/layout.tsx 
+[Server Component]
+
+
+./components/ui/bento-gr
+id.tsx:5:1
+Module not found: Can't 
+resolve '../MagicButton'
+[0m [90m 3 |[39m 
+[36mimport[39m { 
+useState } 
+[36mfrom[39m [32m"rea
+ct"[39m[33m;[39m
+ [90m 4 |[39m 
+[36mimport[39m { 
+[33mIoCopyOutline[39m 
+} [36mfrom[39m [32m"r
+eact-icons/io5"[39m[33
+m;[39m
+[31m[1m>[22m[39m[90
+m 5 |[39m 
+[36mimport[39m 
+[33mMagicButton[39m 
+[36mfrom[39m [32m"../
+MagicButton"[39m[33m;
+[39m
+ [90m   |[39m [31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+ [90m 6 |[39m
+ [90m 7 |[39m 
+[36mexport[39m 
+[36mconst[39m 
+[33mBentoGrid[39m 
+[33m=[39m ({
+ [90m 8 |[39m     
+className[33m,[39m[0m
+
+
+
+Import trace:
+  Server Component:
+    ./components/ui/bent
+o-grid.tsx
+    
+./components/Grid.tsx
+    ./app/page.tsx
+
+https://nextjs.org/docs/
+messages/module-not-foun
+d
+
+
+./app/page.tsx:6:1
+Module not found: Can't 
+resolve '@/components/ui
+/floating-navbar'
+[0m [90m 4 |[39m 
+[36mimport[39m 
+[33mExperience[39m 
+[36mfrom[39m [32m"@/c
+omponents/Experience"[3
+9m[33m;[39m [90m// 
+Bạn cần tạo file này 
+dựa trên code bước 
+trước[39m
+ [90m 5 |[39m 
+[36mimport[39m { 
+[33mFooter[39m } 
+[36mfrom[39m [32m"@/c
+omponents/layout/footer"
+[39m[33m;[39m
+[31m[1m>[22m[39m[90
+m 6 |[39m 
+[36mimport[39m { 
+[33mFloatingNav[39m } 
+[36mfrom[39m [32m"@/c
+omponents/ui/floating-na
+vbar"[39m[33m;[39m 
+[90m// Navbar nổi[39m
+ [90m   |[39m [31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[
+22m[39m
+ [90m 7 |[39m 
+[36mimport[39m { 
+navItems } 
+[36mfrom[39m [32m"@/d
+ata"[39m[33m;[39m
+ [90m 8 |[39m
+ [90m 9 |[39m 
+[36mexport[39m 
+[36mdefault[39m 
+[36mfunction[39m 
+[33mHome[39m() {[0m
+
+Import map: aliased to 
+relative './components/u
+i/floating-navbar' 
+inside of [project]/
+
+
+https://nextjs.org/docs/
+messages/module-not-foun
+d
+
+
+    at async transform (
+turbopack:///[turbopack-
+node]/transforms/postcss
+.ts:70:34) [D:\VISUALSTU
+DIOCODE\MyPortfolio_DoCo
+ngMinh\my-site\.next\bui
+ld\chunks\[root-of-the-s
+erver]__51225daf._.js:14
+7:36])
+    at async run (turbop
+ack:///[turbopack-node]/
+ipc/evaluate.ts:92:23) [
+D:\VISUALSTUDIOCODE\MyPo
+rtfolio_DoCongMinh\my-si
+te\.next\build\chunks\[r
+oot-of-the-server]__9749
+41ed._.js:443:31])
+    at <unknown> (./comp
+onents/ui/bento-grid.tsx
+:5:1)
+    at <unknown> (https:
+//nextjs.org/docs/messag
+es/module-not-found)
+    at <unknown> 
+(./app/page.tsx:6:1)
+    at <unknown> (https:
+//nextjs.org/docs/messag
+es/module-not-found)
