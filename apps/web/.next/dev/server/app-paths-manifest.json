@@ -1,0 +1,6 @@
+{
+  "/(public)/page": "app/(public)/page.js",
+  "/(public)/work/contact/page": "app/(public)/work/contact/page.js",
+  "/(public)/work/projects/page": "app/(public)/work/projects/page.js",
+  "/_not-found/page": "app/_not-found/page.js"
+}

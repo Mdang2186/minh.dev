@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/MyPepositoryGITHUB/minh.dev/apps/web/app/%28public%29/layout.tsx"],"sourcesContent":["export default function PublicLayout({ children }: { children: React.ReactNode }) {\r\n  return (\r\n    <div className=\"flex min-h-dvh flex-col\">\r\n      <main className=\"flex-1\">{children}</main>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;;AAAe,SAAS,aAAa,EAAE,QAAQ,EAAiC;IAC9E,qBACE,8OAAC;QAAI,WAAU;kBACb,cAAA,8OAAC;YAAK,WAAU;sBAAU;;;;;;;;;;;AAGhC"}}]
+}

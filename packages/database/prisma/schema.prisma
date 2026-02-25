@@ -1,0 +1,53 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String
+  content     String?  @db.Text
+  images      String[]
+  tags        String[]
+  demoUrl     String?
+  repoUrl     String?
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  title     String
+  excerpt   String?
+  content   String   @db.Text
+  published Boolean  @default(false)
+  coverImage String?
+  tags      String[]
+  views     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TechStack {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  icon      String?
+  category  String?
+}
