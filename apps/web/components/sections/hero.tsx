@@ -4,6 +4,7 @@ import { site } from "@/data/site";
 import { siteConfig } from "@/features/site/site.config";
 import { FaInstagram, FaFacebook, FaGithub, FaLinkedinIn } from "react-icons/fa";
 import { Code, Paintbrush, FileText } from "lucide-react";
+import { ResumeModal } from "@/components/ui/resume-modal";
 
 export function Hero() {
     return (
@@ -38,10 +39,7 @@ export function Hero() {
                             <Link href="/work/projects" className="inline-flex items-center justify-center rounded-full px-8 py-4 border-2 border-slate-200 text-slate-900 hover:bg-slate-50 font-bold text-[15px] transition-all hover:-translate-y-1 bg-white shadow-sm">
                                 View Work
                             </Link>
-                            <a href={site.links.resume} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-full px-6 py-4 text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-bold text-[15px] transition-all hover:-translate-y-1 ml-2 border border-transparent hover:border-blue-100">
-                                <FileText className="w-5 h-5 mr-2" />
-                                Resume / CV
-                            </a>
+                            <ResumeModal resumeUrl={site.links.resume} />
                         </div>
 
                         {/* Social Icons */}

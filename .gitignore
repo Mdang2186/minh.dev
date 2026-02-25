@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Turbo
+.turbo/
+
+# Sentry (nếu có dùng)
+.sentry-debug-log
+
+# Các file cache tạm thời khác
+.cache/
+*.sst
+*.zst

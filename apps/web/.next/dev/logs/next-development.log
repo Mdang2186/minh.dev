@@ -1,1 +1,25 @@
-[00:00:02.441] Server  LOG     ✓ Ready in 1777ms
+[00:00:01.950] Server  LOG     ✓ Ready in 1507ms
+[00:15:21.207] Server  LOG     ✓ Compiled in 2.2s
+[00:15:33.847] Browser ERROR   ./apps/web/components/sections/hero.tsx:42:31
+Parsing ecmascript source code failed
+  40 |                                 View Work
+  41 |                                 <ResumeModal resumeUrl={site.links.resume} />
+> 42 |                         </div>
+     |                               ^
+> 43 |
+     | ^
+> 44 |                         {/* Social Icons */}
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  45 |                         <div className="flex items-center gap-4">
+  46 |                             <Link href={site.links.instagram} target="_blank" className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
+  47 |                                 <FaInstagram className="w-4 h-4" />
+
+Expected '</', got 'jsx text'
+
+Import trace:
+  Server Component:
+    ./apps/web/components/sections/hero.tsx
+    ./apps/web/app/(public)/page.tsx
+[00:19:49.776] Server  LOG     ✓ Compiled in 191ms
+[00:19:50.848] Browser ERROR   React instrumentation encountered an error: %o {}
+[00:22:41.007] Server  LOG     ✓ Compiled in 203ms

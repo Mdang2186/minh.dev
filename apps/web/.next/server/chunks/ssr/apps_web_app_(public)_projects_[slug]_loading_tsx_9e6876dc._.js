@@ -1,0 +1,3 @@
+module.exports=[69635,a=>{"use strict";var b=a.i(7997),c=a.i(8594);function d(){return(0,b.jsxs)(c.Container,{className:"py-10",children:[(0,b.jsx)("div",{className:"h-7 w-64 animate-pulse rounded bg-muted"}),(0,b.jsx)("div",{className:"mt-3 h-4 w-96 animate-pulse rounded bg-muted"}),(0,b.jsxs)("div",{className:"mt-8 grid gap-3",children:[(0,b.jsx)("div",{className:"h-4 w-full animate-pulse rounded bg-muted"}),(0,b.jsx)("div",{className:"h-4 w-11/12 animate-pulse rounded bg-muted"}),(0,b.jsx)("div",{className:"h-4 w-10/12 animate-pulse rounded bg-muted"})]})]})}a.s(["default",()=>d])}];
+
+//# sourceMappingURL=apps_web_app_%28public%29_projects_%5Bslug%5D_loading_tsx_9e6876dc._.js.map

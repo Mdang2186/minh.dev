@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(public)/layout,_N_T_/(public)/tools/layout,_N_T_/(public)/tools/clock/layout,_N_T_/(public)/tools/clock/page,_N_T_/tools/clock"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/!KHB1YmxpYyk/tools/clock/__PAGE__",
+    "/!KHB1YmxpYyk/tools/clock",
+    "/!KHB1YmxpYyk/tools",
+    "/!KHB1YmxpYyk",
+    "/_index",
+    "/_head"
+  ]
+}
