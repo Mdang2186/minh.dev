@@ -1,146 +1,218 @@
+"use client";
+
+import { useState } from "react";
 import { Container } from "@/components/common/container";
-import { PageHeader } from "@/components/common/page-header";
 import { experiences, educations, certifications } from "@/features/work/work.data";
 import { Briefcase, GraduationCap, Award, Calendar, MapPin } from "lucide-react";
 import Link from "next/link";
+import { InteractiveExperience } from "@/components/sections/interactive-experience";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/cn";
+
+type Tab = "experience" | "education";
 
 export default function ExperiencePage() {
+  const [activeTab, setActiveTab] = useState<Tab>("experience");
+
   return (
     <Container className="py-16 md:py-24">
-      <div className="mx-auto max-w-4xl space-y-20">
+      <div className="mx-auto max-w-5xl space-y-12">
 
-        {/* Experience Section */}
-        <section className="space-y-12">
+        {/* Header & Tab Switcher */}
+        <div className="flex flex-col items-center text-center space-y-8">
           <div className="space-y-4">
-            <h1 className="text-4xl font-extrabold tracking-tight md:text-5xl flex items-center gap-4 text-foreground">
-              <span className="p-3 bg-primary/10 rounded-2xl text-primary">
-                <Briefcase className="h-8 w-8" />
-              </span>
-              Experience
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-              My professional journey, roles, and responsibilities in software development.
+            <motion.h1
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl font-black tracking-tight md:text-5xl flex items-center justify-center gap-4 text-slate-900 dark:text-white"
+            >
+              {activeTab === "experience" ? (
+                <>
+                  <span className="p-3 bg-cyan-500/10 rounded-2xl text-cyan-600 dark:text-cyan-400">
+                    <Briefcase className="h-8 w-8" />
+                  </span>
+                  Academic Projects
+                </>
+              ) : (
+                <>
+                  <span className="p-3 bg-cyan-500/10 rounded-2xl text-cyan-600 dark:text-cyan-400">
+                    <GraduationCap className="h-8 w-8" />
+                  </span>
+                  Education & Certs
+                </>
+              )}
+            </motion.h1>
+
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              {activeTab === "experience"
+                ? "My designated roles and specialized responsibilities in university projects, focusing on frontend development, UI/UX design, and team efficiency."
+                : "Detailed insights into my academic background, technical engineering degree, and recognized professional qualifications."}
             </p>
           </div>
 
-          <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[2px] before:bg-gradient-to-b before:from-border/0 before:via-border/60 before:to-border/0">
-            {experiences.map((exp) => (
-              <div key={exp.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border-[3px] border-background bg-zinc-100 dark:bg-zinc-800 text-zinc-500 shadow-sm shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                  <Briefcase size={16} />
-                </div>
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-7 rounded-3xl border border-border/50 bg-card/50 backdrop-blur-sm text-card-foreground shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300">
-                  <div className="flex flex-col space-y-2 pb-5 border-b border-border/40 mb-5">
-                    <h3 className="text-2xl font-bold tracking-tight text-foreground">{exp.title}</h3>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-sm text-muted-foreground font-medium pt-1">
-                      <span className="flex items-center gap-1.5"><MapPin size={16} className="text-primary/70" /> {exp.org}</span>
-                      <span className="hidden sm:inline text-border">•</span>
-                      <span className="flex items-center gap-1.5"><Calendar size={16} className="text-primary/70" /> {exp.period}</span>
-                    </div>
-                  </div>
-                  <ul className="space-y-3 text-[15px] leading-relaxed text-muted-foreground/90 list-none">
-                    {exp.highlights.map((h, i) => (
-                      <li key={i} className="relative pl-5 before:absolute before:left-0 before:top-2 before:h-1.5 before:w-1.5 before:rounded-full before:bg-primary/50">
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+          {/* Tab Switcher UI */}
+          <div className="relative inline-flex bg-slate-100 dark:bg-slate-800/50 p-1.5 rounded-full border border-slate-200 dark:border-slate-700/50 shadow-sm z-20">
+            {(["experience", "education"] as Tab[]).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={cn(
+                  "relative px-6 sm:px-10 py-2.5 rounded-full text-sm font-bold tracking-wide transition-colors duration-300 z-10 uppercase",
+                  activeTab === tab ? "text-white" : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+                )}
+              >
+                {activeTab === tab && (
+                  <motion.div
+                    layoutId="active-tab-indicator"
+                    className="absolute inset-0 bg-cyan-500 dark:bg-cyan-600 rounded-full shadow-md z-[-1]"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                {tab === "experience" ? "Experience" : "Education"}
+              </button>
             ))}
           </div>
-        </section>
+        </div>
 
-        {/* Education Section */}
-        <section className="space-y-12">
-          <div className="space-y-4 pt-4 border-t border-border/40">
-            <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl flex items-center gap-3 pt-8 text-foreground">
-              <span className="p-2.5 bg-primary/10 rounded-2xl text-primary">
-                <GraduationCap className="h-7 w-7" />
-              </span>
-              Education & Certifications
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-              Detailed overview of my academic background and professional certifications.
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 items-stretch">
-            <div className="space-y-6 flex flex-col">
-              <h3 className="text-2xl font-bold flex items-center gap-2.5 pb-2 text-foreground/90">
-                <GraduationCap className="h-6 w-6 text-primary/80" /> Education
-              </h3>
-              <div className="space-y-6 flex-1 flex flex-col">
-                {educations.map((edu) => (
-                  <div key={edu.id} className="p-7 rounded-3xl border border-border/50 bg-card/50 backdrop-blur-sm space-y-5 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 h-full">
-                    <div>
-                      <h4 className="font-bold text-xl text-foreground">{edu.title}</h4>
-                      <div className="flex flex-col gap-1.5 mt-3">
-                        <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-2">
-                          <MapPin size={16} className="text-primary/70 shrink-0" /> {edu.org}
-                        </p>
-                        <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-2">
-                          <Calendar size={16} className="text-primary/70 shrink-0" /> {edu.period}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="space-y-2.5 text-[15px] bg-muted/40 p-5 rounded-2xl border border-border/30">
-                      <div className="flex justify-between border-b border-border/50 pb-2.5">
-                        <span className="text-muted-foreground">Major</span>
-                        <span className="font-semibold text-foreground text-right">{edu.major}</span>
-                      </div>
-                      <div className="flex justify-between border-b border-border/50 pb-2.5">
-                        <span className="text-muted-foreground">Degree</span>
-                        <span className="font-semibold text-foreground text-right">{edu.degree}</span>
-                      </div>
-                      <div className="flex justify-between pt-1">
-                        <span className="text-muted-foreground">GPA</span>
-                        <span className="font-bold text-primary text-right">{edu.gpa}</span>
-                      </div>
-                    </div>
-                    {edu.description && (
-                      <p className="text-[15px] leading-relaxed text-muted-foreground/90 pt-1">
-                        {edu.description}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-6 flex flex-col">
-              <h3 className="text-2xl font-bold flex items-center gap-2.5 pb-2 text-foreground/90">
-                <Award className="h-6 w-6 text-primary/80" /> Certifications
-              </h3>
-              <div className="space-y-5 flex-1 flex flex-col">
-                {certifications.map((cert) => (
-                  <div key={cert.id} className="p-7 rounded-3xl border border-border/50 bg-card/50 backdrop-blur-sm flex flex-col justify-between hover:shadow-md hover:border-primary/30 transition-all duration-300 shadow-sm h-full">
-                    <div className="space-y-4">
-                      <h4 className="font-bold text-lg leading-snug text-foreground">{cert.title}</h4>
-                      <div className="text-[15px] font-medium text-muted-foreground flex flex-col gap-2.5">
-                        <span className="flex items-center gap-2 text-foreground/90">
-                          <Award size={16} className="text-primary/70 shrink-0" /> {cert.issuer}
-                        </span>
-                        <span className="flex items-center gap-2">
-                          <Calendar size={16} className="text-primary/70 shrink-0" /> {cert.date}
-                        </span>
-                      </div>
-                    </div>
-                    {cert.url && cert.url !== "#" && (
-                      <div className="mt-7 pt-5 border-t border-border/40">
-                        <Link href={cert.url} target="_blank" className="text-[15px] text-primary hover:text-primary/80 hover:underline inline-flex items-center gap-1.5 font-semibold transition-colors">
-                          View Credential <span className="text-lg leading-none">↗</span>
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Tab Content Panels */}
+        <div className="pt-8 w-full min-h-[600px] relative">
+          <AnimatePresence mode="wait">
+            {activeTab === "experience" ? (
+              <motion.div
+                key="experience"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <InteractiveExperience experiences={experiences} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="education"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <EducationPanel />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
       </div>
     </Container>
+  );
+}
+
+function EducationPanel() {
+  return (
+    <div className="grid gap-10 lg:grid-cols-2 items-stretch max-w-5xl mx-auto">
+      {/* Education Column */}
+      <div className="space-y-8 flex flex-col">
+        <h3 className="text-2xl font-black flex items-center gap-3 pb-2 text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800">
+          <GraduationCap className="h-6 w-6 text-cyan-500" /> Academic Degree
+        </h3>
+        <div className="space-y-6 flex-1 flex flex-col">
+          {educations.map((edu) => (
+            <div key={edu.id} className="p-7 rounded-3xl border border-cyan-500/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg flex flex-col relative overflow-hidden group h-full transition-all duration-300 hover:shadow-cyan-500/10 hover:border-cyan-500/40">
+              {/* Subtle Gradient Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-slate-900/5 dark:to-cyan-900/10 pointer-events-none" />
+
+              <div className="flex gap-4 items-start relative z-10">
+                {edu.logo === "uneti" && (
+                  <div className="w-16 h-16 rounded-2xl bg-white p-2 shadow-sm border border-slate-200 shrink-0 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
+                    <div className="font-black text-xl text-blue-800">UNETI</div>
+                  </div>
+                )}
+                <div className="flex-1">
+                  <h4 className="font-bold text-lg md:text-xl text-slate-900 dark:text-white leading-snug">{edu.title}</h4>
+                  <div className="flex flex-col gap-1.5 mt-2">
+                    <p className="text-[14px] font-medium text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                      <MapPin size={15} className="text-cyan-500 shrink-0" /> {edu.org}
+                    </p>
+                    <p className="text-[14px] font-medium text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                      <Calendar size={15} className="text-cyan-500 shrink-0" /> {edu.period}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 space-y-3.5 text-[15px] bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-700/50 relative z-10 flex-1">
+                <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-3">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium tracking-wide text-sm uppercase">Major</span>
+                  <span className="font-bold text-slate-900 dark:text-white text-right">{edu.major}</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-3">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium tracking-wide text-sm uppercase">Degree</span>
+                  <span className="font-bold text-slate-900 dark:text-white text-right">{edu.degree}</span>
+                </div>
+                <div className="flex justify-between items-center pt-2">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium tracking-wide text-sm uppercase">GPA</span>
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-20 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                      {/* Simple visual representation of GPA */}
+                      <div className="h-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]" style={{ width: `${(3.31 / 4.0) * 100}%` }}></div>
+                    </div>
+                    <span className="font-black text-cyan-600 dark:text-cyan-400 text-right">{edu.gpa}</span>
+                  </div>
+                </div>
+              </div>
+              {edu.description && (
+                <p className="text-[15px] leading-relaxed text-slate-600 dark:text-slate-400 mt-6 relative z-10">
+                  {edu.description}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Certifications Column */}
+      <div className="space-y-8 flex flex-col">
+        <h3 className="text-2xl font-black flex items-center gap-3 pb-2 text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800">
+          <Award className="h-6 w-6 text-cyan-500" /> Certifications
+        </h3>
+        <div className="grid gap-6 flex-1 items-start content-start">
+          {certifications.map((cert) => (
+            <div key={cert.id} className="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 shadow-sm relative overflow-hidden group" style={{ borderLeftColor: cert.color, borderLeftWidth: '4px' }}>
+              <div className="absolute top-0 right-0 p-6 opacity-[0.04] group-hover:opacity-[0.1] transition-opacity duration-500 pointer-events-none" style={{ color: cert.color }}>
+                <Award className="h-28 w-28 -mt-4 -mr-4" />
+              </div>
+
+              <div className="space-y-4 relative z-10">
+                <div className="flex justify-between items-start gap-4">
+                  <h4 className="font-bold text-lg md:text-xl leading-snug text-slate-900 dark:text-white">{cert.title}</h4>
+                  {cert.logo === "toeic" && (
+                    <div className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-black tracking-wider uppercase rounded-md shrink-0 border border-blue-200 dark:border-blue-800/50 shadow-sm">TOEIC</div>
+                  )}
+                  {cert.logo === "microsoft" && (
+                    <div className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-black tracking-wider uppercase rounded-md shrink-0 border border-green-200 dark:border-green-800/50 shadow-sm">MOS</div>
+                  )}
+                </div>
+
+                <div className="text-[14px] font-medium flex flex-col gap-3 pt-2">
+                  <span className="flex items-center justify-between">
+                    <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                      <Award size={16} className="shrink-0" style={{ color: cert.color }} /> {cert.issuer}
+                    </span>
+                    {cert.score && (
+                      <span className="font-bold py-1 px-3 rounded-full text-xs tracking-wide shadow-sm" style={{ backgroundColor: `${cert.color}15`, color: cert.color, border: `1px solid ${cert.color}30` }}>
+                        Score: {cert.score}
+                      </span>
+                    )}
+                  </span>
+                  <span className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                    <Calendar size={16} className="shrink-0" /> Issued: {cert.date}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

@@ -3,80 +3,97 @@ import { Container } from "@/components/common/container";
 import { site } from "@/data/site";
 import { siteConfig } from "@/features/site/site.config";
 import { FaInstagram, FaFacebook, FaGithub, FaLinkedinIn } from "react-icons/fa";
-import { Code, Paintbrush, FileText } from "lucide-react";
-import { ResumeModal } from "@/components/ui/resume-modal";
+import { Code, Paintbrush } from "lucide-react";
+import { ResumeModalWrapper } from "@/components/ui/resume-modal-wrapper";
 
 export function Hero() {
     return (
-        <section className="bg-background relative overflow-hidden pt-24 lg:pt-32 pb-16">
+        <section className="bg-white relative overflow-hidden pt-24 lg:pt-32 pb-16">
             <Container className="relative z-10 w-full">
-                <div className="flex flex-col lg:flex-row items-center w-full">
+                <div className="flex flex-col lg:flex-row items-center w-full gap-12 lg:gap-8">
 
                     {/* Left Column: Text & Actions */}
-                    <div className="lg:w-1/2 mb-12 lg:mb-0 z-10 flex flex-col items-start w-full">
-                        <p className="text-blue-600 mb-3 tracking-[0.2em] font-bold text-sm uppercase">
-                            HELLO THERE, I'M
-                        </p>
+                    <div className="lg:w-1/2 flex flex-col items-start w-full relative z-10">
+                        {/* Status Badge */}
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100/60 text-blue-600 mb-6 shadow-sm">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                            </span>
+                            <span className="text-xs font-bold tracking-widest uppercase">Hello, I'm</span>
+                        </div>
 
-                        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black mb-4 text-slate-900 leading-tight uppercase tracking-tighter drop-shadow-lg">
+                        {/* Name */}
+                        <h1 className="text-5xl sm:text-6xl lg:text-[72px] font-black mb-2 text-slate-900 leading-[1.1] tracking-[-0.02em]">
                             {siteConfig.author.name}
                         </h1>
 
-                        <div className="h-1.5 w-40 bg-blue-600 mb-8 rounded-full"></div>
-
-                        <h2 className="text-3xl sm:text-4xl lg:text-[40px] mb-6 text-slate-800 tracking-tight font-medium">
-                            Creative <span className="text-blue-600 font-semibold">Designer</span> & <span className="text-blue-600 font-semibold">Developer</span>
+                        {/* Title */}
+                        <h2 className="text-3xl sm:text-4xl lg:text-[42px] mb-6 text-slate-600 tracking-tight font-bold">
+                            Creative{" "}
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500">
+                                Designer
+                            </span>{" "}
+                            &{" "}
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-blue-500 to-blue-600">
+                                Developer
+                            </span>
                         </h2>
 
-                        <p className="text-slate-500 text-[15px] sm:text-[16px] leading-[1.8] max-w-[48ch] mb-10">
-                            I am a <span className="font-semibold text-slate-800">Software Engineering graduate</span> seeking to grow in <span className="font-medium text-blue-600">Frontend & UX/UI</span>, starting from an <span className="font-medium text-blue-500">internship role</span> to apply my <span className="text-blue-500">programming knowledge</span> and <span className="text-blue-500">interface design skills</span>. I am eager to learn and contribute to real-world projects.
+                        {/* Description */}
+                        <p className="text-slate-500 text-base sm:text-lg leading-relaxed max-w-[48ch] mb-10 font-medium">
+                            I am a <span className="font-semibold text-slate-800">Software Engineering graduate</span> seeking to grow in <span className="font-semibold text-blue-600">Frontend & UX/UI</span>. I specialize in turning <span className="text-slate-800">complex problems</span> into <span className="text-slate-800">elegant, beautiful, and intuitive designs</span>.
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-4 mb-12">
-                            <Link href="/work/contact" className="inline-flex items-center justify-center rounded-full px-8 py-4 bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 font-bold text-[15px] transition-all hover:-translate-y-1">
+                        {/* Call to Action Buttons */}
+                        <div className="flex flex-wrap items-center gap-4 mb-10">
+                            <Link href="/work/contact" className="inline-flex items-center justify-center rounded-full px-8 py-3.5 bg-slate-900 text-white hover:bg-slate-800 hover:shadow-xl hover:shadow-slate-900/20 font-semibold text-[15px] transition-all hover:-translate-y-0.5 active:translate-y-0">
                                 Let's Talk
                             </Link>
-                            <Link href="/work/projects" className="inline-flex items-center justify-center rounded-full px-8 py-4 border-2 border-slate-200 text-slate-900 hover:bg-slate-50 font-bold text-[15px] transition-all hover:-translate-y-1 bg-white shadow-sm">
+                            <Link href="/work/projects" className="inline-flex items-center justify-center rounded-full px-8 py-3.5 border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 font-semibold text-[15px] transition-all hover:-translate-y-0.5 active:translate-y-0 bg-white shadow-sm hover:shadow-md">
                                 View Work
                             </Link>
-                            <ResumeModal resumeUrl={site.links.resume} />
+                            <div className="ml-2">
+                                <ResumeModalWrapper resumeUrl={site.links.resume} />
+                            </div>
                         </div>
 
                         {/* Social Icons */}
-                        <div className="flex items-center gap-4">
-                            <Link href={site.links.instagram} target="_blank" className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
-                                <FaInstagram className="w-4 h-4" />
+                        <div className="flex items-center gap-3">
+                            <Link href={site.links.github} target="_blank" className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-all hover:-translate-y-1 shadow-sm hover:shadow-md">
+                                <FaGithub className="w-[18px] h-[18px]" />
                             </Link>
-                            <Link href={site.links.facebook} target="_blank" className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
-                                <FaFacebook className="w-4 h-4" />
+                            <Link href={site.links.linkedin} target="_blank" className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-500 hover:text-[#0A66C2] hover:border-blue-200 transition-all hover:-translate-y-1 shadow-sm hover:shadow-md">
+                                <FaLinkedinIn className="w-[18px] h-[18px]" />
                             </Link>
-                            <Link href={site.links.github} target="_blank" className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
-                                <FaGithub className="w-4 h-4" />
+                            <Link href={site.links.instagram} target="_blank" className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-500 hover:text-[#E4405F] hover:border-pink-200 transition-all hover:-translate-y-1 shadow-sm hover:shadow-md">
+                                <FaInstagram className="w-[18px] h-[18px]" />
                             </Link>
-                            <Link href={site.links.linkedin} target="_blank" className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
-                                <FaLinkedinIn className="w-4 h-4" />
+                            <Link href={site.links.facebook} target="_blank" className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-500 hover:text-[#1877F2] hover:border-blue-200 transition-all hover:-translate-y-1 shadow-sm hover:shadow-md">
+                                <FaFacebook className="w-[18px] h-[18px]" />
                             </Link>
                         </div>
                     </div>
 
                     {/* Right Column: Avatar Illustration */}
-                    <div className="lg:w-1/2 flex justify-center lg:justify-end relative z-10 w-full mt-8 lg:mt-0">
+                    <div className="lg:w-1/2 flex justify-center lg:justify-end relative z-10 w-full mb-8 lg:mb-0">
                         <div className="relative">
-                            <div className="w-[300px] h-[300px] sm:w-[420px] sm:h-[420px] lg:w-[480px] lg:h-[480px] rounded-full border-[2px] border-blue-500 p-2 relative overflow-hidden bg-white shadow-2xl shadow-blue-900/10">
-                                <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden bg-slate-100">
-                                    <img src="/avatar1.png" alt="Avatar" className="w-full h-full object-cover object-[65%_35%]" loading="eager" />
+                            {/* Main Avatar Container */}
+                            <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[460px] lg:h-[460px] rounded-full p-2.5 relative overflow-hidden bg-white shadow-2xl shadow-slate-200/50 ring-1 ring-slate-900/5">
+                                <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-tr from-slate-100 to-slate-50">
+                                    <img src="/avatar1.png" alt="Avatar" className="w-full h-full object-cover object-[65%_35%] transition-transform duration-700 hover:scale-105" loading="eager" />
                                 </div>
                             </div>
 
-                            {/* Decorative blur glows */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] rounded-full bg-blue-100 opacity-50 blur-3xl pointer-events-none -z-10"></div>
+                            {/* Decorative blur glows behind avatar */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] rounded-full bg-gradient-to-tr from-blue-200/40 to-cyan-200/40 blur-3xl pointer-events-none -z-10"></div>
 
-                            {/* Floating code and designer elements */}
-                            <div className="absolute top-4 -right-4 sm:top-10 sm:-right-8 w-16 h-16 sm:w-20 sm:h-20 bg-white shadow-2xl rounded-2xl flex items-center justify-center rotate-12 transition-transform hover:scale-110 hover:rotate-6 border border-slate-100">
-                                <Code className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-500" />
+                            {/* Floating elements */}
+                            <div className="absolute top-6 -right-2 sm:top-12 sm:-right-6 w-14 h-14 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-md shadow-xl shadow-slate-200/50 rounded-2xl flex items-center justify-center rotate-[15deg] transition-all duration-300 hover:scale-110 hover:rotate-6 ring-1 ring-white/50 border border-slate-100">
+                                <Code className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500" />
                             </div>
-                            <div className="absolute bottom-10 left-0 sm:bottom-12 sm:-left-6 w-16 h-16 sm:w-20 sm:h-20 bg-white shadow-2xl rounded-2xl flex items-center justify-center -rotate-12 transition-transform hover:scale-110 hover:-rotate-6 border border-slate-100">
-                                <Paintbrush className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
+                            <div className="absolute bottom-12 left-0 sm:bottom-16 sm:-left-4 w-14 h-14 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-md shadow-xl shadow-slate-200/50 rounded-2xl flex items-center justify-center -rotate-[15deg] transition-all duration-300 hover:scale-110 hover:-rotate-6 ring-1 ring-white/50 border border-slate-100">
+                                <Paintbrush className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-500" />
                             </div>
                         </div>
                     </div>

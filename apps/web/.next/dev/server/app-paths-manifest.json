@@ -1,6 +1,8 @@
 {
   "/(public)/page": "app/(public)/page.js",
   "/(public)/work/contact/page": "app/(public)/work/contact/page.js",
+  "/(public)/work/experience/page": "app/(public)/work/experience/page.js",
+  "/(public)/work/projects/page": "app/(public)/work/projects/page.js",
   "/(public)/work/skills-and-tools/page": "app/(public)/work/skills-and-tools/page.js",
   "/_not-found/page": "app/_not-found/page.js"
 }

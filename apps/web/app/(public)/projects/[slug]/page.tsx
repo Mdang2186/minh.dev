@@ -31,7 +31,7 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
               Repo
             </a>
           ) : null}
-          <Link className="underline underline-offset-4" href="/projects">
+          <Link className="underline underline-offset-4" href="/work/projects">
             Quay lại Projects
           </Link>
         </div>

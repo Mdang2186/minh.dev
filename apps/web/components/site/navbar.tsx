@@ -8,7 +8,7 @@ import { cn } from "@/lib/cn";
 const nav: { href: string; label: string }[] = [
     { href: "/work/projects", label: "Projects" },
     { href: "/work/skills-and-tools", label: "Skills & Tools" },
-    { href: "/work/experience", label: "Experience" },
+    { href: "/work/experience", label: "Experience & Edu" },
     { href: "/work/contact", label: "Contact" },
 ];
 

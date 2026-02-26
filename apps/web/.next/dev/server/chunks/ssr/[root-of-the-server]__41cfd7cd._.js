@@ -63,7 +63,7 @@ const nav = [
     },
     {
         href: "/work/experience",
-        label: "Experience"
+        label: "Experience & Edu"
     },
     {
         href: "/work/contact",
@@ -197,7 +197,7 @@ const items = [
         label: "Home"
     },
     {
-        href: "/projects",
+        href: "/work/projects",
         label: "Projects"
     },
     {

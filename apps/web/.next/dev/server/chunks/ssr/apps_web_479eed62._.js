@@ -65,8 +65,30 @@ const projects = [
     {
         slug: "motorshop",
         name: "MotorShop — Website Bán Xe Máy",
-        summary: "E-commerce website for motorbikes with pagination, search/filter, cart, and ordering flow.",
-        description: "MotorShop là một ứng dụng web thương mại điện tử chuyên cung cấp và kinh doanh xe máy trực tuyến. Dự án được xây dựng nhằm mang lại trải nghiệm mua sắm tiện lợi, nhanh chóng với đầy đủ các tính năng của một trang bán hàng chuyên nghiệp. Giao diện được thiết kế trực quan, dễ sử dụng, giúp khách hàng dễ dàng tìm kiếm, lọc sản phẩm theo nhu cầu và thực hiện quy trình thanh toán một cách mượt mà.",
+        summary: "Trang web thương mại điện tử chuyên cung cấp và kinh doanh xe máy trực tuyến.",
+        description: "MotorShop là dự án website bán hàng trực tuyến toàn diện, cung cấp trải nghiệm mua sắm tiện lợi với các tính năng phân trang, tìm kiếm và lọc sản phẩm. Hệ thống bao gồm giỏ hàng thông minh và quy trình đặt hàng tích hợp. Dự án tập trung vào việc quản lý danh mục xe máy, cung cấp chi tiết toàn diện từ bộ sưu tập hình ảnh, giá cả đến hệ thống quản trị mạnh mẽ.",
+        image: "/projects/motorshop_hero.png",
+        screenshots: [
+            "/projects/motorshop_hero.png"
+        ],
+        directoryTree: `MotorShop/
+├── Controllers/
+│   ├── AdminController.cs
+│   ├── CartController.cs
+│   └── HomeController.cs
+├── Models/
+│   ├── Motorbike.cs
+│   ├── User.cs
+│   └── Order.cs
+├── Views/
+│   ├── Home/
+│   │   └── Index.cshtml
+│   └── Shared/
+│       └── _Layout.cshtml
+└── wwwroot/
+    ├── css/
+    ├── js/
+    └── images/`,
         stack: [
             "React",
             "Tailwind CSS",
@@ -82,28 +104,47 @@ const projects = [
         tools: [
             "Visual Studio",
             "VS Code",
-            "SQL Server Management Studio",
+            "SSMS",
             "Git"
         ],
-        role: "Fullstack Developer",
-        duration: "2 Months",
-        teamSize: "3 Members",
+        role: "TEAM LEAD & FRONTEND/UI-UX",
+        duration: "10/2025 - 12/2025",
+        teamSize: "Academic Project",
         links: {
             github: "https://github.com/Mdang2186/MotorShop"
         },
         highlights: [
-            "Product listing with pagination, search & basic filters",
-            "Product detail page with gallery, price, add-to-cart",
-            "Cart: update quantity, remove items, compute totals",
-            "User authentication and authorization",
-            "Admin panel for product and order management"
+            "Danh sách sản phẩm: Hỗ trợ phân trang, công cụ tìm kiếm và lọc nâng cao.",
+            "Chi tiết sản phẩm: Cung cấp thư viện hình ảnh, hiển thị giá và chức năng thêm vào giỏ hàng mượt mà.",
+            "Quản lý Giỏ hàng: Cập nhật số lượng, xóa sản phẩm và tự động tính tổng tiền thanh toán.",
+            "Xác thực người dùng: Hệ thống đăng nhập và phân quyền bảo mật.",
+            "Bảng điều khiển Admin: Trình quản lý toàn diện cho danh mục sản phẩm và đơn đặt hàng."
         ]
     },
     {
         slug: "luxe-interiors",
         name: "LUXE INTERIORS — Website Bán Nội Thất",
-        summary: "Furniture e-commerce website with user ordering flow and admin management area.",
+        summary: "Website thương mại điện tử dành cho cửa hàng bán đồ nội thất cao cấp.",
         description: "LUXE INTERIORS là một giải pháp thương mại điện tử toàn diện dành cho cửa hàng bán đồ nội thất. Hệ thống bao gồm trang khách hàng với các chức năng xem sản phẩm, thêm vào giỏ hàng, đặt hàng, và một trang quản trị (Admin) để quản lý danh mục sản phẩm, theo dõi đơn hàng và người dùng. Dự án tập trung vào việc tối ưu hóa giao diện người dùng và quản lý dữ liệu hiệu quả.",
+        image: "/projects/luxe_hero.png",
+        screenshots: [
+            "/projects/luxe_hero.png"
+        ],
+        directoryTree: `FurniShop/
+├── src/
+│   ├── main/
+│   │   ├── java/com/furniture/
+│   │   │   ├── controllers/
+│   │   │   ├── models/
+│   │   │   └── util/DBContext.java
+│   │   └── webapp/
+│   │       ├── WEB-INF/
+│   │       │   └── views/
+│   │       │       ├── admin/
+│   │       │       └── user/
+│   │       ├── css/
+│   │       └── js/
+└── database_schema.sql`,
         stack: [
             "Java",
             "JSP/Servlet",
@@ -121,25 +162,45 @@ const projects = [
             "MySQL",
             "Git"
         ],
-        role: "Backend Team Lead",
-        duration: "1.5 Months",
-        teamSize: "4 Members",
+        role: "BACKEND TEAM LEAD",
+        duration: "1.5 MONTHS",
+        teamSize: "4 MEMBERS",
         links: {
             github: "https://github.com/Mdang2186/LUXE_INTERIORS"
         },
         highlights: [
-            "Category browsing (sofa/table/etc.)",
-            "Cart and checkout experience",
-            "Admin management for products & orders",
-            "Responsive design for mobile and desktop",
-            "Integration with secure authentication mechanisms"
+            "Khám phá danh mục: Hệ thống phân loại thông minh (sofa, bàn, ghế, v.v).",
+            "Trải nghiệm thanh toán: Quy trình giỏ hàng và thanh toán được tối ưu hóa.",
+            "Quản lý Admin: Hệ thống kiểm soát sản phẩm và theo dõi đơn hàng thời gian thực.",
+            "Thiết kế Responsive: Tương thích hoàn hảo trên cả thiết bị di động và máy tính bàn.",
+            "Tích hợp bảo mật: Áp dụng các cơ chế xác thực an toàn cho người dùng."
         ]
     },
     {
         slug: "quanly-hstd",
         name: "Quản Lý Hồ Sơ Tuyển Dụng",
-        summary: "Internal web system for managing candidates, scheduling interviews, and tracking results.",
+        summary: "Hệ thống web nội bộ quản lý ứng viên, lên lịch phỏng vấn và theo dõi kết quả.",
         description: "Hệ thống Quản Lý Hồ Sơ Tuyển Dụng là một ứng dụng nội bộ được thiết kế để số hóa và tối ưu hóa quy trình tuyển dụng của doanh nghiệp. Nền tảng này giúp đội ngũ nhân sự (HR) dễ dàng thu thập, phân loại hồ sơ ứng viên, lên lịch phỏng vấn và ghi nhận đánh giá từ người phỏng vấn. Qua đó, rút ngắn thời gian xử lý và nâng cao hiệu quả tuyển dụng.",
+        image: "/projects/quanly_hero.png",
+        screenshots: [
+            "/projects/quanly_hero.png"
+        ],
+        directoryTree: `QuanLyHSTD/
+├── Controllers/
+│   ├── CandidateController.cs
+│   └── InterviewController.cs
+├── Models/
+│   ├── CandidateProfile.cs
+│   ├── Department.cs
+│   └── InterviewSchedule.cs
+├── Views/
+│   ├── Candidate/
+│   │   ├── Create.cshtml
+│   │   └── Index.cshtml
+│   └── Dashboard/
+│       └── Index.cshtml
+└── App_Data/
+    └── HRDatabase.mdf`,
         stack: [
             "ASP.NET MVC",
             "Razor",
@@ -154,22 +215,22 @@ const projects = [
         ],
         tools: [
             "Visual Studio",
-            "SQL Server Management Studio",
+            "SSMS",
             "Figma",
             "Git"
         ],
-        role: "Fullstack Developer",
-        duration: "3 Months",
-        teamSize: "2 Members",
+        role: "FULLSTACK DEVELOPER",
+        duration: "3 MONTHS",
+        teamSize: "2 MEMBERS",
         links: {
             github: "https://github.com/Mdang2186/QuanLyHSTD"
         },
         highlights: [
-            "Role-based flows: HR / Interviewer",
-            "Candidate profile management and assignment",
-            "Interview scheduling and feedback input",
-            "Dashboard statistics and reporting",
-            "Automated email notifications for candidates"
+            "Luồng người dùng đa cấp: Thiết lập luồng thao tác riêng biệt cho HR và Người phỏng vấn.",
+            "Quản lý hồ sơ: Lưu trữ chi tiết thông tin ứng viên và phân công vị trí phù hợp.",
+            "Lên lịch tự động: Hỗ trợ tạo lịch phỏng vấn và nhập thông tin phản hồi sau phỏng vấn.",
+            "Báo cáo thống kê: Bảng điều khiển phân tích số liệu và tình trạng tuyển dụng.",
+            "Thông báo Email: Hệ thống tự động đẩy email xác nhận lịch cho ứng viên."
         ]
     }
 ];

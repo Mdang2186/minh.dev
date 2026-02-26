@@ -54,7 +54,7 @@ export default function SearchPage({ searchParams }: { searchParams?: { q?: stri
         <section>
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-base font-semibold tracking-tight">Projects</h2>
-            <Link className="text-sm underline underline-offset-4" href="/projects">Projects</Link>
+            <Link className="text-sm underline underline-offset-4" href="/work/projects">Projects</Link>
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {result.projects.length ? result.projects.map((p) => <ProjectCard key={p.slug} project={p} />) : (
