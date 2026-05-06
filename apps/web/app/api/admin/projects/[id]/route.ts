@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@minh-dev/database";
 import { jsonError, requireAdminResponse, writeAuditLog } from "@/lib/admin/api";
+import { buildProjectImageCreates, buildProjectTechStackCreates, projectWriteErrorResponse } from "@/lib/admin/project-write";
 import { serializeAdminProject } from "@/lib/admin/serializers";
 import { projectSchema, zodErrorMessage } from "@/lib/admin/validators";
 
@@ -12,19 +13,6 @@ const projectInclude = {
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
-
-async function findOrCreateTechStacks(names: string[]) {
-  const uniqueNames = Array.from(new Set(names.map((name) => name.trim()).filter(Boolean)));
-  return Promise.all(
-    uniqueNames.map((name) =>
-      prisma.techStack.upsert({
-        where: { name },
-        update: {},
-        create: { name },
-      })
-    )
-  );
-}
 
 export async function GET(_request: Request, context: RouteContext) {
   const { response } = await requireAdminResponse();
@@ -49,31 +37,22 @@ export async function PUT(request: Request, context: RouteContext) {
   if (!existing) return jsonError("Không tìm thấy dự án.", 404);
 
   const { techStacks, projectImages, ...data } = parsed.data;
-  const techStackRows = await findOrCreateTechStacks(techStacks);
 
   try {
-    const project = await prisma.$transaction(async (tx) => {
-      await tx.projectImage.deleteMany({ where: { projectId: id } });
-      await tx.projectTechStack.deleteMany({ where: { projectId: id } });
-      return tx.project.update({
-        where: { id },
-        data: {
-          ...data,
-          images: {
-            create: projectImages.map((image) => ({
-              imageUrl: image.imageUrl,
-              altText: image.altText,
-              sortOrder: image.sortOrder,
-            })),
-          },
-          techStacks: {
-            create: techStackRows.map((techStack) => ({
-              techStack: { connect: { id: techStack.id } },
-            })),
-          },
+    const project = await prisma.project.update({
+      where: { id },
+      data: {
+        ...data,
+        images: {
+          deleteMany: {},
+          create: buildProjectImageCreates(projectImages),
         },
-        include: projectInclude,
-      });
+        techStacks: {
+          deleteMany: {},
+          create: buildProjectTechStackCreates(techStacks),
+        },
+      },
+      include: projectInclude,
     });
 
     await writeAuditLog({
@@ -85,9 +64,8 @@ export async function PUT(request: Request, context: RouteContext) {
 
     return NextResponse.json({ project: serializeAdminProject(project) });
   } catch (error) {
-    if (error instanceof Error && error.message.includes("Unique constraint")) {
-      return jsonError("Slug đã tồn tại.", 409);
-    }
+    const response = projectWriteErrorResponse(error);
+    if (response) return response;
     throw error;
   }
 }

@@ -61,38 +61,48 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
     if (!projectId) return;
 
     async function loadProject() {
-      const response = await fetch(`/api/admin/projects/${projectId}`, { cache: "no-store" });
-      const data = await response.json();
-      if (data.project) {
-        const project = data.project;
-        setForm({
-          title: project.title ?? "",
-          slug: project.slug ?? "",
-          summary: project.summary ?? "",
-          description: project.description ?? "",
-          content: project.content ?? "",
-          coverImage: project.coverImage ?? "",
-          githubUrl: project.githubUrl ?? "",
-          demoUrl: project.demoUrl ?? "",
-          role: project.role ?? "",
-          duration: project.duration ?? "",
-          teamSize: project.teamSize ?? "",
-          featured: Boolean(project.featured),
-          published: Boolean(project.published),
-          sortOrder: project.sortOrder ?? 0,
-          directoryTree: project.directoryTree ?? "",
-          highlightsText: (project.highlights ?? []).join("\n"),
-          languagesText: (project.languages ?? []).join("\n"),
-          toolsText: (project.tools ?? []).join("\n"),
-          techStacksText: (project.techStacks ?? []).join("\n"),
-          projectImagesText: (project.projectImages ?? [])
-            .map((image: { imageUrl: string; altText?: string; sortOrder?: number }) =>
-              [image.imageUrl, image.altText ?? "", image.sortOrder ?? 0].join("|")
-            )
-            .join("\n"),
-        });
+      try {
+        const response = await fetch(`/api/admin/projects/${projectId}`, { cache: "no-store" });
+        const data = await response.json().catch(() => null);
+        if (!response.ok) {
+          setStatus(data?.message || "Không thể tải dự án.");
+          return;
+        }
+
+        if (data?.project) {
+          const project = data.project;
+          setForm({
+            title: project.title ?? "",
+            slug: project.slug ?? "",
+            summary: project.summary ?? "",
+            description: project.description ?? "",
+            content: project.content ?? "",
+            coverImage: project.coverImage ?? "",
+            githubUrl: project.githubUrl ?? "",
+            demoUrl: project.demoUrl ?? "",
+            role: project.role ?? "",
+            duration: project.duration ?? "",
+            teamSize: project.teamSize ?? "",
+            featured: Boolean(project.featured),
+            published: Boolean(project.published),
+            sortOrder: project.sortOrder ?? 0,
+            directoryTree: project.directoryTree ?? "",
+            highlightsText: (project.highlights ?? []).join("\n"),
+            languagesText: (project.languages ?? []).join("\n"),
+            toolsText: (project.tools ?? []).join("\n"),
+            techStacksText: (project.techStacks ?? []).join("\n"),
+            projectImagesText: (project.projectImages ?? [])
+              .map((image: { imageUrl: string; altText?: string; sortOrder?: number }) =>
+                [image.imageUrl, image.altText ?? "", image.sortOrder ?? 0].join("|")
+              )
+              .join("\n"),
+          });
+        }
+      } catch {
+        setStatus("Không thể tải dự án.");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     loadProject();
@@ -130,22 +140,26 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
       projectImages: parseProjectImages(form.projectImagesText),
     };
 
-    const response = await fetch(projectId ? `/api/admin/projects/${projectId}` : "/api/admin/projects", {
-      method: projectId ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await response.json().catch(() => null);
-    if (!response.ok) {
-      setStatus(data?.message || "Không thể lưu dự án.");
-      setSaving(false);
-      return;
-    }
+    try {
+      const response = await fetch(projectId ? `/api/admin/projects/${projectId}` : "/api/admin/projects", {
+        method: projectId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        setStatus(data?.message || "Không thể lưu dự án.");
+        return;
+      }
 
-    setStatus("Đã lưu dự án.");
-    setSaving(false);
-    router.push("/admin/projects");
-    router.refresh();
+      setStatus("Đã lưu dự án.");
+      router.push("/admin/projects");
+      router.refresh();
+    } catch {
+      setStatus("Không thể lưu dự án.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (loading) return <p className="text-sm text-slate-500">Đang tải dự án...</p>;

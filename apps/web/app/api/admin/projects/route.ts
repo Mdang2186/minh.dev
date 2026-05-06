@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@minh-dev/database";
 import { jsonError, requireAdminResponse, writeAuditLog } from "@/lib/admin/api";
+import { buildProjectImageCreates, buildProjectTechStackCreates, projectWriteErrorResponse } from "@/lib/admin/project-write";
 import { serializeAdminProject } from "@/lib/admin/serializers";
 import { projectSchema, zodErrorMessage } from "@/lib/admin/validators";
 
@@ -8,19 +9,6 @@ const projectInclude = {
   images: { orderBy: { sortOrder: "asc" as const } },
   techStacks: { include: { techStack: true } },
 };
-
-async function findOrCreateTechStacks(names: string[]) {
-  const uniqueNames = Array.from(new Set(names.map((name) => name.trim()).filter(Boolean)));
-  return Promise.all(
-    uniqueNames.map((name) =>
-      prisma.techStack.upsert({
-        where: { name },
-        update: {},
-        create: { name },
-      })
-    )
-  );
-}
 
 export async function GET() {
   const { response } = await requireAdminResponse();
@@ -42,23 +30,16 @@ export async function POST(request: Request) {
   if (!parsed.success) return jsonError(zodErrorMessage(parsed.error));
 
   const { techStacks, projectImages, ...data } = parsed.data;
-  const techStackRows = await findOrCreateTechStacks(techStacks);
 
   try {
     const project = await prisma.project.create({
       data: {
         ...data,
         images: {
-          create: projectImages.map((image) => ({
-            imageUrl: image.imageUrl,
-            altText: image.altText,
-            sortOrder: image.sortOrder,
-          })),
+          create: buildProjectImageCreates(projectImages),
         },
         techStacks: {
-          create: techStackRows.map((techStack) => ({
-            techStack: { connect: { id: techStack.id } },
-          })),
+          create: buildProjectTechStackCreates(techStacks),
         },
       },
       include: projectInclude,
@@ -73,9 +54,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ project: serializeAdminProject(project) }, { status: 201 });
   } catch (error) {
-    if (error instanceof Error && error.message.includes("Unique constraint")) {
-      return jsonError("Slug đã tồn tại.", 409);
-    }
+    const response = projectWriteErrorResponse(error);
+    if (response) return response;
     throw error;
   }
 }
