@@ -5,6 +5,14 @@
             "dependsOn": [
                 "^build"
             ],
+            "env": [
+                "DATABASE_URL",
+                "JWT_SECRET",
+                "ADMIN_EMAIL",
+                "ADMIN_PASSWORD",
+                "ADMIN_NAME",
+                "NEXT_PUBLIC_SITE_URL"
+            ],
             "outputs": [
                 ".next/**",
                 "!.next/cache/**",
