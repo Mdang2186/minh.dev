@@ -63,7 +63,9 @@ export async function getPublicSocialLinks(): Promise<PublicSocialLink[]> {
   }, []);
 }
 
-export async function getPublicProjects(options: { featured?: boolean; limit?: number } = {}) {
+export async function getPublicProjects(
+  options: { featured?: boolean; limit?: number } = {}
+): Promise<PublicProject[]> {
   return safeRead(async () => {
     const projects = await prisma.project.findMany({
       where: {
@@ -82,7 +84,7 @@ export async function getPublicProjects(options: { featured?: boolean; limit?: n
   }, [] as PublicProject[]);
 }
 
-export async function getPublicProjectBySlug(slug: string) {
+export async function getPublicProjectBySlug(slug: string): Promise<PublicProject | null> {
   return safeRead(async () => {
     const project = await prisma.project.findFirst({
       where: { slug, published: true },

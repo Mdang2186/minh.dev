@@ -125,6 +125,7 @@ model Skill {
   groupId   String
   name      String
   level     String?
+  iconUrl   String?
   sortOrder Int        @default(0)
   group     SkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
