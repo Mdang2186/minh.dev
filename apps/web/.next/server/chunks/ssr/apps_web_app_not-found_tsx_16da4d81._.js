@@ -1,3 +1,0 @@
-module.exports=[93349,a=>{"use strict";var b=a.i(7997),c=a.i(95936),d=a.i(8594);function e(){return(0,b.jsxs)(d.Container,{className:"py-16",children:[(0,b.jsx)("h1",{className:"text-3xl font-semibold tracking-tight",children:"Không tìm thấy trang"}),(0,b.jsx)("p",{className:"mt-3 text-muted-foreground",children:"Liên kết bạn mở không tồn tại hoặc đã được thay đổi."}),(0,b.jsx)("div",{className:"mt-6",children:(0,b.jsx)(c.default,{className:"text-sm font-medium underline underline-offset-4",href:"/",children:"Về trang chủ"})})]})}a.s(["default",()=>e])}];
-
-//# sourceMappingURL=apps_web_app_not-found_tsx_16da4d81._.js.map

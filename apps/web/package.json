@@ -6,13 +6,24 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
+    "@minh-dev/database": "*",
+    "@supabase/supabase-js": "^2.98.0",
+    "@tiptap/extension-color": "^3.22.5",
+    "@tiptap/extension-text-align": "^3.22.5",
+    "@tiptap/extension-text-style": "^3.22.5",
+    "@tiptap/extension-underline": "^3.22.5",
+    "@tiptap/pm": "^3.22.5",
+    "@tiptap/react": "^3.22.5",
+    "@tiptap/starter-kit": "^3.22.5",
+    "bcryptjs": "^3.0.2",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.0.0",
+    "jose": "^6.1.2",
     "lucide-react": "^0.540.0",
     "mini-svg-data-uri": "^1.4.4",
     "next": "16.1.6",
@@ -23,7 +34,8 @@
     "react-icons": "^5.5.0",
     "react-pdf": "^10.4.1",
     "tailwind-merge": "^3.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

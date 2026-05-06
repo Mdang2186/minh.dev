@@ -2,10 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/common/container";
 import { TagPill } from "@/components/common/tag-pill";
-import { getProjectBySlug } from "@/features/projects/projects.service";
+import { getPublicProjectBySlug } from "@/features/portfolio/portfolio.service";
 
-export default function ProjectDetailPage({ params }: { params: { slug: string } }) {
-  const project = getProjectBySlug(params.slug);
+export const dynamic = "force-dynamic";
+
+export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const project = await getPublicProjectBySlug(slug);
   if (!project) return notFound();
 
   return (
@@ -15,8 +18,8 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
         <p className="text-muted-foreground">{project.summary}</p>
 
         <div className="flex flex-wrap gap-2">
-          {project.stack.map((t) => (
-            <TagPill key={t} label={t} href={`/tag/${encodeURIComponent(t)}`} />
+          {project.stack.map((tag) => (
+            <TagPill key={tag} label={tag} href={`/tag/${encodeURIComponent(tag)}`} />
           ))}
         </div>
 
@@ -38,8 +41,8 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
       </div>
 
       <article className="prose prose-neutral mt-10 max-w-none dark:prose-invert">
-        {project.content.map((block, idx) => (
-          <p key={idx}>{block}</p>
+        {project.content.map((block) => (
+          <p key={block}>{block}</p>
         ))}
       </article>
     </Container>

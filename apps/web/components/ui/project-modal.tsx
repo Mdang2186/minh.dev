@@ -6,7 +6,7 @@ import { Project } from "@/data/site";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { X, ExternalLink, Github, FolderGit2, Calendar, Users, Wrench, Code2, Rocket, FileCode2, ImageIcon } from "lucide-react";
+import { X, ExternalLink, Github, FolderGit2, Calendar, Briefcase, Wrench, Code2, Rocket, FileCode2, ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface ProjectModalProps {
@@ -91,7 +91,7 @@ export function ProjectModal({ selectedProject, onClose }: ProjectModalProps) {
                                         )}
                                         {selectedProject.teamSize && (
                                             <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 px-3.5 py-1.5 rounded-lg text-slate-600">
-                                                <Users className="w-4 h-4 text-cyan-500" />
+                                                <Briefcase className="w-4 h-4 text-cyan-500" />
                                                 <span>{selectedProject.teamSize}</span>
                                             </div>
                                         )}

@@ -1,38 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { Container } from "@/components/ui/container";
-import { Badge } from "@/components/ui/badge";
+import { TechBadge } from "@/components/ui/tech-badge";
 import { Card, CardDesc, CardTitle } from "@/components/ui/card";
-import { projects, Project } from "@/data/site";
+import type { PublicProject } from "@/features/portfolio/portfolio.types";
 import { ProjectModal } from "@/components/ui/project-modal";
 
-export function FeaturedProjects() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+export function FeaturedProjects({ projects }: { projects: PublicProject[] }) {
+  const [selectedProject, setSelectedProject] = useState<PublicProject | null>(null);
   const top = projects.slice(0, 3);
 
   return (
-    <section className="mt-12">
-      <Container>
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
-              Featured Projects
-            </h2>
-            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
-              A few things I have built recently — focused on usability and clean UI.
-            </p>
-          </div>
-          <Link
-            href="/work/projects"
-            className="text-sm font-semibold text-neutral-700 hover:underline dark:text-neutral-200"
-          >
-            View all
-          </Link>
-        </div>
-
-        <div className="mt-5 grid gap-4 md:grid-cols-3">
+    <>
+      {top.length ? (
+        <div className="grid gap-4 md:grid-cols-3">
           {top.map((p) => (
             <div
               key={p.slug}
@@ -45,10 +26,12 @@ export function FeaturedProjects() {
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {p.stack.slice(0, 3).map((s) => (
-                    <Badge key={s}>{s}</Badge>
+                    <TechBadge key={s} name={s} />
                   ))}
                   {p.stack.length > 3 && (
-                    <Badge>+{p.stack.length - 3}</Badge>
+                    <span className="inline-flex items-center px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-500 border border-slate-200">
+                      +{p.stack.length - 3}
+                    </span>
                   )}
                 </div>
 
@@ -61,12 +44,16 @@ export function FeaturedProjects() {
             </div>
           ))}
         </div>
-      </Container>
+      ) : (
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center py-10">
+          Project content is being prepared.
+        </p>
+      )}
 
       <ProjectModal
         selectedProject={selectedProject}
         onClose={() => setSelectedProject(null)}
       />
-    </section>
+    </>
   );
 }

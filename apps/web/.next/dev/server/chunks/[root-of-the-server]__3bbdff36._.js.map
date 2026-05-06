@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 46, "column": 0}, "map": {"version":3,"sources":["file:///D:/MyPepositoryGITHUB/minh.dev/apps/web/proxy.ts"],"sourcesContent":["import { NextResponse } from \"next/server\";\r\nimport type { NextRequest } from \"next/server\";\r\n\r\nexport function proxy(req: NextRequest) {\r\n  // Pass-through since no admin routes to protect\r\n  return NextResponse.next();\r\n}\r\n\r\nexport const config = {\r\n  matcher: [],\r\n};\r\n"],"names":[],"mappings":";;;;;;AAAA;;AAGO,SAAS,MAAM,GAAgB;IACpC,gDAAgD;IAChD,OAAO,8IAAY,CAAC,IAAI;AAC1B;AAEO,MAAM,SAAS;IACpB,SAAS,EAAE;AACb"}}]
-}

@@ -1,9 +1,0 @@
-[00:00:02.744] Server  LOG     ✓ Ready in 2s
-[00:04:46.731] Browser WARN    Image with src "/projects/quanly_hero.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
-[00:04:46.731] Browser WARN    Image with src "/projects/quanly_hero.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
-[00:04:46.731] Browser WARN    Image with src "/projects/luxe_hero.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
-[00:04:46.731] Browser WARN    Image with src "/projects/motorshop_hero.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
-[00:07:19.008] Server  LOG     ✓ Compiled in 502ms
-[00:13:08.203] Browser WARN    Image with src "/projects/luxe_hero.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
-[00:13:20.849] Browser WARN    Image with src "/projects/motorshop_hero.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
-[00:41:57.016] Server  LOG     ✓ Compiled in 275ms

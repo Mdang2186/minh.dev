@@ -13,7 +13,7 @@ const nav: { href: string; label: string }[] = [
 ];
 
 export function Navbar() {
-    const pathname = usePathname();
+    const pathname = usePathname() ?? "";
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {

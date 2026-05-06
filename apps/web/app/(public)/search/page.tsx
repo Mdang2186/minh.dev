@@ -5,9 +5,10 @@ import { searchAll } from "@/features/site/search.service";
 import { PostCard } from "@/components/cards/post-card";
 import { ProjectCard } from "@/components/cards/project-card";
 
-export default function SearchPage({ searchParams }: { searchParams?: { q?: string } }) {
-  const q = (searchParams?.q ?? "").trim();
-  const result = searchAll(q);
+export default async function SearchPage({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
+  const params = await searchParams;
+  const q = (params?.q ?? "").trim();
+  const result = await searchAll(q);
 
   return (
     <Container className="py-10">

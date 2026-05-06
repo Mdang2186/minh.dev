@@ -1,10 +1,12 @@
-﻿"use client";
-
-import { projects } from "@/data";
-import { ProductCard } from "@/components/ui/product-card";
 import { Container } from "@/components/common/container";
+import { ProjectCard } from "@/components/cards/project-card";
+import { getPublicProjects } from "@/features/portfolio/portfolio.service";
 
-export default function ProjectsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ProjectsPage() {
+  const projects = await getPublicProjects();
+
   return (
     <Container className="py-24 md:py-32">
       <div className="mb-16 max-w-2xl">
@@ -16,18 +18,12 @@ export default function ProjectsPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((item) => (
-          <ProductCard
-            key={item.id}
-            id={item.id}
-            title={item.title}
-            des={item.des}
-            img={item.img}
-            iconLists={item.iconLists}
-            link={item.link}
-          />
-        ))}
+      <div className="grid gap-4">
+        {projects.length ? (
+          projects.map((project) => <ProjectCard key={project.slug} project={project} />)
+        ) : (
+          <p className="text-sm text-muted-foreground">Project content is being prepared.</p>
+        )}
       </div>
     </Container>
   );

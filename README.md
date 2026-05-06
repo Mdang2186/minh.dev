@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# minh.dev
 
-## Getting Started
+Portfolio cá nhân dùng Next.js trong `apps/web`, Prisma trong `packages/database` và PostgreSQL. Nội dung portfolio có thể quản trị tại `/admin`.
 
-First, run the development server:
+## Chạy local
+
+1. Cài dependencies:
+
+```bash
+npm install
+```
+
+2. Tạo file môi trường:
+
+```bash
+copy .env.example .env
+```
+
+3. Điền các biến trong `.env`:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+JWT_SECRET="replace-with-a-long-random-secret-at-least-32-characters"
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="ChangeMe123!"
+ADMIN_NAME="Portfolio Admin"
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+```
+
+4. Tạo Prisma client và đẩy schema:
+
+```bash
+npm run prisma:generate
+npm run prisma:push
+```
+
+5. Seed admin và nội dung ban đầu:
+
+```bash
+npm run prisma:seed
+```
+
+Nếu không đặt `ADMIN_EMAIL` hoặc `ADMIN_PASSWORD`, seed dùng tài khoản demo `admin@example.com` / `ChangeMe123!`. Chỉ dùng demo cho local, không dùng cho production.
+
+6. Chạy web:
+
+```bash
+npm --workspace @minh-dev/web run dev
+```
+
+Mở `http://localhost:3000`. Admin ở `http://localhost:3000/admin/login`.
+
+## Scripts chính
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run lint
+npm run prisma:generate
+npm run prisma:push
+npm run prisma:seed
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Railway PostgreSQL
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Tạo project trên Railway.
+2. Add service `PostgreSQL`.
+3. Mở tab database, vào `Variables`.
+4. Copy biến `DATABASE_URL`.
+5. Dán vào `.env` local hoặc biến môi trường deploy.
+6. Chạy `npm run prisma:push` và `npm run prisma:seed` với `DATABASE_URL` đó.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Không hard-code connection string trong source code. PostgreSQL chỉ lưu URL ảnh như `/avatar1.png` hoặc URL Cloudinary/Vercel Blob sau này.
 
-## Learn More
+## Admin
 
-To learn more about Next.js, take a look at the following resources:
+Footer public có link nhỏ `Admin`. Sau khi seed, đăng nhập bằng tài khoản trong `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Admin hiện quản lý:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Hồ sơ cá nhân
+- Dự án, ảnh dự án, tech stack, published/featured
+- Nhóm kỹ năng và kỹ năng con
+- Kinh nghiệm, details, visible
+- Mạng xã hội, visible
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Mật khẩu được hash bằng `bcryptjs`. Session admin dùng JWT trong httpOnly cookie, không lưu token trong localStorage.

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, MapPin, Calendar, ChevronRight } from "lucide-react";
+import { Briefcase, Calendar, ChevronRight, X, Github, Code2, Layers, Wrench, Users, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { PublicProject } from "@/features/portfolio/portfolio.types";
 
 type ExperienceHighlight = string;
 
@@ -17,11 +18,13 @@ export interface ExperienceData {
 
 interface InteractiveExperienceProps {
     experiences: ExperienceData[];
+    projects?: PublicProject[];
 }
 
-export function InteractiveExperience({ experiences }: InteractiveExperienceProps) {
+export function InteractiveExperience({ experiences, projects = [] }: InteractiveExperienceProps) {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isMobile, setIsMobile] = useState(false);
+    const [selectedProject, setSelectedProject] = useState<PublicProject | null>(null);
 
     // Check if we are on mobile to change behavior
     useEffect(() => {
@@ -34,6 +37,9 @@ export function InteractiveExperience({ experiences }: InteractiveExperienceProp
     if (!experiences || experiences.length === 0) return null;
 
     const activeExp = experiences[activeIndex];
+    
+    // Find matching project
+    const activeProject = projects.find(p => p.name.includes(activeExp.org) || activeExp.org.includes(p.name));
 
     return (
         <div className="flex flex-col md:flex-row gap-8 lg:gap-12 w-full max-w-5xl mx-auto">
@@ -91,7 +97,11 @@ export function InteractiveExperience({ experiences }: InteractiveExperienceProp
                                         exit={{ height: 0, opacity: 0 }}
                                         className="absolute top-full left-12 right-0 mt-3 z-10 overflow-hidden"
                                     >
-                                        <ExperienceDetailCard exp={activeExp} />
+                                        <ExperienceDetailCard 
+                                            exp={activeExp} 
+                                            project={activeProject}
+                                            onViewDetails={() => setSelectedProject(activeProject ?? null)} 
+                                        />
                                     </motion.div>
                                 )}
                             </div>
@@ -113,22 +123,37 @@ export function InteractiveExperience({ experiences }: InteractiveExperienceProp
                                 transition={{ duration: 0.3, ease: "easeOut" }}
                                 className="h-full"
                             >
-                                <ExperienceDetailCard exp={activeExp} className="h-full" />
+                                <ExperienceDetailCard 
+                                    exp={activeExp} 
+                                    className="h-full" 
+                                    project={activeProject}
+                                    onViewDetails={() => setSelectedProject(activeProject ?? null)}
+                                />
                             </motion.div>
                         </AnimatePresence>
                     </div>
                 </div>
             )}
+            
+            <AnimatePresence>
+                {selectedProject && (
+                    <ProjectDetailModal 
+                        project={selectedProject} 
+                        role={activeExp.title}
+                        onClose={() => setSelectedProject(null)} 
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }
 
-function ExperienceDetailCard({ exp, className }: { exp: ExperienceData, className?: string }) {
+function ExperienceDetailCard({ exp, className, project, onViewDetails }: { exp: ExperienceData, className?: string, project?: PublicProject, onViewDetails: () => void }) {
     return (
         <div className={cn(
-            "p-6 sm:p-8 rounded-3xl border border-cyan-500/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-2xl flex flex-col relative overflow-hidden group",
+            "p-6 sm:p-8 rounded-3xl border border-cyan-500/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-2xl flex flex-col relative overflow-hidden group cursor-pointer",
             className
-        )}>
+        )} onClick={project ? onViewDetails : undefined}>
             {/* Subtle Gradient Background */}
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-slate-900/5 dark:to-cyan-900/10 pointer-events-none" />
 
@@ -141,7 +166,7 @@ function ExperienceDetailCard({ exp, className }: { exp: ExperienceData, classNa
                     </div>
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+                <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
                     {exp.org}
                 </h3>
 
@@ -149,9 +174,11 @@ function ExperienceDetailCard({ exp, className }: { exp: ExperienceData, classNa
                     <span className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                         <Calendar size={15} className="text-cyan-600 dark:text-cyan-400" /> {exp.period}
                     </span>
-                    <span className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
-                        <Briefcase size={15} className="text-cyan-600 dark:text-cyan-400" /> Academic Project
-                    </span>
+                    {project?.teamSize && (
+                        <span className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <Briefcase size={15} className="text-cyan-600 dark:text-cyan-400" /> {project.teamSize}
+                        </span>
+                    )}
                 </div>
             </div>
 
@@ -160,8 +187,7 @@ function ExperienceDetailCard({ exp, className }: { exp: ExperienceData, classNa
                     <div className="w-2 h-2 rounded-full bg-cyan-500" /> Key Responsibilities & Features
                 </h4>
                 <ul className="space-y-5 text-[15px] sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-                    {exp.highlights.map((highlight, index) => {
-                        // Bold the part before the colon if it exists
+                    {exp.highlights.slice(0, 3).map((highlight, index) => {
                         const parts = highlight.split(':');
                         const hasColon = parts.length > 1;
 
@@ -171,10 +197,10 @@ function ExperienceDetailCard({ exp, className }: { exp: ExperienceData, classNa
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3, delay: index * 0.1 }}
-                                className="flex items-start gap-4 bg-white/50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all"
+                                className="flex items-start gap-4 bg-white/50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 shadow-sm transition-all"
                             >
                                 <span className="mt-1.5 w-2 h-2 shrink-0 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.6)]" />
-                                <span className="flex-1">
+                                <span className="flex-1 line-clamp-2">
                                     {hasColon ? (
                                         <>
                                             <span className="font-bold text-slate-900 dark:text-cyan-300">{parts[0]}:</span>
@@ -188,6 +214,14 @@ function ExperienceDetailCard({ exp, className }: { exp: ExperienceData, classNa
                         );
                     })}
                 </ul>
+                
+                {project && (
+                    <div className="mt-6 text-center">
+                        <span className="inline-flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold text-sm bg-cyan-50 dark:bg-cyan-900/30 px-4 py-2 rounded-xl group-hover:bg-cyan-100 dark:group-hover:bg-cyan-900/50 transition-colors">
+                            Nhấn để xem chi tiết dự án <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </span>
+                    </div>
+                )}
             </div>
 
             {/* Decorative Glow & Abstract Shapes */}
@@ -195,6 +229,176 @@ function ExperienceDetailCard({ exp, className }: { exp: ExperienceData, classNa
             <div className="absolute bottom-0 left-0 -m-32 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -z-10 opacity-50 transition-transform duration-700 group-hover:scale-125" />
             <div className="absolute top-8 right-8 w-16 h-16 border border-cyan-500/10 rounded-full -z-10" />
             <div className="absolute top-12 right-12 w-8 h-8 border border-slate-500/10 rounded-full -z-10" />
+        </div>
+    );
+}
+
+function ProjectDetailModal({ project, role, onClose }: { project: PublicProject, role: string, onClose: () => void }) {
+    // Prevent scrolling on body when modal is open
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm" onClick={onClose}>
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+            >
+                {/* Header */}
+                <div className="p-6 sm:p-8 border-b border-slate-100 shrink-0">
+                    <button 
+                        onClick={onClose}
+                        className="absolute top-6 right-6 p-2 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 rounded-full transition-colors"
+                    >
+                        <X size={20} />
+                    </button>
+
+                    <div className="inline-flex items-center gap-2 mb-4">
+                        <span className="px-3 py-1 rounded-full bg-cyan-50 text-cyan-600 text-[11px] font-black tracking-wider uppercase border border-cyan-100 flex items-center gap-1.5">
+                            <Briefcase size={12} /> {role}
+                        </span>
+                    </div>
+
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight pr-12">
+                        {project.name}
+                    </h2>
+
+                    <div className="flex flex-wrap gap-3 mt-5">
+                        {project.duration && (
+                            <div className="flex items-center gap-2 text-sm font-bold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                                <Clock size={16} className="text-cyan-500" /> {project.duration}
+                            </div>
+                        )}
+                        {project.teamSize && (
+                            <div className="flex items-center gap-2 text-sm font-bold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                                <Users size={16} className="text-cyan-500" /> {project.teamSize}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Body */}
+                <div className="p-6 sm:p-8 overflow-y-auto flex-1">
+                    <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+                        
+                        {/* Left Content (2/3) */}
+                        <div className="lg:col-span-2 space-y-8">
+                            {/* Summary */}
+                            <section>
+                                <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" /> Tổng quan dự án
+                                </h3>
+                                <p className="text-slate-700 leading-relaxed font-medium">
+                                    {project.summary}
+                                </p>
+                            </section>
+
+                            {/* Highlights */}
+                            {project.highlights && project.highlights.length > 0 && (
+                                <section>
+                                    <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" /> Tính năng nổi bật
+                                    </h3>
+                                    <ul className="space-y-4">
+                                        {project.highlights.map((highlight, idx) => {
+                                            const parts = highlight.split(':');
+                                            const hasColon = parts.length > 1;
+                                            return (
+                                                <li key={idx} className="flex gap-3 text-slate-700 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                                                    <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+                                                    <span className="leading-relaxed text-[15px]">
+                                                        {hasColon ? (
+                                                            <>
+                                                                <span className="font-bold text-slate-900">{parts[0]}:</span>
+                                                                <span>{parts.slice(1).join(':')}</span>
+                                                            </>
+                                                        ) : highlight}
+                                                    </span>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </section>
+                            )}
+                        </div>
+
+                        {/* Right Content (1/3) */}
+                        <div className="space-y-8 lg:border-l border-slate-100 lg:pl-8">
+                            {project.stack && project.stack.length > 0 && (
+                                <section>
+                                    <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <Layers size={14} className="text-cyan-500" /> Framework & Tech Stack
+                                    </h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {project.stack.map(tag => (
+                                            <span key={tag} className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-xl shadow-sm">{tag}</span>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {project.languages && project.languages.length > 0 && (
+                                <section>
+                                    <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <Code2 size={14} className="text-cyan-500" /> Ngôn ngữ lập trình
+                                    </h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {project.languages.map(tag => (
+                                            <span key={tag} className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-xl shadow-sm">{tag}</span>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {project.tools && project.tools.length > 0 && (
+                                <section>
+                                    <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <Wrench size={14} className="text-cyan-500" /> Công cụ & Môi trường
+                                    </h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {project.tools.map(tag => (
+                                            <span key={tag} className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-xl shadow-sm">{tag}</span>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                {project.links && (project.links.repo || project.links.demo) && (
+                    <div className="p-4 sm:p-6 border-t border-slate-100 bg-slate-50 shrink-0 flex justify-end gap-3">
+                        {project.links.repo && (
+                            <a 
+                                href={project.links.repo} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-slate-900/20 transition-all active:scale-95"
+                            >
+                                <Github size={18} /> Source Code
+                            </a>
+                        )}
+                        {project.links.demo && (
+                            <a 
+                                href={project.links.demo} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-cyan-500/30 transition-all active:scale-95"
+                            >
+                                Demo
+                            </a>
+                        )}
+                    </div>
+                )}
+            </motion.div>
         </div>
     );
 }

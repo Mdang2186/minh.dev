@@ -6,6 +6,9 @@
         "build": "turbo run build",
         "dev": "turbo run dev",
         "lint": "turbo run lint",
+        "prisma:generate": "npm --workspace @minh-dev/database run db:generate",
+        "prisma:push": "npm --workspace @minh-dev/database run db:push",
+        "prisma:seed": "npm --workspace @minh-dev/database run db:seed",
         "clean": "turbo run clean"
     },
     "devDependencies": {

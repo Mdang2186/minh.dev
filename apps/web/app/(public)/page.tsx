@@ -4,8 +4,11 @@ import { Hero } from "@/components/sections/hero";
 import { FeaturedProjects } from "@/components/sections/featured-projects";
 import { Quote } from "@/components/sections/quote";
 import { DesignFeature } from "@/components/sections/design-feature";
+import { getPublicProjects } from "@/features/portfolio/portfolio.service";
 
-export default function HomePage() {
+export default async function HomePage() {
+    const featuredProjects = await getPublicProjects({ featured: true, limit: 3 });
+
     return (
         <div className="flex flex-col min-h-screen pb-20">
             <Hero />
@@ -34,7 +37,7 @@ export default function HomePage() {
                         </Link>
                     </div>
                     <div className="mt-8 rounded-[3rem] overflow-hidden bg-white/60 border border-white p-4 sm:p-10 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(6,182,212,0.05)] transition-shadow duration-500">
-                        <FeaturedProjects />
+                        <FeaturedProjects projects={featuredProjects} />
                     </div>
                 </section>
 

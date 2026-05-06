@@ -4,12 +4,13 @@ import { PageHeader } from "@/components/common/page-header";
 import { PostCard } from "@/components/cards/post-card";
 import { ProjectCard } from "@/components/cards/project-card";
 import { getPostsByTag } from "@/features/blog/blog.service";
-import { getProjectsByTag } from "@/features/projects/projects.service";
+import { getPublicProjectsByTag } from "@/features/portfolio/portfolio.service";
 
-export default function TagPage({ params }: { params: { tag: string } }) {
-  const tag = decodeURIComponent(params.tag);
+export default async function TagPage({ params }: { params: Promise<{ tag: string }> }) {
+  const { tag: rawTag } = await params;
+  const tag = decodeURIComponent(rawTag);
   const posts = getPostsByTag(tag);
-  const projects = getProjectsByTag(tag);
+  const projects = await getPublicProjectsByTag(tag);
 
   return (
     <Container className="py-10">

@@ -1,7 +1,16 @@
-﻿export default function PublicLayout({ children }: { children: React.ReactNode }) {
+import { Footer } from "@/components/site/footer";
+import { Navbar } from "@/components/site/navbar";
+import { QuickAccess } from "@/components/site/quick-access";
+
+export const dynamic = "force-dynamic";
+
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col">
-      <main className="flex-1">{children}</main>
+      <Navbar />
+      <QuickAccess />
+      <main className="flex-1 min-h-screen z-0">{children}</main>
+      <Footer />
     </div>
   );
 }
