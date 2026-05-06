@@ -1,6 +1,7 @@
 import { Container } from "@/components/common/container";
 import { ProjectCard } from "@/components/cards/project-card";
 import { getPublicProjects } from "@/features/portfolio/portfolio.service";
+import type { PublicProject } from "@/features/portfolio/portfolio.types";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export default async function ProjectsPage() {
 
       <div className="grid gap-4">
         {projects.length ? (
-          projects.map((project) => <ProjectCard key={project.slug} project={project} />)
+          projects.map((project: PublicProject) => <ProjectCard key={project.slug} project={project} />)
         ) : (
           <p className="text-sm text-muted-foreground">Project content is being prepared.</p>
         )}
