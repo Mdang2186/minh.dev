@@ -3,6 +3,20 @@ import { FolderKanban, Share2, Sparkles, UserRound } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
+type DashboardData = {
+  profile: { id: string } | null;
+  projectCount: number;
+  skillCount: number;
+  visibleSocialCount: number;
+  recentLogs: Array<{
+    id: string;
+    action: string;
+    entity: string;
+    message: string | null;
+    createdAt: Date;
+  }>;
+};
+
 export default async function AdminDashboardPage() {
   const dashboardData = await getDashboardData();
   const { profile, projectCount, skillCount, visibleSocialCount, recentLogs } = dashboardData;
@@ -68,7 +82,7 @@ export default async function AdminDashboardPage() {
   );
 }
 
-async function getDashboardData() {
+async function getDashboardData(): Promise<DashboardData> {
   try {
     const [profile, projectCount, skillCount, visibleSocialCount, recentLogs] = await Promise.all([
       prisma.siteProfile.findFirst(),
