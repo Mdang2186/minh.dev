@@ -6,11 +6,11 @@ import { ResumeModalWrapper } from "@/components/ui/resume-modal-wrapper";
 import { getPublicSiteProfile, getPublicSocialLinks } from "@/features/portfolio/portfolio.service";
 import { getTranslations } from "next-intl/server";
 
-const socialIconMap = {
-  github: FaGithub,
-  linkedin: FaLinkedinIn,
-  instagram: FaInstagram,
-  facebook: FaFacebook,
+const socialConfig = {
+  github: { icon: FaGithub, hoverClass: "hover:text-[#181717] hover:border-[#181717]/30" },
+  linkedin: { icon: FaLinkedinIn, hoverClass: "hover:text-[#0A66C2] hover:border-[#0A66C2]/30" },
+  instagram: { icon: FaInstagram, hoverClass: "hover:text-[#E4405F] hover:border-[#E4405F]/30" },
+  facebook: { icon: FaFacebook, hoverClass: "hover:text-[#1877F2] hover:border-[#1877F2]/30" },
 };
 
 export async function Hero() {
@@ -58,13 +58,14 @@ export async function Hero() {
 
             <div className="flex items-center gap-3">
               {socials.map((social) => {
-                const Icon = socialIconMap[social.name.toLowerCase() as keyof typeof socialIconMap] ?? FaGithub;
+                const config = socialConfig[social.name.toLowerCase() as keyof typeof socialConfig] ?? { icon: FaGithub, hoverClass: "hover:text-slate-900 hover:border-slate-300" };
+                const Icon = config.icon;
                 return (
                   <Link
                     key={social.id}
                     href={social.url}
                     target="_blank"
-                    className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-cyan-600 hover:border-cyan-200 transition-all hover:-translate-y-1"
+                    className={`w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 transition-all hover:-translate-y-1 ${config.hoverClass}`}
                     aria-label={social.name}
                   >
                     <Icon className="w-[18px] h-[18px]" />
