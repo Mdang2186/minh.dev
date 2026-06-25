@@ -1,0 +1,94 @@
+{
+  "Navbar": {
+    "projects": "Proyectos",
+    "skills": "Habilidades",
+    "experience": "Experiencia",
+    "contact": "Contacto",
+    "talk": "Hablemos"
+  },
+  "Hero": {
+    "hello": "Hola, soy",
+    "talk": "Hablemos"
+  },
+  "HomePage": {
+    "featuredWork": "Proyectos Destacados",
+    "bestProjects": "Algunos de mis mejores proyectos hasta ahora.",
+    "viewAll": "Ver Todos los Proyectos"
+  },
+  "Quote": {
+    "line2_1": "cómo",
+    "line2_2": "se ve",
+    "line2_3": "y",
+    "line2_4": "cómo se siente.",
+    "line3_1": "es",
+    "line3_2": "cómo funciona.",
+    "author": "Steve Jobs",
+    "line1_1": "El diseño",
+    "line1_2": "no es solo"
+  },
+  "DesignFeature": {
+    "tagline": "Front-end Limpio e Intuitivo",
+    "title1": "La interfaz perfecta se encuentra con",
+    "title2": "un rendimiento optimizado.",
+    "desc": "Combinando una estética visual nítida con una ingeniería rigurosa para crear aplicaciones web fluidas, receptivas y robustas.",
+    "feat1Title": "Arquitectura Limpia",
+    "feat1Desc": "Escribir código React modular, escalable y altamente mantenible.",
+    "feat2Title": "Pixel Perfecto",
+    "feat2Desc": "Traducir diseños de Figma en interfaces de usuario precisas e impecables.",
+    "feat3Title": "Totalmente Responsivo",
+    "feat3Desc": "Garantizar un diseño optimizado en dispositivos de todos los tamaños de pantalla."
+  },
+  "FeaturedProjects": {
+    "learnMore": "Saber más →",
+    "empty": "El contenido del proyecto se está preparando."
+  },
+  "ContactPage": {
+    "title": "Hablemos",
+    "desc": "Toda la información aquí es solo para fines profesionales. Si tiene alguna pregunta, no dude en enviar un mensaje directo.",
+    "infoTitle": "Información de Contacto",
+    "address": "Dirección",
+    "email": "Correo Electrónico",
+    "socialTitle": "Redes Sociales",
+    "socialEmpty": "Los enlaces sociales se están preparando.",
+    "formTitle": "Enviar un Mensaje",
+    "formDesc": "Abre su cliente de correo predeterminado para enviar un correo electrónico directo."
+  },
+  "ContactForm": {
+    "fullName": "Nombre Completo",
+    "fullNamePlaceholder": "Su Nombre",
+    "email": "Correo Electrónico",
+    "emailPlaceholder": "email@ejemplo.com",
+    "subject": "Asunto",
+    "subjectPlaceholder": "Ejemplo: Consulta de colaboración en proyecto",
+    "message": "Mensaje",
+    "messagePlaceholder": "¿Qué le gustaría discutir?",
+    "submit": "Enviar Mensaje",
+    "submitting": "Enviando...",
+    "success": "¡Mensaje enviado con éxito!",
+    "error": "Error al enviar el mensaje, por favor inténtelo de nuevo."
+  },
+  "ProjectsPage": {
+    "title": "Proyectos",
+    "desc": "Una colección de proyectos en los que he trabajado, desde aplicaciones web hasta herramientas de código abierto.",
+    "empty": "El contenido del proyecto se está preparando.",
+    "all": "Todos los Proyectos",
+    "featured": "Destacados",
+    "viewDetails": "Ver Detalles",
+    "sourceCode": "Código Fuente",
+    "liveDemo": "Demostración en Vivo"
+  },
+  "SkillsPage": {
+    "title": "Habilidades y Herramientas",
+    "desc": "Las tecnologías, herramientas y lenguajes que utilizo para construir aplicaciones robustas y escalables."
+  },
+  "ExperiencePage": {
+    "title": "Experiencia y Educación",
+    "desc": "Mi trayectoria profesional y mi formación académica.",
+    "empty": "El contenido de la experiencia se está preparando.",
+    "present": "Presente"
+  },
+  "Common": {
+    "close": "Cerrar",
+    "loading": "Cargando..."
+  }
+}

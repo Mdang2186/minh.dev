@@ -3,22 +3,11 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Edit2, Eye, EyeOff } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
+import { useAdminLanguage } from "./admin-language-provider";
 
-type Experience = {
-  id?: string;
-  title: string;
-  org: string;
-  time: string;
-  detailsText: string;
-  sortOrder: number;
-  visible: boolean;
-};
+type Experience = Record<string, any>;
 
 const emptyExperience: Experience = {
-  title: "",
-  org: "",
-  time: "",
-  detailsText: "",
   sortOrder: 0,
   visible: true,
 };
@@ -34,15 +23,29 @@ export function ExperienceManager() {
     const response = await fetch("/api/admin/experience", { cache: "no-store" });
     const data = await response.json();
     setItems(
-      (data.experiences ?? []).map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        org: item.org,
-        time: item.time,
-        detailsText: (item.details ?? []).join("\n"),
-        sortOrder: item.sortOrder,
-        visible: item.visible,
-      }))
+      (data.experiences ?? []).map((item: any) => {
+        const mapped: Record<string, any> = {
+          id: item.id,
+          sortOrder: item.sortOrder,
+          visible: item.visible,
+        };
+        const langs = ["en", "vi", "ja", "fr", "es", "zh", "ko"];
+        const strFields = ["title", "org", "time"];
+        
+        strFields.forEach(f => {
+          langs.forEach(l => {
+            const key = l === "en" ? f : `${f}_${l}`;
+            mapped[key] = item[key] ?? "";
+          });
+        });
+
+        langs.forEach(l => {
+          const dbKey = l === "en" ? "details" : `details_${l}`;
+          mapped[dbKey + "Text"] = (item[dbKey] ?? []).join("\n");
+        });
+
+        return mapped;
+      })
     );
   }
 
@@ -51,17 +54,29 @@ export function ExperienceManager() {
   }, []);
 
   async function saveItem(item: Experience) {
-    const body = {
-      title: item.title,
-      org: item.org,
-      time: item.time,
-      details: item.detailsText
-        .split(/\r?\n/)
-        .map((line) => line.trim())
-        .filter(Boolean),
+    const body: Record<string, any> = {
       sortOrder: Number(item.sortOrder) || 0,
       visible: item.visible,
     };
+    
+    const langs = ["en", "vi", "ja", "fr", "es", "zh", "ko"];
+    const strFields = ["title", "org", "time"];
+    
+    strFields.forEach(f => {
+      langs.forEach(l => {
+        const key = l === "en" ? f : `${f}_${l}`;
+        body[key] = item[key];
+      });
+    });
+
+    langs.forEach(l => {
+      const dbKey = l === "en" ? "details" : `details_${l}`;
+      body[dbKey] = (item[dbKey + "Text"] || "")
+        .split(/\r?\n/)
+        .map((line: string) => line.trim())
+        .filter(Boolean);
+    });
+
     const response = await fetch(item.id ? `/api/admin/experience/${item.id}` : "/api/admin/experience", {
       method: item.id ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
@@ -98,8 +113,8 @@ export function ExperienceManager() {
         {items.map((item) => (
           <div key={item.id} className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
             <div>
-              <h3 className={`font-bold ${item.visible ? "text-slate-900" : "text-slate-400"}`}>{item.title}</h3>
-              <p className="text-sm text-slate-500 mt-1">{item.org} &bull; {item.time}</p>
+              <h3 className={`font-bold ${item.visible ? "text-slate-900" : "text-slate-400"}`}>{item.title || item.title_vi || "Untitled"}</h3>
+              <p className="text-sm text-slate-500 mt-1">{item.org || item.org_vi} &bull; {item.time || item.time_vi}</p>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               <button onClick={() => saveItem({ ...item, visible: !item.visible })} className={`p-2 rounded-lg transition-colors ${item.visible ? "text-slate-400 hover:text-slate-600 hover:bg-slate-50" : "text-amber-500 hover:bg-amber-50"}`} title={item.visible ? "Đang hiện" : "Đang ẩn"}>
@@ -151,24 +166,34 @@ function ExperienceFields({
   onChange,
 }: {
   item: Experience;
-  onChange: (field: keyof Experience, value: string | number | boolean) => void;
+  onChange: (field: string, value: string | number | boolean) => void;
 }) {
+  const { language } = useAdminLanguage();
+  
+  const getFieldKey = (base: string) => language === "en" ? base : `${base}_${language}`;
+  
+  function getVal(base: string) {
+    return item[getFieldKey(base)] || "";
+  }
+  
+  const labelSuffix = `(${language.toUpperCase()})`;
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <AdminInput label="Title" value={item.title} onChange={(value) => onChange("title", value)} />
-      <AdminInput label="Org" value={item.org} onChange={(value) => onChange("org", value)} />
-      <AdminInput label="Time" value={item.time} onChange={(value) => onChange("time", value)} />
-      <AdminNumber label="Sort" value={item.sortOrder} onChange={(value) => onChange("sortOrder", value)} />
-      <label className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700">
+      <AdminInput label={`Title ${labelSuffix}`} value={getVal("title")} onChange={(value) => onChange(getFieldKey("title"), value)} />
+      <AdminInput label={`Org ${labelSuffix}`} value={getVal("org")} onChange={(value) => onChange(getFieldKey("org"), value)} />
+      <AdminInput label={`Time ${labelSuffix}`} value={getVal("time")} onChange={(value) => onChange(getFieldKey("time"), value)} />
+      <AdminNumber label="Sort" value={item.sortOrder || 0} onChange={(value) => onChange("sortOrder", value)} />
+      <label className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 md:col-span-1">
         Visible
-        <input type="checkbox" checked={item.visible} onChange={(event) => onChange("visible", event.target.checked)} className="h-5 w-5 accent-cyan-500" />
+        <input type="checkbox" checked={item.visible ?? true} onChange={(event) => onChange("visible", event.target.checked)} className="h-5 w-5 accent-cyan-500" />
       </label>
       <label className="block space-y-2 md:col-span-2">
-        <span className="text-xs font-bold text-slate-600">Details (mỗi dòng một ý)</span>
+        <span className="text-xs font-bold text-slate-600">Details {labelSuffix} (mỗi dòng một ý)</span>
         <textarea
           rows={5}
-          value={item.detailsText}
-          onChange={(event) => onChange("detailsText", event.target.value)}
+          value={item[getFieldKey("details") + "Text"] || ""}
+          onChange={(event) => onChange(getFieldKey("details") + "Text", event.target.value)}
           className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
         />
       </label>

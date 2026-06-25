@@ -19,43 +19,109 @@ model User {
 }
 
 model SiteProfile {
-  id        String   @id @default(uuid())
-  name      String
-  role      String
-  headline  String
-  intro     String
-  location  String?
-  email     String?
-  phone     String?
-  avatarUrl String?
-  resumeUrl String?
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  role        String
+  headline    String
+  intro       String
+  location    String?
+  email       String?
+  phone       String?
+  avatarUrl   String?
+  resumeUrl   String?
+  updatedAt   DateTime @updatedAt
+  headline_vi String?
+  intro_vi    String?
+  location_vi String?
+  name_vi     String?
+  role_vi     String?
+  headline_es String?
+  headline_fr String?
+  headline_ja String?
+  headline_ko String?
+  headline_zh String?
+  intro_es    String?
+  intro_fr    String?
+  intro_ja    String?
+  intro_ko    String?
+  intro_zh    String?
+  location_es String?
+  location_fr String?
+  location_ja String?
+  location_ko String?
+  location_zh String?
+  name_es     String?
+  name_fr     String?
+  name_ja     String?
+  name_ko     String?
+  name_zh     String?
+  role_es     String?
+  role_fr     String?
+  role_ja     String?
+  role_ko     String?
+  role_zh     String?
 }
 
 model Project {
-  id            String             @id @default(uuid())
-  title         String
-  slug          String             @unique
-  summary       String
-  description   String?
-  content       String?
-  coverImage    String?
-  githubUrl     String?
-  demoUrl       String?
-  role          String?
-  duration      String?
-  teamSize      String?
-  featured      Boolean            @default(false)
-  published     Boolean            @default(true)
-  sortOrder     Int                @default(0)
-  directoryTree String?
-  highlights    String[]           @default([])
-  languages     String[]           @default([])
-  tools         String[]           @default([])
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  images        ProjectImage[]
-  techStacks    ProjectTechStack[]
+  id             String             @id @default(uuid())
+  title          String
+  slug           String             @unique
+  summary        String
+  description    String?
+  content        String?
+  coverImage     String?
+  githubUrl      String?
+  demoUrl        String?
+  role           String?
+  duration       String?
+  teamSize       String?
+  featured       Boolean            @default(false)
+  published      Boolean            @default(true)
+  sortOrder      Int                @default(0)
+  directoryTree  String?
+  highlights     String[]           @default([])
+  languages      String[]           @default([])
+  tools          String[]           @default([])
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  content_vi     String?
+  description_vi String?
+  highlights_vi  String[]           @default([])
+  role_vi        String?
+  summary_vi     String?
+  title_vi       String?
+  content_es     String?
+  content_fr     String?
+  content_ja     String?
+  content_ko     String?
+  content_zh     String?
+  description_es String?
+  description_fr String?
+  description_ja String?
+  description_ko String?
+  description_zh String?
+  highlights_es  String[]           @default([])
+  highlights_fr  String[]           @default([])
+  highlights_ja  String[]           @default([])
+  highlights_ko  String[]           @default([])
+  highlights_zh  String[]           @default([])
+  role_es        String?
+  role_fr        String?
+  role_ja        String?
+  role_ko        String?
+  role_zh        String?
+  summary_es     String?
+  summary_fr     String?
+  summary_ja     String?
+  summary_ko     String?
+  summary_zh     String?
+  title_es       String?
+  title_fr       String?
+  title_ja       String?
+  title_ko       String?
+  title_zh       String?
+  images         ProjectImage[]
+  techStacks     ProjectTechStack[]
 }
 
 model ProjectImage {
@@ -102,21 +168,51 @@ model ProjectTechStack {
 }
 
 model Experience {
-  id        String   @id @default(uuid())
-  title     String
-  org       String
-  time      String
-  details   String[] @default([])
-  sortOrder Int      @default(0)
-  visible   Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  title      String
+  org        String
+  time       String
+  details    String[] @default([])
+  sortOrder  Int      @default(0)
+  visible    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  details_vi String[] @default([])
+  org_vi     String?
+  time_vi    String?
+  title_vi   String?
+  details_es String[] @default([])
+  details_fr String[] @default([])
+  details_ja String[] @default([])
+  details_ko String[] @default([])
+  details_zh String[] @default([])
+  org_es     String?
+  org_fr     String?
+  org_ja     String?
+  org_ko     String?
+  org_zh     String?
+  time_es    String?
+  time_fr    String?
+  time_ja    String?
+  time_ko    String?
+  time_zh    String?
+  title_es   String?
+  title_fr   String?
+  title_ja   String?
+  title_ko   String?
+  title_zh   String?
 }
 
 model SkillGroup {
   id        String  @id @default(uuid())
   title     String
   sortOrder Int     @default(0)
+  title_vi  String?
+  title_es  String?
+  title_fr  String?
+  title_ja  String?
+  title_ko  String?
+  title_zh  String?
   skills    Skill[]
 }
 
@@ -125,8 +221,14 @@ model Skill {
   groupId   String
   name      String
   level     String?
-  iconUrl   String?
   sortOrder Int        @default(0)
+  iconUrl   String?
+  name_vi   String?
+  name_es   String?
+  name_fr   String?
+  name_ja   String?
+  name_ko   String?
+  name_zh   String?
   group     SkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@index([groupId])

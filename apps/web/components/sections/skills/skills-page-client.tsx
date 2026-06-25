@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Code2, LayoutTemplate, PenTool, Server, Wrench, Star } from "lucide-react";
 import { Container } from "@/components/ui/container";
+import { useTranslations } from "next-intl";
 import type { PublicSkillGroup } from "@/features/portfolio/portfolio.types";
 import {
   SiJavascript, SiTypescript, SiReact, SiHtml5, SiCss3,
@@ -143,6 +144,7 @@ function SkillDetailModal({ skill, groupTitle, onClose }: { skill: Skill; groupT
 
 export function SkillsPageClient({ groups }: { groups: PublicSkillGroup[] }) {
   const [selectedSkill, setSelectedSkill] = useState<{ skill: Skill; groupTitle: string } | null>(null);
+  const t = useTranslations("SkillsPage");
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -235,7 +237,7 @@ export function SkillsPageClient({ groups }: { groups: PublicSkillGroup[] }) {
                 })
               ) : (
                 <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center text-slate-400">
-                  Skill content is being prepared.
+                  {t("empty")}
                 </div>
               )}
             </motion.div>

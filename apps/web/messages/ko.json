@@ -1,0 +1,94 @@
+{
+  "Navbar": {
+    "projects": "프로젝트",
+    "skills": "기술 및 도구",
+    "experience": "경력 및 학력",
+    "contact": "연락처",
+    "talk": "대화하기"
+  },
+  "Hero": {
+    "hello": "안녕하세요, 저는",
+    "talk": "대화하기"
+  },
+  "HomePage": {
+    "featuredWork": "주요 프로젝트",
+    "bestProjects": "지금까지 제가 진행한 최고의 프로젝트들입니다.",
+    "viewAll": "모든 프로젝트 보기"
+  },
+  "Quote": {
+    "line2_1": "어떻게",
+    "line2_2": "보이는지",
+    "line2_3": "또는",
+    "line2_4": "어떻게 느껴지는지가 아닙니다.",
+    "line3_1": "은",
+    "line3_2": "어떻게 작동하는가입니다.",
+    "author": "스티브 잡스",
+    "line1_1": "디자인",
+    "line1_2": "은 단지"
+  },
+  "DesignFeature": {
+    "tagline": "깔끔하고 직관적인 프론트엔드",
+    "title1": "픽셀 단위의 완벽한 UI와",
+    "title2": "최적화된 성능의 만남.",
+    "desc": "날카로운 시각적 미학과 엄격한 엔지니어링을 결합하여 매끄럽고 반응성이 뛰어나며 견고한 웹 애플리케이션을 만듭니다.",
+    "feat1Title": "클린 아키텍처",
+    "feat1Desc": "모듈식이고 확장 가능하며 유지 관리가 쉬운 React 코드를 작성합니다.",
+    "feat2Title": "픽셀 퍼펙트",
+    "feat2Desc": "Figma 디자인을 정확하고 완벽한 사용자 인터페이스로 변환합니다.",
+    "feat3Title": "완벽한 반응형",
+    "feat3Desc": "모든 화면 크기의 장치에서 최적화된 레이아웃을 보장합니다."
+  },
+  "FeaturedProjects": {
+    "learnMore": "자세히 알아보기 →",
+    "empty": "프로젝트 콘텐츠가 준비 중입니다."
+  },
+  "ContactPage": {
+    "title": "대화하기",
+    "desc": "여기에 있는 모든 정보는 업무 목적으로만 사용됩니다. 질문이 있으시면 언제든지 다이렉트 메시지를 보내주세요.",
+    "infoTitle": "연락처 정보",
+    "address": "주소",
+    "email": "이메일",
+    "socialTitle": "소셜 미디어",
+    "socialEmpty": "소셜 링크가 준비 중입니다.",
+    "formTitle": "메시지 보내기",
+    "formDesc": "기본 이메일 클라이언트를 열어 다이렉트 이메일을 보냅니다."
+  },
+  "ContactForm": {
+    "fullName": "성명",
+    "fullNamePlaceholder": "이름",
+    "email": "이메일",
+    "emailPlaceholder": "email@example.com",
+    "subject": "제목",
+    "subjectPlaceholder": "예: 프로젝트 협력 문의",
+    "message": "메시지",
+    "messagePlaceholder": "무엇에 대해 논의하고 싶으신가요?",
+    "submit": "메시지 보내기",
+    "submitting": "보내는 중...",
+    "success": "메시지가 성공적으로 전송되었습니다!",
+    "error": "메시지 전송에 실패했습니다. 다시 시도해주세요!"
+  },
+  "ProjectsPage": {
+    "title": "프로젝트",
+    "desc": "웹 애플리케이션에서 오픈 소스 도구에 이르기까지 제가 작업한 프로젝트 모음입니다.",
+    "empty": "프로젝트 콘텐츠가 준비 중입니다.",
+    "all": "모든 프로젝트",
+    "featured": "주요",
+    "viewDetails": "세부 정보 보기",
+    "sourceCode": "소스 코드",
+    "liveDemo": "라이브 데모"
+  },
+  "SkillsPage": {
+    "title": "기술 및 도구",
+    "desc": "견고하고 확장 가능한 애플리케이션을 구축하는 데 사용하는 기술, 도구 및 언어입니다."
+  },
+  "ExperiencePage": {
+    "title": "경력 및 학력",
+    "desc": "저의 직업적 여정과 학력 배경입니다.",
+    "empty": "경력 콘텐츠가 준비 중입니다.",
+    "present": "현재"
+  },
+  "Common": {
+    "close": "닫기",
+    "loading": "로딩 중..."
+  }
+}

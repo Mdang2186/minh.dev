@@ -3,56 +3,19 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";
+import { useAdminLanguage } from "./admin-language-provider";
 
-type ProjectPayload = {
-  title: string;
-  slug: string;
-  summary: string;
-  description: string;
-  content: string;
-  coverImage: string;
-  githubUrl: string;
-  demoUrl: string;
-  role: string;
-  duration: string;
-  teamSize: string;
-  featured: boolean;
-  published: boolean;
-  sortOrder: number;
-  directoryTree: string;
-  highlightsText: string;
-  languagesText: string;
-  toolsText: string;
-  techStacksText: string;
-  projectImagesText: string;
-};
-
-const emptyProject: ProjectPayload = {
-  title: "",
-  slug: "",
-  summary: "",
-  description: "",
-  content: "",
-  coverImage: "",
-  githubUrl: "",
-  demoUrl: "",
-  role: "",
-  duration: "",
-  teamSize: "",
-  featured: false,
-  published: true,
-  sortOrder: 0,
-  directoryTree: "",
-  highlightsText: "",
-  languagesText: "",
-  toolsText: "",
-  techStacksText: "",
-  projectImagesText: "",
-};
+type ProjectPayload = Record<string, any>;
 
 export function ProjectForm({ projectId }: { projectId?: string }) {
   const router = useRouter();
-  const [form, setForm] = useState<ProjectPayload>(emptyProject);
+  const { language } = useAdminLanguage();
+
+  const [form, setForm] = useState<ProjectPayload>({
+    featured: false,
+    published: true,
+    sortOrder: 0,
+  });
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(Boolean(projectId));
   const [saving, setSaving] = useState(false);
@@ -71,23 +34,9 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
 
         if (data?.project) {
           const project = data.project;
-          setForm({
-            title: project.title ?? "",
-            slug: project.slug ?? "",
-            summary: project.summary ?? "",
-            description: project.description ?? "",
-            content: project.content ?? "",
-            coverImage: project.coverImage ?? "",
-            githubUrl: project.githubUrl ?? "",
-            demoUrl: project.demoUrl ?? "",
-            role: project.role ?? "",
-            duration: project.duration ?? "",
-            teamSize: project.teamSize ?? "",
-            featured: Boolean(project.featured),
-            published: Boolean(project.published),
-            sortOrder: project.sortOrder ?? 0,
-            directoryTree: project.directoryTree ?? "",
-            highlightsText: (project.highlights ?? []).join("\n"),
+          
+          // Helper to map DB lists to text fields
+          const textLists: Record<string, string> = {
             languagesText: (project.languages ?? []).join("\n"),
             toolsText: (project.tools ?? []).join("\n"),
             techStacksText: (project.techStacks ?? []).join("\n"),
@@ -96,6 +45,18 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
                 [image.imageUrl, image.altText ?? "", image.sortOrder ?? 0].join("|")
               )
               .join("\n"),
+          };
+          
+          // Map localized highlights
+          const langs = ["en", "vi", "ja", "fr", "es", "zh", "ko"];
+          langs.forEach((l) => {
+            const field = l === "en" ? "highlights" : `highlights_${l}`;
+            textLists[field + "Text"] = (project[field] ?? []).join("\n");
+          });
+
+          setForm({
+            ...project,
+            ...textLists,
           });
         }
       } catch {
@@ -108,8 +69,14 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
     loadProject();
   }, [projectId]);
 
-  function updateField<T extends keyof ProjectPayload>(name: T, value: ProjectPayload[T]) {
+  const getFieldKey = (base: string) => language === "en" ? base : `${base}_${language}`;
+
+  function updateField(name: string, value: any) {
     setForm((current) => ({ ...current, [name]: value }));
+  }
+
+  function getVal(base: string) {
+    return form[getFieldKey(base)] || "";
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -117,28 +84,41 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
     setSaving(true);
     setStatus("");
 
-    const body = {
-      title: form.title,
+    // Build the payload dynamically
+    const body: Record<string, any> = {
       slug: form.slug,
-      summary: form.summary,
-      description: form.description,
-      content: form.content,
       coverImage: form.coverImage,
       githubUrl: form.githubUrl,
       demoUrl: form.demoUrl,
-      role: form.role,
       duration: form.duration,
       teamSize: form.teamSize,
-      featured: form.featured,
-      published: form.published,
+      featured: Boolean(form.featured),
+      published: Boolean(form.published),
       sortOrder: Number(form.sortOrder) || 0,
       directoryTree: form.directoryTree,
-      highlights: parseList(form.highlightsText),
-      languages: parseList(form.languagesText),
-      tools: parseList(form.toolsText),
-      techStacks: parseList(form.techStacksText),
-      projectImages: parseProjectImages(form.projectImagesText),
+      languages: parseList(form.languagesText || ""),
+      tools: parseList(form.toolsText || ""),
+      techStacks: parseList(form.techStacksText || ""),
+      projectImages: parseProjectImages(form.projectImagesText || ""),
     };
+
+    const langs = ["en", "vi", "ja", "fr", "es", "zh", "ko"];
+    const localizedFields = ["title", "summary", "description", "content", "role"];
+    
+    // Process text fields
+    localizedFields.forEach(field => {
+      langs.forEach(l => {
+        const key = l === "en" ? field : `${field}_${l}`;
+        body[key] = form[key];
+      });
+    });
+
+    // Process highlights list
+    langs.forEach(l => {
+      const dbKey = l === "en" ? "highlights" : `highlights_${l}`;
+      const formKey = dbKey + "Text";
+      body[dbKey] = parseList(form[formKey] || "");
+    });
 
     try {
       const response = await fetch(projectId ? `/api/admin/projects/${projectId}` : "/api/admin/projects", {
@@ -162,6 +142,9 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
     }
   }
 
+  const isEn = language === "en";
+  const labelSuffix = `(${language.toUpperCase()})`;
+
   if (loading) return <p className="text-sm text-slate-500">Đang tải dự án...</p>;
 
   return (
@@ -173,35 +156,36 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
-        <AdminInput label="Title" value={form.title} onChange={(value) => updateField("title", value)} required />
-        <AdminInput label="Slug" value={form.slug} onChange={(value) => updateField("slug", value)} required />
-      </div>
-      <AdminTextarea label="Summary" value={form.summary} onChange={(value) => updateField("summary", value)} required rows={3} />
-      <AdminTextarea label="Description" value={form.description} onChange={(value) => updateField("description", value)} rows={5} />
-      <AdminTextarea label="Content" value={form.content} onChange={(value) => updateField("content", value)} rows={5} />
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <AdminInput label="Cover image URL" value={form.coverImage} onChange={(value) => updateField("coverImage", value)} />
-        <AdminInput label="GitHub URL" value={form.githubUrl} onChange={(value) => updateField("githubUrl", value)} />
-        <AdminInput label="Demo URL" value={form.demoUrl} onChange={(value) => updateField("demoUrl", value)} />
-        <AdminInput label="Role" value={form.role} onChange={(value) => updateField("role", value)} />
-        <AdminInput label="Duration" value={form.duration} onChange={(value) => updateField("duration", value)} />
-        <AdminInput label="Quy mô / Loại dự án (Team size / Type)" value={form.teamSize} onChange={(value) => updateField("teamSize", value)} />
-        <AdminNumber label="Sort order" value={form.sortOrder} onChange={(value) => updateField("sortOrder", value)} />
+        <AdminInput label={`Title ${labelSuffix}`} value={getVal("title")} onChange={(value) => updateField(getFieldKey("title"), value)} required={isEn} />
+        <AdminInput label="Slug" value={form.slug || ""} onChange={(value) => updateField("slug", value)} required />
       </div>
 
+      <AdminTextarea label={`Summary ${labelSuffix}`} value={getVal("summary")} onChange={(value) => updateField(getFieldKey("summary"), value)} required={isEn} rows={3} />
+      <AdminTextarea label={`Description ${labelSuffix}`} value={getVal("description")} onChange={(value) => updateField(getFieldKey("description"), value)} rows={5} />
+      <AdminTextarea label={`Content ${labelSuffix}`} value={getVal("content")} onChange={(value) => updateField(getFieldKey("content"), value)} rows={5} />
+
       <div className="grid gap-4 md:grid-cols-2">
-        <AdminCheckbox label="Featured" checked={form.featured} onChange={(value) => updateField("featured", value)} />
-        <AdminCheckbox label="Published" checked={form.published} onChange={(value) => updateField("published", value)} />
+        <AdminInput label="Cover image URL" value={form.coverImage || ""} onChange={(value) => updateField("coverImage", value)} />
+        <AdminInput label="GitHub URL" value={form.githubUrl || ""} onChange={(value) => updateField("githubUrl", value)} />
+        <AdminInput label="Demo URL" value={form.demoUrl || ""} onChange={(value) => updateField("demoUrl", value)} />
+        <AdminInput label={`Role ${labelSuffix}`} value={getVal("role")} onChange={(value) => updateField(getFieldKey("role"), value)} />
+        <AdminInput label="Duration" value={form.duration || ""} onChange={(value) => updateField("duration", value)} />
+        <AdminInput label="Quy mô / Loại dự án (Team size / Type)" value={form.teamSize || ""} onChange={(value) => updateField("teamSize", value)} />
+        <AdminNumber label="Sort order" value={form.sortOrder || 0} onChange={(value) => updateField("sortOrder", value)} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <AdminTextarea label="Tech stacks (mỗi dòng một item)" value={form.techStacksText} onChange={(value) => updateField("techStacksText", value)} rows={6} />
-        <AdminTextarea label="Project images (url|alt|sortOrder)" value={form.projectImagesText} onChange={(value) => updateField("projectImagesText", value)} rows={6} />
-        <AdminTextarea label="Highlights (mỗi dòng một ý)" value={form.highlightsText} onChange={(value) => updateField("highlightsText", value)} rows={8} />
-        <AdminTextarea label="Languages (mỗi dòng một item)" value={form.languagesText} onChange={(value) => updateField("languagesText", value)} rows={8} />
-        <AdminTextarea label="Tools (mỗi dòng một item)" value={form.toolsText} onChange={(value) => updateField("toolsText", value)} rows={8} />
-        <AdminTextarea label="Directory tree" value={form.directoryTree} onChange={(value) => updateField("directoryTree", value)} rows={8} />
+        <AdminCheckbox label="Featured" checked={form.featured || false} onChange={(value) => updateField("featured", value)} />
+        <AdminCheckbox label="Published" checked={form.published ?? true} onChange={(value) => updateField("published", value)} />
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <AdminTextarea label="Tech stacks (mỗi dòng một item)" value={form.techStacksText || ""} onChange={(value) => updateField("techStacksText", value)} rows={6} />
+        <AdminTextarea label="Project images (url|alt|sortOrder)" value={form.projectImagesText || ""} onChange={(value) => updateField("projectImagesText", value)} rows={6} />
+        <AdminTextarea label={`Highlights ${labelSuffix} (mỗi dòng một ý)`} value={form[getFieldKey("highlights") + "Text"] || ""} onChange={(value) => updateField(getFieldKey("highlights") + "Text", value)} rows={8} />
+        <AdminTextarea label="Languages (mỗi dòng một item)" value={form.languagesText || ""} onChange={(value) => updateField("languagesText", value)} rows={8} />
+        <AdminTextarea label="Tools (mỗi dòng một item)" value={form.toolsText || ""} onChange={(value) => updateField("toolsText", value)} rows={8} />
+        <AdminTextarea label="Directory tree" value={form.directoryTree || ""} onChange={(value) => updateField("directoryTree", value)} rows={8} />
       </div>
 
       <button

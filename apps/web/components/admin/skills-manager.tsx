@@ -3,36 +3,29 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Edit2, Image as ImageIcon } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
+import { useAdminLanguage } from "./admin-language-provider";
 
-type Skill = {
-  id: string;
-  groupId: string;
-  name: string;
-  level: string | null;
-  iconUrl: string | null;
-  sortOrder: number;
-};
-
-type SkillGroup = {
-  id: string;
-  title: string;
-  sortOrder: number;
-  skills: Skill[];
-};
+type Skill = Record<string, any>;
+type SkillGroup = Record<string, any>;
 
 const LEVELS = ["Frequently Used", "Occasionally", "Familiar", "Learning"];
 
 export function SkillsManager() {
+  const { language } = useAdminLanguage();
+  const getFieldKey = (base: string) => language === "en" ? base : `${base}_${language}`;
+  const isEn = language === "en";
+  const labelSuffix = `(${language.toUpperCase()})`;
+
   const [groups, setGroups] = useState<SkillGroup[]>([]);
   const [status, setStatus] = useState("");
   
   // Modal states
   const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
-  const [draftGroup, setDraftGroup] = useState({ title: "", sortOrder: 0 });
+  const [draftGroup, setDraftGroup] = useState<SkillGroup>({ sortOrder: 0 });
   const [editGroup, setEditGroup] = useState<SkillGroup | null>(null);
 
   const [addSkillToGroupId, setAddSkillToGroupId] = useState<string | null>(null);
-  const [draftSkill, setDraftSkill] = useState({ name: "", level: "", iconUrl: "", sortOrder: 0 });
+  const [draftSkill, setDraftSkill] = useState<Skill>({ level: "", iconUrl: "", sortOrder: 0 });
   const [editSkill, setEditSkill] = useState<Skill | null>(null);
 
   async function loadGroups() {
@@ -46,26 +39,36 @@ export function SkillsManager() {
   }, []);
 
   // --- Group Actions ---
+  function getGroupBody(source: SkillGroup) {
+    const body: Record<string, any> = { sortOrder: Number(source.sortOrder) || 0 };
+    const langs = ["en", "vi", "ja", "fr", "es", "zh", "ko"];
+    langs.forEach(l => {
+      const key = l === "en" ? "title" : `title_${l}`;
+      body[key] = source[key] || "";
+    });
+    return body;
+  }
+
   async function saveNewGroup() {
-    if (!draftGroup.title) return setStatus("Tên nhóm không được trống.");
+    if (!draftGroup.title && !draftGroup[getFieldKey("title")]) return setStatus("Tên nhóm không được trống.");
     const response = await fetch("/api/admin/skill-groups", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(draftGroup),
+      body: JSON.stringify(getGroupBody(draftGroup)),
     });
     if (!response.ok) return setStatus((await response.json()).message || "Không thể thêm nhóm.");
-    setDraftGroup({ title: "", sortOrder: 0 });
+    setDraftGroup({ sortOrder: 0 });
     setIsAddGroupOpen(false);
     setStatus("Đã thêm nhóm kỹ năng.");
     loadGroups();
   }
 
   async function saveEditedGroup() {
-    if (!editGroup || !editGroup.title) return setStatus("Tên nhóm không được trống.");
+    if (!editGroup || (!editGroup.title && !editGroup[getFieldKey("title")])) return setStatus("Tên nhóm không được trống.");
     const response = await fetch(`/api/admin/skill-groups/${editGroup.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: editGroup.title, sortOrder: editGroup.sortOrder }),
+      body: JSON.stringify(getGroupBody(editGroup)),
     });
     if (!response.ok) return setStatus((await response.json()).message || "Không thể lưu nhóm.");
     setEditGroup(null);
@@ -74,7 +77,7 @@ export function SkillsManager() {
   }
 
   async function deleteGroup(group: SkillGroup) {
-    if (!confirm(`Xóa nhóm "${group.title}" và toàn bộ kỹ năng con?`)) return;
+    if (!confirm(`Xóa nhóm "${group.title || group.title_vi}" và toàn bộ kỹ năng con?`)) return;
     await fetch(`/api/admin/skill-groups/${group.id}`, { method: "DELETE" });
     setStatus("Đã xóa nhóm kỹ năng.");
     loadGroups();
@@ -82,36 +85,46 @@ export function SkillsManager() {
 
   // --- Skill Actions ---
   function openAddSkill(groupId: string) {
-    setDraftSkill({ name: "", level: "", iconUrl: "", sortOrder: 0 });
+    setDraftSkill({ level: "", iconUrl: "", sortOrder: 0 });
     setAddSkillToGroupId(groupId);
   }
 
+  function getSkillBody(source: Skill, groupId?: string) {
+    const body: Record<string, any> = { 
+      level: source.level || "", 
+      iconUrl: source.iconUrl || "", 
+      sortOrder: Number(source.sortOrder) || 0 
+    };
+    if (groupId) body.groupId = groupId;
+    
+    const langs = ["en", "vi", "ja", "fr", "es", "zh", "ko"];
+    langs.forEach(l => {
+      const key = l === "en" ? "name" : `name_${l}`;
+      body[key] = source[key] || "";
+    });
+    return body;
+  }
+
   async function saveNewSkill() {
-    if (!addSkillToGroupId || !draftSkill.name) return setStatus("Tên kỹ năng không được trống.");
+    if (!addSkillToGroupId || (!draftSkill.name && !draftSkill[getFieldKey("name")])) return setStatus("Tên kỹ năng không được trống.");
     const response = await fetch("/api/admin/skills", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...draftSkill, groupId: addSkillToGroupId }),
+      body: JSON.stringify(getSkillBody(draftSkill, addSkillToGroupId)),
     });
     if (!response.ok) return setStatus((await response.json()).message || "Không thể thêm kỹ năng.");
     setAddSkillToGroupId(null);
-    setDraftSkill({ name: "", level: "", iconUrl: "", sortOrder: 0 });
+    setDraftSkill({ level: "", iconUrl: "", sortOrder: 0 });
     setStatus("Đã thêm kỹ năng.");
     loadGroups();
   }
 
   async function saveEditedSkill() {
-    if (!editSkill || !editSkill.name) return setStatus("Tên kỹ năng không được trống.");
+    if (!editSkill || (!editSkill.name && !editSkill[getFieldKey("name")])) return setStatus("Tên kỹ năng không được trống.");
     const response = await fetch(`/api/admin/skills/${editSkill.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        groupId: editSkill.groupId,
-        name: editSkill.name,
-        level: editSkill.level ?? "",
-        iconUrl: editSkill.iconUrl ?? "",
-        sortOrder: editSkill.sortOrder,
-      }),
+      body: JSON.stringify(getSkillBody(editSkill, editSkill.groupId)),
     });
     if (!response.ok) return setStatus((await response.json()).message || "Không thể lưu kỹ năng.");
     setEditSkill(null);
@@ -120,7 +133,7 @@ export function SkillsManager() {
   }
 
   async function deleteSkill(skill: Skill) {
-    if (!confirm(`Xóa kỹ năng "${skill.name}"?`)) return;
+    if (!confirm(`Xóa kỹ năng "${skill.name || skill.name_vi}"?`)) return;
     await fetch(`/api/admin/skills/${skill.id}`, { method: "DELETE" });
     setStatus("Đã xóa kỹ năng.");
     loadGroups();
@@ -143,8 +156,8 @@ export function SkillsManager() {
             {/* Group Header */}
             <div className="flex items-center justify-between bg-slate-50 px-5 py-4 border-b border-slate-200">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">{group.title}</h3>
-                <p className="text-xs text-slate-500 mt-1">Sort order: {group.sortOrder} &bull; {group.skills.length} skills</p>
+                <h3 className="text-lg font-bold text-slate-900">{group.title || group.title_vi}</h3>
+                <p className="text-xs text-slate-500 mt-1">Sort order: {group.sortOrder} &bull; {group.skills?.length || 0} skills</p>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => openAddSkill(group.id)} className="p-2 text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors" title="Thêm kỹ năng">
@@ -162,24 +175,24 @@ export function SkillsManager() {
 
             {/* Skills List */}
             <div className="p-5">
-              {group.skills.length === 0 ? (
+              {!group.skills || group.skills.length === 0 ? (
                 <div className="text-center py-6 text-slate-500 text-sm border border-slate-200 border-dashed rounded-xl">
                   Nhóm chưa có kỹ năng. Nhấn nút <Plus className="inline h-3 w-3" /> để thêm.
                 </div>
               ) : (
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {group.skills.map((skill) => (
+                  {group.skills.map((skill: Skill) => (
                     <div key={skill.id} className="flex items-center justify-between rounded-xl border border-slate-100 bg-white p-3 hover:border-slate-200 hover:shadow-sm transition-all group/skill">
                       <div className="flex items-center gap-3 overflow-hidden">
                         <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
                           {skill.iconUrl ? (
-                            <img src={skill.iconUrl} alt={skill.name} className="w-4 h-4 object-contain" />
+                            <img src={skill.iconUrl} alt={skill.name || ""} className="w-4 h-4 object-contain" />
                           ) : (
                             <ImageIcon className="w-4 h-4 text-slate-400" />
                           )}
                         </div>
                         <div className="overflow-hidden">
-                          <h4 className="font-bold text-sm text-slate-800 truncate">{skill.name}</h4>
+                          <h4 className="font-bold text-sm text-slate-800 truncate">{skill.name || skill.name_vi}</h4>
                           <p className="text-xs text-slate-500 truncate">{skill.level || "No level"}</p>
                         </div>
                       </div>
@@ -211,8 +224,8 @@ export function SkillsManager() {
       <Modal isOpen={isAddGroupOpen} onClose={() => setIsAddGroupOpen(false)} title="Thêm Nhóm Kỹ Năng">
         <div className="space-y-6">
           <div className="grid gap-4">
-            <AdminInput label="Tên nhóm mới" value={draftGroup.title} onChange={(value) => setDraftGroup((c) => ({ ...c, title: value }))} required />
-            <AdminNumber label="Sort Order" value={draftGroup.sortOrder} onChange={(value) => setDraftGroup((c) => ({ ...c, sortOrder: value }))} />
+            <AdminInput label={`Tên nhóm mới ${labelSuffix}`} value={draftGroup[getFieldKey("title")] || ""} onChange={(value) => setDraftGroup((c) => ({ ...c, [getFieldKey("title")]: value }))} required={isEn} />
+            <AdminNumber label="Sort Order" value={draftGroup.sortOrder || 0} onChange={(value) => setDraftGroup((c) => ({ ...c, sortOrder: value }))} />
           </div>
           <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
             <button onClick={() => setIsAddGroupOpen(false)} className="rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors">Hủy</button>
@@ -226,8 +239,8 @@ export function SkillsManager() {
         {editGroup && (
           <div className="space-y-6">
             <div className="grid gap-4">
-              <AdminInput label="Tên nhóm" value={editGroup.title} onChange={(value) => setEditGroup({ ...editGroup, title: value } as SkillGroup)} required />
-              <AdminNumber label="Sort Order" value={editGroup.sortOrder} onChange={(value) => setEditGroup({ ...editGroup, sortOrder: value } as SkillGroup)} />
+              <AdminInput label={`Tên nhóm ${labelSuffix}`} value={editGroup[getFieldKey("title")] || ""} onChange={(value) => setEditGroup({ ...editGroup, [getFieldKey("title")]: value } as SkillGroup)} required={isEn} />
+              <AdminNumber label="Sort Order" value={editGroup.sortOrder || 0} onChange={(value) => setEditGroup({ ...editGroup, sortOrder: value } as SkillGroup)} />
             </div>
             <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
               <button onClick={() => setEditGroup(null)} className="rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors">Hủy</button>
@@ -241,12 +254,12 @@ export function SkillsManager() {
       <Modal isOpen={!!addSkillToGroupId} onClose={() => setAddSkillToGroupId(null)} title="Thêm Kỹ Năng">
         <div className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
-            <AdminInput label="Tên kỹ năng" value={draftSkill.name} onChange={(value) => setDraftSkill((c) => ({ ...c, name: value }))} required />
-            <AdminSelect label="Mức độ (Level)" value={draftSkill.level} onChange={(value) => setDraftSkill((c) => ({ ...c, level: value }))} options={LEVELS} />
+            <AdminInput label={`Tên kỹ năng ${labelSuffix}`} value={draftSkill[getFieldKey("name")] || ""} onChange={(value) => setDraftSkill((c) => ({ ...c, [getFieldKey("name")]: value }))} required={isEn} />
+            <AdminSelect label="Mức độ (Level)" value={draftSkill.level || ""} onChange={(value) => setDraftSkill((c) => ({ ...c, level: value }))} options={LEVELS} />
+            <AdminNumber label="Sort Order" value={draftSkill.sortOrder || 0} onChange={(value) => setDraftSkill((c) => ({ ...c, sortOrder: value }))} />
             <div className="md:col-span-2">
-              <AdminInput label="Logo URL / Icon" value={draftSkill.iconUrl} onChange={(value) => setDraftSkill((c) => ({ ...c, iconUrl: value }))} placeholder="VD: /icons/react.svg" icon={<ImageIcon className="h-4 w-4 text-slate-400" />} />
+              <AdminInput label="Logo URL / Icon" value={draftSkill.iconUrl || ""} onChange={(value) => setDraftSkill((c) => ({ ...c, iconUrl: value }))} placeholder="VD: /icons/react.svg" icon={<ImageIcon className="h-4 w-4 text-slate-400" />} />
             </div>
-            <AdminNumber label="Sort Order" value={draftSkill.sortOrder} onChange={(value) => setDraftSkill((c) => ({ ...c, sortOrder: value }))} />
           </div>
           <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
             <button onClick={() => setAddSkillToGroupId(null)} className="rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors">Hủy</button>
@@ -260,12 +273,12 @@ export function SkillsManager() {
         {editSkill && (
           <div className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2">
-              <AdminInput label="Tên kỹ năng" value={editSkill.name} onChange={(value) => setEditSkill({ ...editSkill, name: value } as Skill)} required />
+              <AdminInput label={`Tên kỹ năng ${labelSuffix}`} value={editSkill[getFieldKey("name")] || ""} onChange={(value) => setEditSkill({ ...editSkill, [getFieldKey("name")]: value } as Skill)} required={isEn} />
               <AdminSelect label="Mức độ (Level)" value={editSkill.level ?? ""} onChange={(value) => setEditSkill({ ...editSkill, level: value } as Skill)} options={LEVELS} />
+              <AdminNumber label="Sort Order" value={editSkill.sortOrder || 0} onChange={(value) => setEditSkill({ ...editSkill, sortOrder: value } as Skill)} />
               <div className="md:col-span-2">
                 <AdminInput label="Logo URL / Icon" value={editSkill.iconUrl ?? ""} onChange={(value) => setEditSkill({ ...editSkill, iconUrl: value } as Skill)} placeholder="VD: /icons/react.svg" icon={<ImageIcon className="h-4 w-4 text-slate-400" />} />
               </div>
-              <AdminNumber label="Sort Order" value={editSkill.sortOrder} onChange={(value) => setEditSkill({ ...editSkill, sortOrder: value } as Skill)} />
             </div>
             <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
               <button onClick={() => setEditSkill(null)} className="rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors">Hủy</button>

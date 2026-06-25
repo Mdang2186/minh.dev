@@ -1,18 +1,21 @@
 import { CheckCircle2, Code2, MonitorSmartphone, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function DesignFeature() {
+    const t = useTranslations("DesignFeature");
+
     return (
         <section className="py-12 lg:py-16 max-w-7xl mx-auto px-4 sm:px-6 relative">
             <div className="mb-10 max-w-3xl text-center md:text-left mx-auto md:mx-0">
                 <h3 className="text-sm font-bold tracking-widest text-[#0ea5e9] uppercase mb-4 flex items-center justify-center md:justify-start gap-2">
                     <Sparkles className="w-4 h-4" />
-                    Clean & Intuitive Front-end
+                    {t("tagline")}
                 </h3>
                 <h2 className="text-4xl md:text-5xl font-extrabold text-[#0f172a] tracking-tight mb-4">
-                    Pixel-perfect UI meets <br className="hidden md:block" /> optimized performance.
+                    {t("title1")} <br className="hidden md:block" /> {t("title2")}
                 </h2>
                 <p className="text-[#64748b] text-base md:text-lg max-w-2xl leading-relaxed font-medium mx-auto md:mx-0">
-                    Combining sharp visual aesthetics with rigorous engineering to create seamless, responsive, and robust web applications.
+                    {t("desc")}
                 </p>
             </div>
 
@@ -31,9 +34,9 @@ export function DesignFeature() {
                     {/* Left Side: Frontend Principles */}
                     <div className="lg:col-span-5 flex flex-col gap-6 w-full max-w-[500px] mx-auto lg:mx-0">
                         {[
-                            { icon: Code2, color: "text-blue-500", bg: "bg-blue-100", title: "Clean Architecture", desc: "Writing modular, scalable, and highly maintainable React code." },
-                            { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-100", title: "Pixel-Perfect", desc: "Translating Figma designs into precise, flawless user interfaces." },
-                            { icon: MonitorSmartphone, color: "text-purple-500", bg: "bg-purple-100", title: "Fully Responsive", desc: "Ensuring an optimized layout across devices of all screen sizes." },
+                            { icon: Code2, color: "text-blue-500", bg: "bg-blue-100", title: t("feat1Title"), desc: t("feat1Desc") },
+                            { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-100", title: t("feat2Title"), desc: t("feat2Desc") },
+                            { icon: MonitorSmartphone, color: "text-purple-500", bg: "bg-purple-100", title: t("feat3Title"), desc: t("feat3Desc") },
                         ].map((item, i) => (
                             <div
                                 key={i}

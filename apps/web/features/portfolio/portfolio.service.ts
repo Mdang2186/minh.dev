@@ -6,6 +6,7 @@ import type {
   PublicSkillGroup,
   PublicSocialLink,
 } from "./portfolio.types";
+import { getLocale } from "next-intl/server";
 
 export const defaultProfile: PublicSiteProfile = {
   name: "Portfolio",
@@ -28,17 +29,39 @@ async function safeRead<T>(reader: () => Promise<T>, fallback: T): Promise<T> {
   }
 }
 
+async function getSafeLocale(): Promise<string> {
+  try {
+    return await getLocale();
+  } catch {
+    return 'en';
+  }
+}
+
+function getLoc(obj: any, base: string, locale: string) {
+  if (!obj) return null;
+  if (locale === 'en') return obj[base];
+  
+  const locVal = obj[`${base}_${locale}`];
+  
+  if (Array.isArray(locVal)) {
+    return locVal.length > 0 ? locVal : obj[base];
+  }
+  
+  return locVal ? locVal : obj[base];
+}
+
 export async function getPublicSiteProfile(): Promise<PublicSiteProfile> {
   return safeRead(async () => {
+    const locale = await getSafeLocale();
     const profile = await prisma.siteProfile.findFirst({ orderBy: { updatedAt: "desc" } });
     if (!profile) return defaultProfile;
 
     return {
-      name: profile.name,
-      role: profile.role,
-      headline: profile.headline,
-      intro: profile.intro,
-      location: profile.location ?? "",
+      name: getLoc(profile, "name", locale) || "",
+      role: getLoc(profile, "role", locale) || "",
+      headline: getLoc(profile, "headline", locale) || "",
+      intro: getLoc(profile, "intro", locale) || "",
+      location: getLoc(profile, "location", locale) || "",
       email: profile.email ?? "",
       phone: profile.phone ?? "",
       avatarUrl: profile.avatarUrl ?? defaultProfile.avatarUrl,
@@ -67,6 +90,7 @@ export async function getPublicProjects(
   options: { featured?: boolean; limit?: number } = {}
 ): Promise<PublicProject[]> {
   return safeRead(async () => {
+    const locale = await getSafeLocale();
     const projects = await prisma.project.findMany({
       where: {
         published: true,
@@ -80,12 +104,13 @@ export async function getPublicProjects(
       },
     });
 
-    return projects.map(mapProject);
+    return projects.map((p) => mapProject(p, locale));
   }, [] as PublicProject[]);
 }
 
 export async function getPublicProjectBySlug(slug: string): Promise<PublicProject | null> {
   return safeRead(async () => {
+    const locale = await getSafeLocale();
     const project = await prisma.project.findFirst({
       where: { slug, published: true },
       include: {
@@ -94,7 +119,7 @@ export async function getPublicProjectBySlug(slug: string): Promise<PublicProjec
       },
     });
 
-    return project ? mapProject(project) : null;
+    return project ? mapProject(project, locale) : null;
   }, null as PublicProject | null);
 }
 
@@ -108,6 +133,7 @@ export async function getPublicProjectsByTag(tag: string) {
 
 export async function getPublicSkillGroups(): Promise<PublicSkillGroup[]> {
   return safeRead(async () => {
+    const locale = await getSafeLocale();
     const groups = await prisma.skillGroup.findMany({
       orderBy: { sortOrder: "asc" },
       include: { skills: { orderBy: { sortOrder: "asc" } } },
@@ -115,10 +141,10 @@ export async function getPublicSkillGroups(): Promise<PublicSkillGroup[]> {
 
     return groups.map((group) => ({
       id: group.id,
-      title: group.title,
+      title: getLoc(group, "title", locale) || "",
       skills: group.skills.map((skill) => ({
         id: skill.id,
-        name: skill.name,
+        name: getLoc(skill, "name", locale) || "",
         level: skill.level,
         iconUrl: skill.iconUrl,
       })),
@@ -128,6 +154,7 @@ export async function getPublicSkillGroups(): Promise<PublicSkillGroup[]> {
 
 export async function getPublicExperiences(): Promise<PublicExperience[]> {
   return safeRead(async () => {
+    const locale = await getSafeLocale();
     const experiences = await prisma.experience.findMany({
       where: { visible: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
@@ -135,10 +162,10 @@ export async function getPublicExperiences(): Promise<PublicExperience[]> {
 
     return experiences.map((experience) => ({
       id: experience.id,
-      title: experience.title,
-      org: experience.org,
-      period: experience.time,
-      highlights: experience.details,
+      title: getLoc(experience, "title", locale) || "",
+      org: getLoc(experience, "org", locale) || "",
+      period: getLoc(experience, "time", locale) || "",
+      highlights: getLoc(experience, "details", locale) || [],
     }));
   }, []);
 }
@@ -150,46 +177,25 @@ function splitContent(value?: string | null) {
     .filter(Boolean);
 }
 
-function mapProject(project: {
-  id: string;
-  slug: string;
-  title: string;
-  summary: string;
-  description: string | null;
-  content: string | null;
-  coverImage: string | null;
-  githubUrl: string | null;
-  demoUrl: string | null;
-  role: string | null;
-  duration: string | null;
-  teamSize: string | null;
-  featured: boolean;
-  directoryTree: string | null;
-  highlights: string[];
-  languages: string[];
-  tools: string[];
-  updatedAt: Date;
-  images: Array<{ imageUrl: string }>;
-  techStacks: Array<{ techStack: { name: string } }>;
-}): PublicProject {
-  const screenshots = project.images.map((image) => image.imageUrl);
+function mapProject(project: any, locale: string): PublicProject {
+  const screenshots = project.images.map((image: any) => image.imageUrl);
   const image = project.coverImage || screenshots[0] || undefined;
-  const stack = project.techStacks.map((item) => item.techStack.name);
+  const stack = project.techStacks.map((item: any) => item.techStack.name);
 
   return {
     id: project.id,
     slug: project.slug,
-    name: project.title,
-    summary: project.summary,
-    description: project.description ?? undefined,
-    content: splitContent(project.content || project.description || project.summary),
+    name: getLoc(project, "title", locale) || "",
+    summary: getLoc(project, "summary", locale) || "",
+    description: getLoc(project, "description", locale) || undefined,
+    content: splitContent(getLoc(project, "content", locale) || getLoc(project, "description", locale) || getLoc(project, "summary", locale)),
     image,
     screenshots,
     directoryTree: project.directoryTree ?? undefined,
     stack,
     languages: project.languages,
     tools: project.tools,
-    role: project.role ?? undefined,
+    role: getLoc(project, "role", locale) || undefined,
     duration: project.duration ?? undefined,
     teamSize: project.teamSize ?? undefined,
     featured: project.featured,
@@ -199,6 +205,6 @@ function mapProject(project: {
       repo: project.githubUrl ?? undefined,
       demo: project.demoUrl ?? undefined,
     },
-    highlights: project.highlights,
+    highlights: getLoc(project, "highlights", locale) || [],
   };
 }

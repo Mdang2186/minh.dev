@@ -1,0 +1,94 @@
+{
+  "Navbar": {
+    "projects": "Projets",
+    "skills": "Compétences",
+    "experience": "Expérience",
+    "contact": "Contact",
+    "talk": "Discutons"
+  },
+  "Hero": {
+    "hello": "Bonjour, je suis",
+    "talk": "Discutons"
+  },
+  "HomePage": {
+    "featuredWork": "Projets en Vedette",
+    "bestProjects": "Certains de mes meilleurs projets jusqu'à présent.",
+    "viewAll": "Voir Tous Les Projets"
+  },
+  "Quote": {
+    "line2_1": "à quoi",
+    "line2_2": "il ressemble",
+    "line2_3": "et",
+    "line2_4": "ce qu'on ressent.",
+    "line3_1": "c'est",
+    "line3_2": "comment ça marche.",
+    "author": "Steve Jobs",
+    "line1_1": "Le design",
+    "line1_2": "ce n'est pas juste"
+  },
+  "DesignFeature": {
+    "tagline": "Front-end Clair & Intuitif",
+    "title1": "L'interface parfaite rencontre",
+    "title2": "des performances optimisées.",
+    "desc": "Combinant une esthétique visuelle pointue avec une ingénierie rigoureuse pour créer des applications web fluides, réactives et robustes.",
+    "feat1Title": "Architecture Propre",
+    "feat1Desc": "Écriture de code React modulaire, évolutif et hautement maintenable.",
+    "feat2Title": "Parfait au Pixel Près",
+    "feat2Desc": "Traduction de designs Figma en interfaces utilisateur précises et sans défaut.",
+    "feat3Title": "Entièrement Réactif",
+    "feat3Desc": "Assurer une disposition optimisée sur tous les appareils et tailles d'écran."
+  },
+  "FeaturedProjects": {
+    "learnMore": "En savoir plus →",
+    "empty": "Le contenu du projet est en cours de préparation."
+  },
+  "ContactPage": {
+    "title": "Discutons",
+    "desc": "Toutes les informations ici sont à des fins professionnelles uniquement. Si vous avez des questions, n'hésitez pas à envoyer un message direct.",
+    "infoTitle": "Coordonnées",
+    "address": "Adresse",
+    "email": "Email",
+    "socialTitle": "Réseaux Sociaux",
+    "socialEmpty": "Les liens sociaux sont en cours de préparation.",
+    "formTitle": "Envoyer un Message",
+    "formDesc": "Ouvre votre client de messagerie par défaut pour envoyer un e-mail direct."
+  },
+  "ContactForm": {
+    "fullName": "Nom Complet",
+    "fullNamePlaceholder": "Votre Nom",
+    "email": "Email",
+    "emailPlaceholder": "email@exemple.com",
+    "subject": "Sujet",
+    "subjectPlaceholder": "Exemple: Demande de collaboration sur un projet",
+    "message": "Message",
+    "messagePlaceholder": "De quoi aimeriez-vous discuter ?",
+    "submit": "Envoyer le Message",
+    "submitting": "Envoi en cours...",
+    "success": "Message envoyé avec succès !",
+    "error": "Échec de l'envoi du message, veuillez réessayer !"
+  },
+  "ProjectsPage": {
+    "title": "Projets",
+    "desc": "Une collection de projets sur lesquels j'ai travaillé, allant des applications web aux outils open source.",
+    "empty": "Le contenu du projet est en cours de préparation.",
+    "all": "Tous les Projets",
+    "featured": "En Vedette",
+    "viewDetails": "Voir les Détails",
+    "sourceCode": "Code Source",
+    "liveDemo": "Démo en Direct"
+  },
+  "SkillsPage": {
+    "title": "Compétences et Outils",
+    "desc": "Les technologies, outils et langages que j'utilise pour créer des applications robustes et évolutives."
+  },
+  "ExperiencePage": {
+    "title": "Expérience et Éducation",
+    "desc": "Mon parcours professionnel et ma formation universitaire.",
+    "empty": "Le contenu de l'expérience est en cours de préparation.",
+    "present": "Présent"
+  },
+  "Common": {
+    "close": "Fermer",
+    "loading": "Chargement..."
+  }
+}

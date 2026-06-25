@@ -1,0 +1,94 @@
+{
+  "Navbar": {
+    "projects": "项目",
+    "skills": "技能与工具",
+    "experience": "经历与教育",
+    "contact": "联系",
+    "talk": "聊一聊"
+  },
+  "Hero": {
+    "hello": "你好，我是",
+    "talk": "聊一聊"
+  },
+  "HomePage": {
+    "featuredWork": "精选项目",
+    "bestProjects": "到目前为止我最好的一些项目。",
+    "viewAll": "查看所有项目"
+  },
+  "Quote": {
+    "line2_1": "看起来",
+    "line2_2": "怎么样",
+    "line2_3": "或者",
+    "line2_4": "感觉怎么样。",
+    "line3_1": "是",
+    "line3_2": "它如何运作。",
+    "author": "史蒂夫·乔布斯",
+    "line1_1": "设计",
+    "line1_2": "不仅仅是"
+  },
+  "DesignFeature": {
+    "tagline": "简洁直观的前端",
+    "title1": "像素级完美的UI与",
+    "title2": "优化的性能相结合。",
+    "desc": "将敏锐的视觉美学与严谨的工程技术相结合，创建无缝、响应迅速且强大的网络应用程序。",
+    "feat1Title": "清晰的架构",
+    "feat1Desc": "编写模块化、可扩展且高度可维护的React代码。",
+    "feat2Title": "像素级完美",
+    "feat2Desc": "将Figma设计转化为精确无瑕的用户界面。",
+    "feat3Title": "完全响应式",
+    "feat3Desc": "确保在各种屏幕尺寸的设备上进行优化的布局。"
+  },
+  "FeaturedProjects": {
+    "learnMore": "了解更多 →",
+    "empty": "项目内容正在准备中。"
+  },
+  "ContactPage": {
+    "title": "聊一聊",
+    "desc": "此处的所有信息仅供专业目的使用。如果您有任何问题，请随时发送私信。",
+    "infoTitle": "联系信息",
+    "address": "地址",
+    "email": "电子邮件",
+    "socialTitle": "社交媒体",
+    "socialEmpty": "社交链接正在准备中。",
+    "formTitle": "发送消息",
+    "formDesc": "打开您的默认电子邮件客户端以发送直接电子邮件。"
+  },
+  "ContactForm": {
+    "fullName": "全名",
+    "fullNamePlaceholder": "您的名字",
+    "email": "电子邮件",
+    "emailPlaceholder": "email@example.com",
+    "subject": "主题",
+    "subjectPlaceholder": "示例：项目合作咨询",
+    "message": "留言",
+    "messagePlaceholder": "您想讨论什么？",
+    "submit": "发送消息",
+    "submitting": "发送中...",
+    "success": "消息发送成功！",
+    "error": "消息发送失败，请重试！"
+  },
+  "ProjectsPage": {
+    "title": "项目",
+    "desc": "我参与过的项目集合，从网络应用程序到开源工具。",
+    "empty": "项目内容正在准备中。",
+    "all": "所有项目",
+    "featured": "精选",
+    "viewDetails": "查看详情",
+    "sourceCode": "源代码",
+    "liveDemo": "实时演示"
+  },
+  "SkillsPage": {
+    "title": "技能与工具",
+    "desc": "我用来构建强大且可扩展应用程序的技术、工具和语言。"
+  },
+  "ExperiencePage": {
+    "title": "经历与教育",
+    "desc": "我的职业旅程和学术背景。",
+    "empty": "经历内容正在准备中。",
+    "present": "现在"
+  },
+  "Common": {
+    "close": "关闭",
+    "loading": "加载中..."
+  }
+}

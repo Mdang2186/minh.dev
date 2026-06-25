@@ -8,10 +8,11 @@ import { TechBadge } from "@/components/ui/tech-badge";
 import { Container } from "@/components/ui/container";
 import { ProjectModal } from "@/components/ui/project-modal";
 import type { PublicProject } from "@/features/portfolio/portfolio.types";
-
+import { useTranslations } from "next-intl";
 
 export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) {
   const [selectedProject, setSelectedProject] = useState<PublicProject | null>(null);
+  const t = useTranslations("ProjectsPage");
 
   useEffect(() => {
     document.body.style.overflow = selectedProject ? "hidden" : "unset";
@@ -129,7 +130,7 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
             </motion.div>
           ) : (
             <div className="w-full rounded-3xl border border-slate-200 bg-white/70 p-10 text-center text-slate-500 shadow-sm">
-              Project content is being prepared.
+              {t("empty")}
             </div>
           )}
         </motion.div>

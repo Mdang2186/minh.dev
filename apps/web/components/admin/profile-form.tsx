@@ -2,33 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
+import { useAdminLanguage } from "./admin-language-provider";
 
-type ProfileFormState = {
-  name: string;
-  role: string;
-  headline: string;
-  intro: string;
-  location: string;
-  email: string;
-  phone: string;
-  avatarUrl: string;
-  resumeUrl: string;
-};
-
-const emptyProfile: ProfileFormState = {
-  name: "",
-  role: "",
-  headline: "",
-  intro: "",
-  location: "",
-  email: "",
-  phone: "",
-  avatarUrl: "",
-  resumeUrl: "",
-};
+type ProfileFormState = Record<string, string>;
 
 export function ProfileForm() {
-  const [form, setForm] = useState<ProfileFormState>(emptyProfile);
+  const { language } = useAdminLanguage();
+
+  const [form, setForm] = useState<ProfileFormState>({});
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -38,12 +19,11 @@ export function ProfileForm() {
     const response = await fetch("/api/admin/profile", { cache: "no-store" });
     const data = await response.json();
     if (data.profile) {
-      setForm({
-        ...emptyProfile,
-        ...Object.fromEntries(
-          Object.entries(data.profile).map(([key, value]) => [key, value ?? ""])
-        ),
-      } as ProfileFormState);
+      setForm(
+        Object.fromEntries(
+          Object.entries(data.profile).map(([key, value]) => [key, (value as string) ?? ""])
+        )
+      );
     }
     setLoading(false);
   }
@@ -74,9 +54,18 @@ export function ProfileForm() {
     setSaving(false);
   }
 
-  function updateField(name: keyof ProfileFormState, value: string) {
-    setForm((current) => ({ ...current, [name]: value }));
+  const getFieldKey = (base: string) => language === "en" ? base : `${base}_${language}`;
+  
+  function updateField(base: string, value: string) {
+    setForm((current) => ({ ...current, [getFieldKey(base)]: value }));
   }
+
+  function getVal(base: string) {
+    return form[getFieldKey(base)] || "";
+  }
+
+  const isEn = language === "en";
+  const labelSuffix = `(${language.toUpperCase()})`;
 
   if (loading) return <p className="text-sm text-slate-500">Đang tải hồ sơ...</p>;
 
@@ -89,17 +78,19 @@ export function ProfileForm() {
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
-        <AdminInput label="Tên" value={form.name} onChange={(value) => updateField("name", value)} required />
-        <AdminInput label="Vai trò" value={form.role} onChange={(value) => updateField("role", value)} required />
+        <AdminInput label={`Tên ${labelSuffix}`} value={getVal("name")} onChange={(value) => updateField("name", value)} required={isEn} />
+        <AdminInput label={`Vai trò ${labelSuffix}`} value={getVal("role")} onChange={(value) => updateField("role", value)} required={isEn} />
       </div>
-      <AdminInput label="Headline" value={form.headline} onChange={(value) => updateField("headline", value)} required />
-      <AdminTextarea label="Intro" value={form.intro} onChange={(value) => updateField("intro", value)} required />
+      
+      <AdminInput label={`Headline ${labelSuffix}`} value={getVal("headline")} onChange={(value) => updateField("headline", value)} required={isEn} />
+      <AdminTextarea label={`Intro ${labelSuffix}`} value={getVal("intro")} onChange={(value) => updateField("intro", value)} required={isEn} />
+      
       <div className="grid gap-4 md:grid-cols-2">
-        <AdminInput label="Địa điểm" value={form.location} onChange={(value) => updateField("location", value)} />
-        <AdminInput label="Email" value={form.email} onChange={(value) => updateField("email", value)} />
-        <AdminInput label="Số điện thoại" value={form.phone} onChange={(value) => updateField("phone", value)} />
-        <AdminInput label="Avatar URL" value={form.avatarUrl} onChange={(value) => updateField("avatarUrl", value)} />
-        <AdminInput label="Resume URL" value={form.resumeUrl} onChange={(value) => updateField("resumeUrl", value)} />
+        <AdminInput label={`Địa điểm ${labelSuffix}`} value={getVal("location")} onChange={(value) => updateField("location", value)} />
+        <AdminInput label="Email" value={form.email || ""} onChange={(value) => setForm((c) => ({ ...c, email: value }))} />
+        <AdminInput label="Số điện thoại" value={form.phone || ""} onChange={(value) => setForm((c) => ({ ...c, phone: value }))} />
+        <AdminInput label="Avatar URL" value={form.avatarUrl || ""} onChange={(value) => setForm((c) => ({ ...c, avatarUrl: value }))} />
+        <AdminInput label="Resume URL" value={form.resumeUrl || ""} onChange={(value) => setForm((c) => ({ ...c, resumeUrl: value }))} />
       </div>
 
       <button

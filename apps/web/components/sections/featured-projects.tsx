@@ -5,10 +5,12 @@ import { TechBadge } from "@/components/ui/tech-badge";
 import { Card, CardDesc, CardTitle } from "@/components/ui/card";
 import type { PublicProject } from "@/features/portfolio/portfolio.types";
 import { ProjectModal } from "@/components/ui/project-modal";
+import { useTranslations } from "next-intl";
 
 export function FeaturedProjects({ projects }: { projects: PublicProject[] }) {
   const [selectedProject, setSelectedProject] = useState<PublicProject | null>(null);
   const top = projects.slice(0, 3);
+  const t = useTranslations("FeaturedProjects");
 
   return (
     <>
@@ -37,7 +39,7 @@ export function FeaturedProjects({ projects }: { projects: PublicProject[] }) {
 
                 <div className="mt-5 flex flex-wrap gap-3 pointer-events-none">
                   <span className="text-sm font-semibold text-cyan-600 dark:text-cyan-400">
-                    Learn more →
+                    {t("learnMore")}
                   </span>
                 </div>
               </Card>
@@ -46,7 +48,7 @@ export function FeaturedProjects({ projects }: { projects: PublicProject[] }) {
         </div>
       ) : (
         <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center py-10">
-          Project content is being prepared.
+          {t("empty")}
         </p>
       )}
 

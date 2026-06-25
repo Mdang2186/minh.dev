@@ -83,9 +83,9 @@ export function ResumeModal({ resumeUrl }: ResumeModalProps) {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="inline-flex items-center justify-center rounded-full px-6 py-4 text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-bold text-[15px] transition-all hover:-translate-y-1 ml-0 sm:ml-2 border border-transparent hover:border-blue-100"
+                className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-bold text-sm transition-all hover:-translate-y-0.5 border border-transparent hover:border-blue-100"
             >
-                <FileText className="w-5 h-5 mr-2" />
+                <FileText className="w-4 h-4 mr-1.5" />
                 Resume
             </button>
 

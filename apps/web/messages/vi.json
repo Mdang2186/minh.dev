@@ -1,0 +1,94 @@
+{
+  "Navbar": {
+    "projects": "Dự án",
+    "skills": "Kỹ năng & Công cụ",
+    "experience": "Kinh nghiệm & Học vấn",
+    "contact": "Liên hệ",
+    "talk": "Trò chuyện"
+  },
+  "Hero": {
+    "hello": "Xin chào, tôi là",
+    "talk": "Trò chuyện"
+  },
+  "HomePage": {
+    "featuredWork": "Dự án nổi bật",
+    "bestProjects": "Một số dự án tốt nhất của tôi cho đến nay.",
+    "viewAll": "Xem tất cả dự án"
+  },
+  "Quote": {
+    "line2_1": "trông",
+    "line2_2": "như thế nào",
+    "line2_3": "hay",
+    "line2_4": "cảm giác ra sao.",
+    "line3_1": "là cách",
+    "line3_2": "nó hoạt động.",
+    "author": "Steve Jobs",
+    "line1_1": "Thiết kế",
+    "line1_2": "không chỉ là"
+  },
+  "DesignFeature": {
+    "tagline": "Front-end Trực quan & Sạch sẽ",
+    "title1": "Giao diện hoàn hảo &",
+    "title2": "Hiệu suất tối ưu.",
+    "desc": "Kết hợp tính thẩm mỹ cao với kỹ thuật nghiêm ngặt để tạo ra các ứng dụng web mượt mà, thân thiện và mạnh mẽ.",
+    "feat1Title": "Kiến trúc Sạch",
+    "feat1Desc": "Viết mã React có tính mô-đun, dễ mở rộng và dễ bảo trì cao.",
+    "feat2Title": "Hoàn hảo từng Pixel",
+    "feat2Desc": "Chuyển đổi thiết kế Figma thành giao diện người dùng chính xác, hoàn hảo.",
+    "feat3Title": "Tương thích hoàn toàn",
+    "feat3Desc": "Đảm bảo bố cục tối ưu trên mọi thiết bị và kích thước màn hình."
+  },
+  "FeaturedProjects": {
+    "learnMore": "Tìm hiểu thêm →",
+    "empty": "Nội dung dự án đang được chuẩn bị."
+  },
+  "ContactPage": {
+    "title": "Trò chuyện",
+    "desc": "Tất cả thông tin ở đây chỉ dành cho mục đích công việc. Nếu bạn có bất kỳ câu hỏi nào, vui lòng gửi tin nhắn trực tiếp.",
+    "infoTitle": "Thông tin liên hệ",
+    "address": "Địa chỉ",
+    "email": "Email",
+    "socialTitle": "Mạng xã hội",
+    "socialEmpty": "Liên kết mạng xã hội đang được chuẩn bị.",
+    "formTitle": "Gửi tin nhắn",
+    "formDesc": "Mở ứng dụng email mặc định của bạn để gửi email trực tiếp."
+  },
+  "ContactForm": {
+    "fullName": "Họ và tên",
+    "fullNamePlaceholder": "Tên của bạn",
+    "email": "Email",
+    "emailPlaceholder": "email@example.com",
+    "subject": "Tiêu đề",
+    "subjectPlaceholder": "Ví dụ: Yêu cầu hợp tác dự án",
+    "message": "Tin nhắn",
+    "messagePlaceholder": "Bạn muốn thảo luận điều gì?",
+    "submit": "Gửi tin nhắn",
+    "submitting": "Đang gửi...",
+    "success": "Gửi thành công!",
+    "error": "Gửi thất bại, thử lại!"
+  },
+  "ProjectsPage": {
+    "title": "Dự án",
+    "desc": "Bộ sưu tập các dự án tôi đã thực hiện, từ các ứng dụng web đến các công cụ mã nguồn mở.",
+    "empty": "Nội dung dự án đang được chuẩn bị.",
+    "all": "Tất cả dự án",
+    "featured": "Nổi bật",
+    "viewDetails": "Xem chi tiết",
+    "sourceCode": "Mã nguồn",
+    "liveDemo": "Xem trực tiếp"
+  },
+  "SkillsPage": {
+    "title": "Kỹ năng & Công cụ",
+    "desc": "Các công nghệ, công cụ và ngôn ngữ tôi sử dụng để xây dựng các ứng dụng mạnh mẽ và có khả năng mở rộng."
+  },
+  "ExperiencePage": {
+    "title": "Kinh nghiệm & Học vấn",
+    "desc": "Hành trình nghề nghiệp và nền tảng học vấn của tôi.",
+    "empty": "Nội dung kinh nghiệm đang được chuẩn bị.",
+    "present": "Hiện tại"
+  },
+  "Common": {
+    "close": "Đóng",
+    "loading": "Đang tải..."
+  }
+}

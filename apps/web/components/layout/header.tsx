@@ -5,14 +5,15 @@ import { siteConfig } from "@/features/site/site.config";
 import { navLinks } from "./nav-links";
 import { MobileNav } from "./mobile-nav";
 import { Github, Facebook } from "lucide-react";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
       <div className="container mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold tracking-tight hover:text-primary transition-colors">
-          minh.dev
+        <Link href="/" className="text-2xl font-black tracking-tight hover:opacity-80 transition-opacity">
+          minh<span className="text-cyan-500">dev</span>
         </Link>
 
         {/* Center Navigation */}
@@ -44,6 +45,9 @@ export function Header() {
           >
             <Github className="h-5 w-5" />
           </Link>
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
           <MobileNav />
         </div>
       </div>

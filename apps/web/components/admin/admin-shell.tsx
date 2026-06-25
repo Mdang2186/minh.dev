@@ -10,8 +10,10 @@ import {
   Share2,
   Sparkles,
   UserRound,
+  Languages,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { useAdminLanguage } from "./admin-language-provider";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Tổng quan", icon: BarChart3 },
@@ -25,6 +27,7 @@ const navItems = [
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "";
   const router = useRouter();
+  const { language, setLanguage } = useAdminLanguage();
 
   async function handleLogout() {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -67,10 +70,36 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
+        <div className="absolute bottom-20 left-5 right-5 space-y-2 border-t border-slate-200 pt-4">
+          <div className="flex items-center gap-2 px-1 text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+            <Languages className="w-3.5 h-3.5" /> Ngôn ngữ hiển thị
+          </div>
+          <div className="relative">
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as any)}
+              className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-slate-700 outline-none hover:bg-slate-50 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 cursor-pointer transition-colors"
+            >
+              <option value="en">English (EN)</option>
+              <option value="vi">Tiếng Việt (VI)</option>
+              <option value="ja">日本語 (JA)</option>
+              <option value="fr">Français (FR)</option>
+              <option value="es">Español (ES)</option>
+              <option value="zh">中文 (ZH)</option>
+              <option value="ko">한국어 (KO)</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+              <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={handleLogout}
-          className="absolute bottom-6 left-5 right-5 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+          className="absolute bottom-6 left-5 right-5 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-red-50 hover:text-red-600"
         >
           <LogOut className="h-4 w-4" />
           Đăng xuất
@@ -83,13 +112,28 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <Link href="/admin/dashboard" className="font-black">
               minh.dev admin
             </Link>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold hover:bg-slate-100"
-            >
-              Đăng xuất
-            </button>
+            <div className="flex items-center gap-2">
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as any)}
+                className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs font-bold text-slate-700 shadow-sm outline-none"
+              >
+                <option value="en">EN</option>
+                <option value="vi">VI</option>
+                <option value="ja">JA</option>
+                <option value="fr">FR</option>
+                <option value="es">ES</option>
+                <option value="zh">ZH</option>
+                <option value="ko">KO</option>
+              </select>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold hover:bg-red-50 hover:text-red-600"
+              >
+                Đăng xuất
+              </button>
+            </div>
           </div>
           <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
             {navItems.map((item) => (

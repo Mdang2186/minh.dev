@@ -22,21 +22,27 @@ interface InteractiveExperienceProps {
 }
 
 export function InteractiveExperience({ experiences, projects = [] }: InteractiveExperienceProps) {
-    const [activeIndex, setActiveIndex] = useState(0);
+    const [activeIndex, setActiveIndex] = useState<number>(-1);
     const [isMobile, setIsMobile] = useState(false);
     const [selectedProject, setSelectedProject] = useState<PublicProject | null>(null);
 
     // Check if we are on mobile to change behavior
     useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        const checkMobile = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            if (!mobile && activeIndex === -1) {
+                setActiveIndex(0);
+            }
+        };
         checkMobile();
         window.addEventListener("resize", checkMobile);
         return () => window.removeEventListener("resize", checkMobile);
-    }, []);
+    }, [activeIndex]);
 
     if (!experiences || experiences.length === 0) return null;
 
-    const activeExp = experiences[activeIndex];
+    const activeExp = experiences[activeIndex] || experiences[0];
     
     // Find matching project
     const activeProject = projects.find(p => p.name.includes(activeExp.org) || activeExp.org.includes(p.name));
@@ -52,58 +58,63 @@ export function InteractiveExperience({ experiences, projects = [] }: Interactiv
                         const isActive = index === activeIndex;
 
                         return (
-                            <div
-                                key={exp.id}
-                                className={cn(
-                                    "relative flex items-center group cursor-pointer transition-all duration-300 w-full pl-0",
-                                    isActive ? "opacity-100" : "opacity-60 hover:opacity-100"
-                                )}
-                                onMouseEnter={() => !isMobile && setActiveIndex(index)}
-                                onClick={() => setActiveIndex(index)}
-                            >
-                                {/* Timeline Dot */}
-                                <div className="relative flex items-center justify-center shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-background border-2 transition-colors z-20"
-                                    style={{
-                                        borderColor: isActive ? 'hsl(var(--primary))' : 'hsl(var(--border))',
-                                    }}>
-                                    <div className={cn(
-                                        "w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300",
-                                        isActive ? "bg-primary scale-100" : "bg-transparent scale-0 group-hover:bg-primary/50 group-hover:scale-100"
-                                    )} />
-                                </div>
-
-                                {/* Timeline Tab */}
-                                <div className={cn(
-                                    "ml-4 p-4 rounded-2xl flex-1 transition-all duration-300 border flex justify-between items-center group/tab",
-                                    isActive
-                                        ? "bg-primary/5 border-primary/20 shadow-sm"
-                                        : "bg-transparent border-transparent hover:bg-muted/30"
-                                )}>
-                                    <div className="flex flex-col">
-                                        <span className="font-semibold text-foreground md:text-sm lg:text-base line-clamp-1">{exp.org.split('–')[0]?.trim() || exp.org}</span>
-                                        <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5"><Calendar size={12} /> {exp.period}</span>
+                            <div key={exp.id} className="relative flex flex-col w-full">
+                                <div
+                                    className={cn(
+                                        "relative flex items-center group cursor-pointer transition-all duration-300 w-full pl-0",
+                                        isActive ? "opacity-100" : "opacity-60 hover:opacity-100"
+                                    )}
+                                    onMouseEnter={() => !isMobile && setActiveIndex(index)}
+                                    onClick={() => setActiveIndex(isActive && isMobile ? -1 : index)}
+                                >
+                                    {/* Timeline Dot */}
+                                    <div className="relative flex items-center justify-center shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-background border-2 transition-colors z-20"
+                                        style={{
+                                            borderColor: isActive ? 'hsl(var(--primary))' : 'hsl(var(--border))',
+                                        }}>
+                                        <div className={cn(
+                                            "w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300",
+                                            isActive ? "bg-primary scale-100" : "bg-transparent scale-0 group-hover:bg-primary/50 group-hover:scale-100"
+                                        )} />
                                     </div>
-                                    <ChevronRight size={16} className={cn(
-                                        "text-muted-foreground transition-transform duration-300",
-                                        isActive ? "translate-x-1 text-primary opacity-100" : "opacity-0 -translate-x-2 group-hover/tab:opacity-50 group-hover/tab:-translate-x-1"
-                                    )} />
+
+                                    {/* Timeline Tab */}
+                                    <div className={cn(
+                                        "ml-4 p-4 rounded-2xl flex-1 transition-all duration-300 border flex justify-between items-center group/tab",
+                                        isActive
+                                            ? "bg-primary/5 border-primary/20 shadow-sm"
+                                            : "bg-transparent border-transparent hover:bg-muted/30"
+                                    )}>
+                                        <div className="flex flex-col">
+                                            <span className="font-semibold text-foreground md:text-sm lg:text-base line-clamp-1">{exp.org.split('–')[0]?.trim() || exp.org}</span>
+                                            <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5"><Calendar size={12} /> {exp.period}</span>
+                                        </div>
+                                        <ChevronRight size={16} className={cn(
+                                            "text-muted-foreground transition-transform duration-300",
+                                            isActive ? "translate-x-1 text-primary opacity-100 rotate-90 md:rotate-0" : "opacity-0 -translate-x-2 group-hover/tab:opacity-50 group-hover/tab:-translate-x-1"
+                                        )} />
+                                    </div>
                                 </div>
 
                                 {/* Mobile Inline Content (Accordion style) */}
-                                {isMobile && isActive && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: "auto", opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        className="absolute top-full left-12 right-0 mt-3 z-10 overflow-hidden"
-                                    >
-                                        <ExperienceDetailCard 
-                                            exp={activeExp} 
-                                            project={activeProject}
-                                            onViewDetails={() => setSelectedProject(activeProject ?? null)} 
-                                        />
-                                    </motion.div>
-                                )}
+                                <AnimatePresence>
+                                    {isMobile && isActive && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: "auto", opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="overflow-hidden w-full pl-12 sm:pl-14 pr-0"
+                                        >
+                                            <div className="pt-4 pb-6">
+                                                <ExperienceDetailCard 
+                                                    exp={activeExp} 
+                                                    project={activeProject}
+                                                    onViewDetails={() => setSelectedProject(activeProject ?? null)} 
+                                                />
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         );
                     })}
@@ -151,16 +162,14 @@ export function InteractiveExperience({ experiences, projects = [] }: Interactiv
 function ExperienceDetailCard({ exp, className, project, onViewDetails }: { exp: ExperienceData, className?: string, project?: PublicProject, onViewDetails: () => void }) {
     return (
         <div className={cn(
-            "p-6 sm:p-8 rounded-3xl border border-cyan-500/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-2xl flex flex-col relative overflow-hidden group cursor-pointer",
+            "p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col relative overflow-hidden group cursor-pointer",
             className
         )} onClick={project ? onViewDetails : undefined}>
-            {/* Subtle Gradient Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-slate-900/5 dark:to-cyan-900/10 pointer-events-none" />
 
             <div className="flex flex-col space-y-4 pb-6 border-b border-cyan-500/20 relative z-10">
                 <div className="flex justify-between items-start gap-4">
                     <div className="inline-flex items-center gap-2 w-fit">
-                        <span className="px-3.5 py-1.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 text-xs md:text-sm font-bold tracking-wide uppercase border border-cyan-500/20 shadow-sm">
+                        <span className="px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-xs md:text-sm font-bold tracking-wide uppercase border border-slate-200 dark:border-slate-700">
                             {exp.title}
                         </span>
                     </div>
@@ -199,7 +208,7 @@ function ExperienceDetailCard({ exp, className, project, onViewDetails }: { exp:
                                 transition={{ duration: 0.3, delay: index * 0.1 }}
                                 className="flex items-start gap-4 bg-white/50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 shadow-sm transition-all"
                             >
-                                <span className="mt-1.5 w-2 h-2 shrink-0 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.6)]" />
+                                <span className="mt-1.5 w-2 h-2 shrink-0 rounded-full bg-slate-400 dark:bg-slate-600" />
                                 <span className="flex-1 line-clamp-2">
                                     {hasColon ? (
                                         <>
@@ -224,11 +233,6 @@ function ExperienceDetailCard({ exp, className, project, onViewDetails }: { exp:
                 )}
             </div>
 
-            {/* Decorative Glow & Abstract Shapes */}
-            <div className="absolute top-0 right-0 -m-20 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl -z-10 opacity-60 transition-transform duration-700 group-hover:scale-150" />
-            <div className="absolute bottom-0 left-0 -m-32 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -z-10 opacity-50 transition-transform duration-700 group-hover:scale-125" />
-            <div className="absolute top-8 right-8 w-16 h-16 border border-cyan-500/10 rounded-full -z-10" />
-            <div className="absolute top-12 right-12 w-8 h-8 border border-slate-500/10 rounded-full -z-10" />
         </div>
     );
 }
@@ -249,7 +253,7 @@ function ProjectDetailModal({ project, role, onClose }: { project: PublicProject
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+                className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden"
             >
                 {/* Header */}
                 <div className="p-6 sm:p-8 border-b border-slate-100 shrink-0">
@@ -381,7 +385,7 @@ function ProjectDetailModal({ project, role, onClose }: { project: PublicProject
                                 href={project.links.repo} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-slate-900/20 transition-all active:scale-95"
+                                className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95"
                             >
                                 <Github size={18} /> Source Code
                             </a>
@@ -391,7 +395,7 @@ function ProjectDetailModal({ project, role, onClose }: { project: PublicProject
                                 href={project.links.demo} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="inline-flex items-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-cyan-500/30 transition-all active:scale-95"
+                                className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95"
                             >
                                 Demo
                             </a>

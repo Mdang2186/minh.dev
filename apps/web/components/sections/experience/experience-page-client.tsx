@@ -8,11 +8,13 @@ import { InteractiveExperience } from "@/components/sections/interactive-experie
 import { certifications, educations } from "@/features/work/work.data";
 import { cn } from "@/lib/cn";
 import type { PublicExperience, PublicProject } from "@/features/portfolio/portfolio.types";
+import { useTranslations } from "next-intl";
 
 type Tab = "experience" | "education";
 
 export function ExperiencePageClient({ experiences, projects }: { experiences: PublicExperience[], projects: PublicProject[] }) {
   const [activeTab, setActiveTab] = useState<Tab>("experience");
+  const t = useTranslations("ExperiencePage");
 
   return (
     <Container className="py-16 md:py-24">
@@ -86,7 +88,7 @@ export function ExperiencePageClient({ experiences, projects }: { experiences: P
                   <InteractiveExperience experiences={experiences} projects={projects} />
                 ) : (
                   <div className="rounded-3xl border border-slate-200 bg-white/70 p-10 text-center text-slate-500 shadow-sm">
-                    Experience content is being prepared.
+                    {t("empty")}
                   </div>
                 )}
               </motion.div>

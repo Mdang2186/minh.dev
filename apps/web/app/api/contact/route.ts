@@ -3,8 +3,12 @@ import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json();
-        const { name, email, subject, message } = body;
+        const formData = await req.formData();
+        const name = formData.get("name") as string;
+        const email = formData.get("email") as string;
+        const subject = formData.get("subject") as string;
+        const message = formData.get("message") as string;
+        const file = formData.get("file") as File | null;
 
         if (!name || !email || !message) {
             return NextResponse.json(
@@ -21,6 +25,15 @@ export async function POST(req: Request) {
                 pass: "ppdo vxpv waik cdsk",
             },
         });
+
+        const attachments = [];
+        if (file) {
+            const buffer = Buffer.from(await file.arrayBuffer());
+            attachments.push({
+                filename: file.name,
+                content: buffer,
+            });
+        }
 
         // Setup email data
         const mailOptions = {
@@ -39,6 +52,7 @@ export async function POST(req: Request) {
                     <p style="white-space: pre-wrap;">${message}</p>
                 </div>
             `,
+            attachments,
         };
 
         // Send the email
