@@ -10,7 +10,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
     <div className={cn("relative inline-block", className)}>
       <select
         value={language}
-        onChange={(e) => setLanguage(e.target.value)}
+        onChange={(e) => setLanguage(e.target.value as "en" | "vi" | "ja" | "fr" | "es" | "zh" | "ko")}
         className="appearance-none bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-full px-4 py-2 pr-8 outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer border border-transparent hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
       >
         <option value="en">English (EN)</option>
