@@ -299,7 +299,7 @@ export function ProjectModal({ selectedProject, onClose }: ProjectModalProps) {
                                                 groups[f].push(img);
                                             });
                                         } else {
-                                            groups["Hình ảnh"] = selectedProject.screenshots.map(src => ({ url: src, altText: "" }));
+                                            groups["Hình ảnh"] = (selectedProject.screenshots || []).map(src => ({ url: src, altText: "" }));
                                         }
 
                                         return Object.entries(groups).map(([folder, imgs], groupIndex) => (
