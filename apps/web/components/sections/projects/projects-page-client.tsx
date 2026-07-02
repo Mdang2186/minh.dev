@@ -48,11 +48,11 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
               <div className="p-3.5 bg-cyan-500/10 rounded-2xl text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 shadow-sm">
                 <FolderGit2 className="w-8 h-8" />
               </div>
-              <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
                 Featured Projects
               </h1>
             </div>
-            <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
               Khám phá các dự án tôi đã tham gia và xây dựng. Nhấn vào từng dự án để xem thêm chi tiết về chức năng, giao diện và công nghệ.
             </p>
           </motion.div>
@@ -86,12 +86,12 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                     )}
 
                     {/* Content */}
-                    <div className="p-6 sm:p-7 flex flex-col flex-grow relative bg-white dark:bg-slate-900">
-                      <h3 className="text-xl sm:text-[22px] font-black tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors leading-snug mb-3">
+                    <div className="p-5 sm:p-7 flex flex-col flex-grow relative bg-white dark:bg-slate-900">
+                      <h3 className="text-lg sm:text-[22px] font-black tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors leading-snug mb-3">
                         <span className="line-clamp-2">{project.name}</span>
                       </h3>
 
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4 text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4 text-[11px] sm:text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                         {project.duration ? (
                           <div className="flex items-center gap-1.5">
                             <Calendar className="w-4 h-4 text-cyan-500" />
@@ -109,11 +109,11 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                         ) : null}
                       </div>
 
-                      <p className="flex-grow line-clamp-3 text-slate-600 dark:text-slate-400 font-medium leading-relaxed text-[15px] mb-6">
+                      <p className="flex-grow line-clamp-3 text-slate-600 dark:text-slate-400 font-medium leading-relaxed text-[13.5px] sm:text-[15px] mb-6">
                         {project.summary}
                       </p>
 
-                      <div className="flex flex-wrap gap-2 mt-auto pt-5 border-t border-slate-100 dark:border-slate-800/50">
+                      <div className="flex flex-wrap gap-2 mt-auto pt-4 sm:pt-5 border-t border-slate-100 dark:border-slate-800/50">
                         {project.stack.slice(0, 4).map((stack) => (
                           <TechBadge key={stack} name={stack} className="bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700" />
                         ))}
