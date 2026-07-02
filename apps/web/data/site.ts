@@ -5,6 +5,7 @@ export type Project = {
     description?: string;
     image?: string;
     screenshots?: string[];
+    detailedImages?: { url: string; altText: string; folder?: string }[];
     directoryTree?: string;
     stack: string[];
     languages?: string[];
