@@ -60,39 +60,51 @@ export function InteractiveExperience({ experiences, projects = [] }: Interactiv
                         return (
                             <div key={exp.id} className="relative flex flex-col w-full">
                                 <div
-                                    className={cn(
-                                        "relative flex items-center group cursor-pointer transition-all duration-300 w-full pl-0",
-                                        isActive ? "opacity-100" : "opacity-60 hover:opacity-100"
-                                    )}
-                                    onMouseEnter={() => !isMobile && setActiveIndex(index)}
-                                    onClick={() => setActiveIndex(isActive && isMobile ? -1 : index)}
+                                    className="relative flex items-center group w-full"
                                 >
                                     {/* Timeline Dot */}
-                                    <div className="relative flex items-center justify-center shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-background border-2 transition-colors z-20"
+                                    <div className="absolute left-0 flex items-center justify-center shrink-0 w-8 h-8 rounded-full bg-background border-2 transition-colors z-20"
                                         style={{
-                                            borderColor: isActive ? 'hsl(var(--primary))' : 'hsl(var(--border))',
+                                            borderColor: isActive ? 'rgb(6 182 212)' : 'rgb(226 232 240)',
                                         }}>
                                         <div className={cn(
-                                            "w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300",
-                                            isActive ? "bg-primary scale-100" : "bg-transparent scale-0 group-hover:bg-primary/50 group-hover:scale-100"
+                                            "w-2.5 h-2.5 rounded-full transition-all duration-300",
+                                            isActive ? "bg-cyan-500 scale-100" : "bg-transparent scale-0 group-hover:bg-cyan-500/50 group-hover:scale-100"
                                         )} />
                                     </div>
 
-                                    {/* Timeline Tab */}
-                                    <div className={cn(
-                                        "ml-4 p-4 rounded-2xl flex-1 transition-all duration-300 border flex justify-between items-center group/tab",
-                                        isActive
-                                            ? "bg-primary/5 border-primary/20 shadow-sm"
-                                            : "bg-transparent border-transparent hover:bg-muted/30"
-                                    )}>
+                                    {/* Timeline Tab (Card Style) */}
+                                    <div 
+                                        onClick={() => {
+                                            if (isMobile) {
+                                                setActiveIndex(isActive ? -1 : index);
+                                            } else {
+                                                setActiveIndex(index);
+                                            }
+                                        }}
+                                        className={cn(
+                                            "ml-12 p-4 sm:p-5 rounded-2xl flex-1 transition-all duration-300 border flex justify-between items-center group/tab cursor-pointer",
+                                            isActive
+                                                ? "bg-white dark:bg-slate-900 border-cyan-500 shadow-md ring-1 ring-cyan-500/20"
+                                                : "bg-white/60 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 shadow-sm hover:border-cyan-300"
+                                        )}
+                                    >
                                         <div className="flex flex-col">
-                                            <span className="font-semibold text-foreground md:text-sm lg:text-base line-clamp-1">{exp.org.split('–')[0]?.trim() || exp.org}</span>
-                                            <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5"><Calendar size={12} /> {exp.period}</span>
+                                            <span className="font-bold text-slate-900 dark:text-white md:text-sm lg:text-base line-clamp-1">{exp.org.split('–')[0]?.trim() || exp.org}</span>
+                                            <span className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5"><Calendar size={14} className="text-cyan-500" /> {exp.period}</span>
                                         </div>
-                                        <ChevronRight size={16} className={cn(
-                                            "text-muted-foreground transition-transform duration-300",
-                                            isActive ? "translate-x-1 text-primary opacity-100 rotate-90 md:rotate-0" : "opacity-0 -translate-x-2 group-hover/tab:opacity-50 group-hover/tab:-translate-x-1"
-                                        )} />
+                                        {!isMobile && (
+                                            <ChevronRight size={18} className={cn(
+                                                "text-slate-400 transition-transform duration-300",
+                                                isActive ? "translate-x-1 text-cyan-500 opacity-100" : "opacity-0 -translate-x-2 group-hover/tab:opacity-50 group-hover/tab:-translate-x-1"
+                                            )} />
+                                        )}
+                                        {isMobile && (
+                                            <ChevronRight size={18} className={cn(
+                                                "text-slate-400 transition-transform duration-300",
+                                                isActive ? "rotate-90 text-cyan-500" : "rotate-0"
+                                            )} />
+                                        )}
                                     </div>
                                 </div>
 
@@ -103,13 +115,14 @@ export function InteractiveExperience({ experiences, projects = [] }: Interactiv
                                             initial={{ height: 0, opacity: 0 }}
                                             animate={{ height: "auto", opacity: 1 }}
                                             exit={{ height: 0, opacity: 0 }}
-                                            className="overflow-hidden w-full pl-12 sm:pl-14 pr-0"
+                                            className="overflow-hidden w-full relative z-30"
                                         >
                                             <div className="pt-4 pb-6">
                                                 <ExperienceDetailCard 
                                                     exp={activeExp} 
                                                     project={activeProject}
                                                     onViewDetails={() => setSelectedProject(activeProject ?? null)} 
+                                                    className="shadow-xl ring-1 ring-slate-900/5"
                                                 />
                                             </div>
                                         </motion.div>
@@ -195,21 +208,21 @@ function ExperienceDetailCard({ exp, className, project, onViewDetails }: { exp:
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-5 flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-cyan-500" /> Key Responsibilities & Features
                 </h4>
-                <ul className="space-y-5 text-[15px] sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-                    {exp.highlights.slice(0, 3).map((highlight, index) => {
+                <ul className="space-y-3 text-[14px] sm:text-[15px] leading-relaxed text-slate-700 dark:text-slate-300">
+                    {exp.highlights.map((highlight, index) => {
                         const parts = highlight.split(':');
                         const hasColon = parts.length > 1;
 
                         return (
                             <motion.li
                                 key={index}
-                                initial={{ opacity: 0, y: 10 }}
+                                initial={{ opacity: 0, y: 5 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3, delay: index * 0.1 }}
-                                className="flex items-start gap-4 bg-white/50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 shadow-sm transition-all"
+                                className="flex items-start gap-3 py-1"
                             >
-                                <span className="mt-1.5 w-2 h-2 shrink-0 rounded-full bg-slate-400 dark:bg-slate-600" />
-                                <span className="flex-1 line-clamp-2">
+                                <span className="mt-2 w-1.5 h-1.5 shrink-0 rounded-full bg-slate-400 dark:bg-slate-500" />
+                                <span className="flex-1">
                                     {hasColon ? (
                                         <>
                                             <span className="font-bold text-slate-900 dark:text-cyan-300">{parts[0]}:</span>

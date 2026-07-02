@@ -31,7 +31,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className="bg-white text-slate-900 scroll-smooth antialiased selection:bg-purple-100 selection:text-purple-900 relative">
-        <div className="absolute inset-0 bg-[url('/bg-grid-small.svg')] bg-[length:24px_24px] opacity-10 pointer-events-none -z-10" />
+        <div className="absolute inset-0 bg-[url('/bg-grid-small.svg')] bg-[length:24px_24px] opacity-[0.03] dark:opacity-[0.05] pointer-events-none -z-10" />
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>

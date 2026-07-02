@@ -3,6 +3,7 @@ import { jsonError } from "./api";
 type ProjectImageInput = {
   imageUrl: string;
   altText?: string | null;
+  folder?: string | null;
   sortOrder: number;
 };
 
@@ -10,6 +11,7 @@ export function buildProjectImageCreates(images: ProjectImageInput[]) {
   return images.map((image) => ({
     imageUrl: image.imageUrl.trim(),
     altText: image.altText?.trim() || null,
+    folder: image.folder?.trim() || "",
     sortOrder: image.sortOrder,
   }));
 }

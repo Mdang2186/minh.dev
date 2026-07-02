@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";
 import { useAdminLanguage } from "./admin-language-provider";
+import { ProjectImageUploader, ProjectImage } from "./project-image-uploader";
 
 type ProjectPayload = Record<string, any>;
 
@@ -40,11 +41,6 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
             languagesText: (project.languages ?? []).join("\n"),
             toolsText: (project.tools ?? []).join("\n"),
             techStacksText: (project.techStacks ?? []).join("\n"),
-            projectImagesText: (project.projectImages ?? [])
-              .map((image: { imageUrl: string; altText?: string; sortOrder?: number }) =>
-                [image.imageUrl, image.altText ?? "", image.sortOrder ?? 0].join("|")
-              )
-              .join("\n"),
           };
           
           // Map localized highlights
@@ -56,6 +52,8 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
 
           setForm({
             ...project,
+            projectImages: project.projectImages || [],
+            imageFolders: project.imageFolders || [],
             ...textLists,
           });
         }
@@ -99,7 +97,8 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
       languages: parseList(form.languagesText || ""),
       tools: parseList(form.toolsText || ""),
       techStacks: parseList(form.techStacksText || ""),
-      projectImages: parseProjectImages(form.projectImagesText || ""),
+      projectImages: form.projectImages || [],
+      imageFolders: form.imageFolders || [],
     };
 
     const langs = ["en", "vi", "ja", "fr", "es", "zh", "ko"];
@@ -181,7 +180,13 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
 
       <div className="grid gap-4 md:grid-cols-2">
         <AdminTextarea label="Tech stacks (mỗi dòng một item)" value={form.techStacksText || ""} onChange={(value) => updateField("techStacksText", value)} rows={6} />
-        <AdminTextarea label="Project images (url|alt|sortOrder)" value={form.projectImagesText || ""} onChange={(value) => updateField("projectImagesText", value)} rows={6} />
+        <ProjectImageUploader 
+          label="Quản lý File & Hình ảnh" 
+          images={form.projectImages || []} 
+          imageFolders={form.imageFolders || []}
+          onChangeImages={(images) => updateField("projectImages", images)} 
+          onChangeFolders={(folders) => updateField("imageFolders", folders)} 
+        />
         <AdminTextarea label={`Highlights ${labelSuffix} (mỗi dòng một ý)`} value={form[getFieldKey("highlights") + "Text"] || ""} onChange={(value) => updateField(getFieldKey("highlights") + "Text", value)} rows={8} />
         <AdminTextarea label="Languages (mỗi dòng một item)" value={form.languagesText || ""} onChange={(value) => updateField("languagesText", value)} rows={8} />
         <AdminTextarea label="Tools (mỗi dòng một item)" value={form.toolsText || ""} onChange={(value) => updateField("toolsText", value)} rows={8} />
@@ -207,21 +212,6 @@ function parseList(value: string) {
     .filter(Boolean);
 }
 
-function parseProjectImages(value: string) {
-  return value
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line, index) => {
-      const [imageUrl, altText = "", sortOrder = String(index + 1)] = line.split("|");
-      return {
-        imageUrl: imageUrl.trim(),
-        altText: altText.trim(),
-        sortOrder: Number(sortOrder) || index + 1,
-      };
-    });
-}
-
 function AdminInput({
   label,
   value,
@@ -240,7 +230,7 @@ function AdminInput({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         required={required}
-        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10"
+        className="w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10"
       />
     </label>
   );
@@ -289,7 +279,7 @@ function AdminTextarea({
         onChange={(event) => onChange(event.target.value)}
         required={required}
         rows={rows}
-        className="w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium leading-6 text-slate-900 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10"
+        className="w-full min-w-0 resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium leading-6 text-slate-900 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10"
       />
     </label>
   );

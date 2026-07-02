@@ -79,6 +79,7 @@ model Project {
   published      Boolean            @default(true)
   sortOrder      Int                @default(0)
   directoryTree  String?
+  imageFolders   String[]           @default([])
   highlights     String[]           @default([])
   languages      String[]           @default([])
   tools          String[]           @default([])
@@ -129,6 +130,7 @@ model ProjectImage {
   projectId String
   imageUrl  String
   altText   String?
+  folder    String? @default("")
   sortOrder Int     @default(0)
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 

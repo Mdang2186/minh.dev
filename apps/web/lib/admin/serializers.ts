@@ -54,12 +54,14 @@ type ProjectWithRelations = {
   highlights_ko: string[];
   languages: string[];
   tools: string[];
+  imageFolders: string[];
   createdAt: Date;
   updatedAt: Date;
   images: Array<{
     id: string;
     imageUrl: string;
     altText: string | null;
+    folder: string | null;
     sortOrder: number;
   }>;
   techStacks: Array<{
@@ -75,6 +77,7 @@ type ProjectWithRelations = {
 export function serializeAdminProject(project: ProjectWithRelations) {
   return {
     ...project,
+    imageFolders: project.imageFolders || [],
     techStacks: project.techStacks.map((item) => item.techStack.name),
     projectImages: project.images
       .slice()
@@ -83,6 +86,7 @@ export function serializeAdminProject(project: ProjectWithRelations) {
         id: image.id,
         imageUrl: image.imageUrl,
         altText: image.altText ?? "",
+        folder: image.folder ?? "",
         sortOrder: image.sortOrder,
       })),
   };

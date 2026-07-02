@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import { useAdminLanguage } from "./admin-language-provider";
+import { FileSelector } from "./file-selector";
 
 type ProfileFormState = Record<string, string>;
 
@@ -89,8 +90,8 @@ export function ProfileForm() {
         <AdminInput label={`Địa điểm ${labelSuffix}`} value={getVal("location")} onChange={(value) => updateField("location", value)} />
         <AdminInput label="Email" value={form.email || ""} onChange={(value) => setForm((c) => ({ ...c, email: value }))} />
         <AdminInput label="Số điện thoại" value={form.phone || ""} onChange={(value) => setForm((c) => ({ ...c, phone: value }))} />
-        <AdminInput label="Avatar URL" value={form.avatarUrl || ""} onChange={(value) => setForm((c) => ({ ...c, avatarUrl: value }))} />
-        <AdminInput label="Resume URL" value={form.resumeUrl || ""} onChange={(value) => setForm((c) => ({ ...c, resumeUrl: value }))} />
+        <FileSelector label="Avatar URL" type="avatar" value={form.avatarUrl || ""} onChange={(value) => setForm((c) => ({ ...c, avatarUrl: value }))} />
+        <FileSelector label="Resume URL" type="resume" value={form.resumeUrl || ""} onChange={(value) => setForm((c) => ({ ...c, resumeUrl: value }))} />
       </div>
 
       <button

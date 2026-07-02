@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   BarChart3,
   BriefcaseBusiness,
@@ -11,6 +12,8 @@ import {
   Sparkles,
   UserRound,
   Languages,
+  Menu,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useAdminLanguage } from "./admin-language-provider";
@@ -28,6 +31,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "";
   const router = useRouter();
   const { language, setLanguage } = useAdminLanguage();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   async function handleLogout() {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -107,51 +111,80 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="lg:pl-72">
-        <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 px-4 py-3 backdrop-blur lg:hidden">
-          <div className="flex items-center justify-between gap-3">
-            <Link href="/admin/dashboard" className="font-black">
-              minh.dev admin
+        <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur lg:hidden">
+          <div className="flex items-center justify-between gap-3 relative z-50">
+            <Link href="/admin/dashboard" className="font-black text-lg text-slate-900 tracking-tight">
+              minh.dev
             </Link>
             <div className="flex items-center gap-2">
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as any)}
-                className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs font-bold text-slate-700 shadow-sm outline-none"
-              >
-                <option value="en">EN</option>
-                <option value="vi">VI</option>
-                <option value="ja">JA</option>
-                <option value="fr">FR</option>
-                <option value="es">ES</option>
-                <option value="zh">ZH</option>
-                <option value="ko">KO</option>
-              </select>
+              <div className="relative flex items-center">
+                <Languages className="absolute left-2 w-3.5 h-3.5 text-slate-400" />
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value as any)}
+                  className="appearance-none rounded-lg border border-slate-200 bg-white pl-7 pr-6 py-1.5 text-xs font-bold text-slate-700 shadow-sm outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 cursor-pointer"
+                >
+                  <option value="en">EN</option>
+                  <option value="vi">VI</option>
+                  <option value="ja">JA</option>
+                  <option value="fr">FR</option>
+                  <option value="es">ES</option>
+                  <option value="zh">ZH</option>
+                  <option value="ko">KO</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-slate-500">
+                  <svg className="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                  </svg>
+                </div>
+              </div>
               <button
                 type="button"
-                onClick={handleLogout}
-                className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold hover:bg-red-50 hover:text-red-600"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="rounded-lg border border-slate-200 p-1.5 text-slate-600 bg-white shadow-sm hover:bg-slate-50 focus:outline-none transition-colors"
               >
-                Đăng xuất
+                {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
             </div>
           </div>
-          <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "shrink-0 rounded-full px-3 py-1.5 text-xs font-bold",
-                  pathname === item.href ? "bg-cyan-100 text-cyan-900" : "bg-slate-100 text-slate-600"
-                )}
+
+          {/* Mobile dropdown menu overlay */}
+          {isMobileMenuOpen && (
+            <div className="absolute left-0 right-0 top-full z-40 border-b border-slate-200 bg-white px-4 py-4 shadow-xl flex flex-col gap-1.5 animate-in slide-in-from-top-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-colors",
+                      active
+                        ? "bg-cyan-100 text-cyan-900"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+              <div className="my-2 border-t border-slate-100" />
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50"
               >
-                {item.label}
-              </Link>
-            ))}
-          </div>
+                <LogOut className="h-4 w-4" />
+                Đăng xuất
+              </button>
+            </div>
+          )}
         </header>
 
-        <main className="mx-auto min-h-screen max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <main className="mx-auto min-h-screen max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           {children}
         </main>
       </div>

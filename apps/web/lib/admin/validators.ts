@@ -64,6 +64,7 @@ export const profileSchema = z.object({
 export const projectImageSchema = z.object({
   imageUrl: z.string().trim().min(1, "URL ảnh không được trống"),
   altText: z.string().trim().optional().nullable(),
+  folder: z.string().trim().optional().nullable(),
   sortOrder: z.coerce.number().int().default(0),
 });
 
@@ -127,6 +128,7 @@ export const projectSchema = z.object({
   languages: z.array(z.string().trim().min(1)).default([]),
   tools: z.array(z.string().trim().min(1)).default([]),
   techStacks: z.array(z.string().trim().min(1)).default([]),
+  imageFolders: z.array(z.string().trim()).default([]),
   projectImages: z.array(projectImageSchema).default([]),
 });
 

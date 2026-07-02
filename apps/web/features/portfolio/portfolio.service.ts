@@ -182,6 +182,12 @@ function mapProject(project: any, locale: string): PublicProject {
   const image = project.coverImage || screenshots[0] || undefined;
   const stack = project.techStacks.map((item: any) => item.techStack.name);
 
+  const detailedImages = project.images.map((img: any) => ({
+    url: img.imageUrl,
+    altText: img.altText || "",
+    folder: img.folder || "",
+  }));
+
   return {
     id: project.id,
     slug: project.slug,
@@ -191,6 +197,7 @@ function mapProject(project: any, locale: string): PublicProject {
     content: splitContent(getLoc(project, "content", locale) || getLoc(project, "description", locale) || getLoc(project, "summary", locale)),
     image,
     screenshots,
+    detailedImages,
     directoryTree: project.directoryTree ?? undefined,
     stack,
     languages: project.languages,
