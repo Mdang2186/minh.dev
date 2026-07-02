@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
+import { put, list } from "@vercel/blob";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -10,41 +9,19 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Invalid type parameter" }, { status: 400 });
   }
 
-  const uploadDir = path.join(process.cwd(), "public", `${type}s`);
-  const publicDir = path.join(process.cwd(), "public");
-  const fileUrls: string[] = [];
-
   try {
-    // 1. Scan the specific directory
-    try {
-      await fs.mkdir(uploadDir, { recursive: true });
-      const dirFiles = await fs.readdir(uploadDir);
-      for (const file of dirFiles) {
-        fileUrls.push(`/${type}s/${file}`);
-      }
-    } catch (e) {
-      console.error(`Could not read ${uploadDir}`, e);
-    }
+    // List blobs from Vercel Blob
+    // Filter blobs starting with the type's directory name (e.g., "avatars/")
+    const { blobs } = await list({
+      prefix: `${type}s/`,
+    });
 
-    // 2. Scan the root public directory for backward compatibility
-    try {
-      const rootFiles = await fs.readdir(publicDir);
-      for (const file of rootFiles) {
-        const stats = await fs.stat(path.join(publicDir, file));
-        if (stats.isFile() && file.toLowerCase().includes(type)) {
-          // Exclude if it's already in our list
-          if (!fileUrls.includes(`/${file}`)) {
-            fileUrls.push(`/${file}`);
-          }
-        }
-      }
-    } catch (e) {
-      console.error(`Could not read ${publicDir}`, e);
-    }
+    // Map to their URLs
+    const fileUrls = blobs.map((blob) => blob.url);
 
     return NextResponse.json({ files: fileUrls });
   } catch (error) {
-    console.error("Failed to list files:", error);
+    console.error("Failed to list files from Blob:", error);
     return NextResponse.json({ files: [] });
   }
 }
@@ -63,19 +40,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid type" }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    
     // Create safe filename
-    const ext = path.extname(file.name);
-    const basename = path.basename(file.name, ext).replace(/[^a-zA-Z0-9_-]/g, "_");
-    const filename = `${basename}-${Date.now()}${ext}`;
-
-    const uploadDir = path.join(process.cwd(), "public", `${type}s`);
-    await fs.mkdir(uploadDir, { recursive: true });
+    const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.'));
+    const ext = file.name.substring(file.name.lastIndexOf('.'));
+    const basename = nameWithoutExt ? nameWithoutExt.replace(/[^a-zA-Z0-9_-]/g, "_") : "file";
     
-    await fs.writeFile(path.join(uploadDir, filename), buffer);
+    // Store in folders based on type
+    const filename = `${type}s/${basename}-${Date.now()}${ext}`;
 
-    return NextResponse.json({ url: `/${type}s/${filename}` });
+    // Upload to Vercel Blob
+    const blob = await put(filename, file, {
+      access: 'public',
+      addRandomSuffix: false, // We already add a timestamp
+    });
+
+    return NextResponse.json({ url: blob.url });
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json({ error: "Upload failed." }, { status: 500 });
