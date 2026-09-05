@@ -8,15 +8,15 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@minh-dev/database"],
   // Treat Prisma client as server-only external to avoid Turbopack CJS warning
   serverExternalPackages: ["@prisma/client"],
+  outputFileTracingExcludes: {
+    "**/*": [
+      "public/uploads/**/*", 
+      "node_modules/typescript/**/*", 
+      "node_modules/@swc/core/**/*"
+    ],
+  },
   experimental: {
     swcPlugins: [],
-    outputFileTracingExcludes: {
-      "**/*": [
-        "public/uploads/**/*", 
-        "node_modules/typescript/**/*", 
-        "node_modules/@swc/core/**/*"
-      ],
-    },
   },
   images: {
     remotePatterns: [
