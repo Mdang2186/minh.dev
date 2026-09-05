@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { TechBadge } from "@/components/ui/tech-badge";
 import type { PublicProject } from "@/features/portfolio/portfolio.types";
 import { ProjectModal } from "@/components/ui/project-modal";
@@ -94,9 +95,11 @@ function ProjectPosterCard({
       {/* Background Image / Poster */}
       <div className="absolute inset-0">
         {(project.image || project.screenshots?.[0]) ? (
-          <img
-            src={project.image || project.screenshots?.[0]}
+          <Image
+            src={project.image || project.screenshots?.[0] || ""}
             alt={project.name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
           />
         ) : (

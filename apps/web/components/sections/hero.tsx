@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { FaFacebook, FaGithub, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { Code, Paintbrush } from "lucide-react";
 import { Container } from "@/components/common/container";
@@ -79,7 +80,7 @@ export async function Hero() {
             <div className="relative">
               <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[460px] lg:h-[460px] rounded-full p-2.5 relative overflow-hidden bg-white border border-slate-200">
                 <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden bg-slate-50 border border-slate-100">
-                  <img src={profile.avatarUrl} alt={profile.name} className="w-full h-full object-cover object-[65%_35%] transition-transform duration-700 hover:scale-105" loading="eager" />
+                  <Image src={profile.avatarUrl} alt={profile.name} width={460} height={460} className="w-full h-full object-cover object-[65%_35%] transition-transform duration-700 hover:scale-105" priority />
                 </div>
               </div>
 

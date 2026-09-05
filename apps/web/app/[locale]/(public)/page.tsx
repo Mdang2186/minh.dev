@@ -8,6 +8,8 @@ import { DesignFeature } from "@/components/sections/design-feature";
 import { getPublicProjects, getPublicTimelineNodes } from "@/features/portfolio/portfolio.service";
 import { getTranslations } from "next-intl/server";
 
+export const revalidate = 3600; // Cache data for 1 hour
+
 export default async function HomePage() {
     const featuredProjects = await getPublicProjects({ featured: true, limit: 3 });
     const timelineNodes = await getPublicTimelineNodes();
