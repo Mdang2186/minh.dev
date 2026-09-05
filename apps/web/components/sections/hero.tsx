@@ -21,11 +21,11 @@ export async function Hero() {
   ]);
 
   return (
-    <section className="bg-white relative overflow-hidden pt-24 lg:pt-32 pb-16">
+    <section className="bg-white relative overflow-hidden pt-8 sm:pt-10 lg:pt-14 pb-8 sm:pb-10">
       <Container className="relative z-10 w-full">
-        <div className="flex flex-col lg:flex-row items-center w-full gap-12 lg:gap-8">
+        <div className="flex flex-col lg:flex-row items-center w-full gap-8 lg:gap-8">
           <div className="lg:w-1/2 flex flex-col items-start w-full relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100/60 text-blue-600 mb-6 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100/60 text-blue-600 mb-3 shadow-xs">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
@@ -33,20 +33,20 @@ export async function Hero() {
               <span className="text-xs font-bold tracking-widest uppercase">{t("hello")}</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-[72px] font-black mb-2 text-slate-900 leading-[1.1] tracking-[-0.02em]">
+            <h1 className="text-3xl sm:text-5xl lg:text-[64px] font-black mb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-indigo-600 to-cyan-600 leading-[1.15] tracking-[-0.02em] pb-1">
               {profile.name}
             </h1>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-[42px] mb-6 text-slate-600 tracking-tight font-bold">
+            <h2 className="text-xl sm:text-2xl lg:text-[36px] mb-3 text-slate-700 tracking-tight font-bold">
               {profile.role}
             </h2>
 
-            <p className="text-slate-500 text-base sm:text-lg leading-relaxed max-w-[48ch] mb-10 font-medium">
+            <p className="text-slate-500 text-sm sm:text-base leading-relaxed max-w-[48ch] mb-6 font-medium">
               {profile.intro || profile.headline}
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 mb-10">
-              <Link href="/work/contact" className="inline-flex items-center justify-center rounded-full px-6 py-2.5 bg-slate-900 text-white hover:bg-slate-800 border border-slate-900 font-semibold text-sm transition-all hover:-translate-y-0.5 active:translate-y-0">
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+              <Link href="/work/contact" className="inline-flex items-center justify-center rounded-full px-5 py-2 bg-slate-900 text-white hover:bg-slate-800 border border-slate-900 font-semibold text-sm transition-all hover:-translate-y-0.5 active:translate-y-0">
                 {t("talk")}
               </Link>
               {profile.resumeUrl ? (

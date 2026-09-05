@@ -22,7 +22,7 @@ export function LanguageSwitcher() {
   return (
     <div className="relative flex items-center">
       <div className="absolute left-2 text-slate-500 pointer-events-none">
-        <Globe className="w-4 h-4" />
+        <Globe className="w-3.5 h-3.5" />
       </div>
       <select
         value={locale}
@@ -30,7 +30,7 @@ export function LanguageSwitcher() {
         disabled={isPending}
         className={cn(
           "appearance-none bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800",
-          "rounded-full pl-8 pr-8 py-2 text-[14px] font-semibold text-slate-700 dark:text-slate-300",
+          "rounded-full pl-6 pr-6 py-1 text-xs sm:text-[13px] font-semibold text-slate-700 dark:text-slate-300 h-8",
           "hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer transition-colors outline-none",
           "focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500",
           isPending ? "opacity-50 cursor-not-allowed" : ""
@@ -45,8 +45,8 @@ export function LanguageSwitcher() {
         <option value="zh">中文</option>
         <option value="ko">한국어</option>
       </select>
-      <div className="pointer-events-none absolute right-3 flex items-center text-slate-500">
-        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+      <div className="pointer-events-none absolute right-2 flex items-center text-slate-500">
+        <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
           <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
         </svg>
       </div>

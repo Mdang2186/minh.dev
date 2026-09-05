@@ -5,13 +5,13 @@ export function DesignFeature() {
     const t = useTranslations("DesignFeature");
 
     return (
-        <section className="py-12 lg:py-16 max-w-7xl mx-auto px-4 sm:px-6 relative">
-            <div className="mb-10 max-w-3xl text-center lg:text-left mx-auto lg:mx-0">
-                <h3 className="text-xs sm:text-sm font-bold tracking-widest text-[#0ea5e9] uppercase mb-3 flex items-center justify-center lg:justify-start gap-2">
+        <section className="py-6 lg:py-10 max-w-7xl mx-auto px-4 sm:px-6 relative">
+            <div className="mb-6 max-w-3xl text-center lg:text-left mx-auto lg:mx-0">
+                <h3 className="text-xs sm:text-sm font-bold tracking-widest text-[#0ea5e9] uppercase mb-2 flex items-center justify-center lg:justify-start gap-2">
                     <Sparkles className="w-4 h-4" />
                     {t("tagline")}
                 </h3>
-                <h2 className="text-3xl sm:text-4xl md:text-[40px] font-extrabold text-[#0f172a] tracking-tight mb-4 leading-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-[36px] font-extrabold text-[#0f172a] tracking-tight mb-2 leading-tight">
                     {t("title1")} {t("title2")}
                 </h2>
                 <p className="text-[#64748b] text-sm md:text-base max-w-2xl leading-relaxed font-medium mx-auto lg:mx-0">
@@ -19,7 +19,7 @@ export function DesignFeature() {
                 </p>
             </div>
 
-            <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-50 to-slate-100/50 border border-slate-200/60 overflow-hidden px-4 sm:px-8 py-10 md:py-16 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-50 to-slate-100/50 border border-slate-200/60 overflow-hidden px-4 sm:px-8 py-8 md:py-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
                 {/* Dot Pattern Background */}
                 <div
                     className="absolute inset-0 z-0 opacity-40 pointer-events-none"

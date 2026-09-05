@@ -41,33 +41,44 @@
     }
 
     .dark {
-        --background: 240 10% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 240 10% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 240 10% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 263.4 70% 50.4%;
+        --background: 230 100% 5%; /* Deep Blue-Black #000319 */
+        --foreground: 210 20% 98%;
+        --card: 230 60% 8%; /* Slightly lighter deep blue for cards */
+        --card-foreground: 210 20% 98%;
+        --popover: 230 60% 8%;
+        --popover-foreground: 210 20% 98%;
+        --primary: 210 100% 50%; /* Pure bright blue */
         --primary-foreground: 210 20% 98%;
-        --secondary: 240 3.7% 15.9%;
+        --secondary: 230 30% 15%;
         --secondary-foreground: 0 0% 98%;
-        --muted: 240 3.7% 15.9%;
-        --muted-foreground: 240 5% 64.9%;
-        --accent: 240 3.7% 15.9%;
+        --muted: 230 30% 15%;
+        --muted-foreground: 215 20% 65%;
+        --accent: 230 30% 20%;
         --accent-foreground: 0 0% 98%;
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 0 0% 98%;
-        --border: 240 3.7% 15.9%;
-        --input: 240 3.7% 15.9%;
-        --ring: 263.4 70% 50.4%;
+        --border: 230 30% 20%;
+        --input: 230 30% 20%;
+        --ring: 210 100% 50%;
+        --radius: 1.5rem; /* Larger rounded corners by default */
     }
 }
 
 @layer base {
+    html {
+        overflow-x: clip;
+        max-width: 100vw;
+    }
     body {
         background-color: hsl(var(--background));
         color: hsl(var(--foreground));
         font-feature-settings: "rlig" 1, "calt" 1;
+        overflow-x: clip;
+        max-width: 100vw;
+    }
+    pre {
+        max-width: 100%;
+        overflow-x: auto;
     }
 }
 

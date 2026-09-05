@@ -7,6 +7,7 @@ import {
   BarChart3,
   BriefcaseBusiness,
   FolderKanban,
+  Milestone,
   LogOut,
   Share2,
   Sparkles,
@@ -14,6 +15,8 @@ import {
   Languages,
   Menu,
   X,
+  GraduationCap,
+  Award,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useAdminLanguage } from "./admin-language-provider";
@@ -24,6 +27,9 @@ const navItems = [
   { href: "/admin/projects", label: "Dự án", icon: FolderKanban },
   { href: "/admin/skills", label: "Kỹ năng", icon: Sparkles },
   { href: "/admin/experience", label: "Kinh nghiệm", icon: BriefcaseBusiness },
+  { href: "/admin/education", label: "Học vấn", icon: GraduationCap },
+  { href: "/admin/certifications", label: "Chứng chỉ", icon: Award },
+  { href: "/admin/timeline-nodes", label: "My Journey", icon: Milestone },
   { href: "/admin/social-links", label: "Mạng xã hội", icon: Share2 },
 ];
 

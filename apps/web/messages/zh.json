@@ -2,7 +2,8 @@
   "Navbar": {
     "projects": "项目",
     "skills": "技能与工具",
-    "experience": "经历与教育",
+    "experience": "经历",
+    "education": "教育",
     "contact": "联系",
     "talk": "聊一聊"
   },
@@ -90,5 +91,30 @@
   "Common": {
     "close": "关闭",
     "loading": "加载中..."
+  },
+  "ProjectDetail": {
+    "home": "首页",
+    "projects": "项目",
+    "back": "返回项目",
+    "highlights": "核心亮点",
+    "directoryTree": "目录结构",
+    "techStack": "技术栈与框架",
+    "gallery": "图库与截图",
+    "toc": "内容目录",
+    "onThisPage": "本页目录",
+    "share": "分享",
+    "shareProject": "分享项目",
+    "copyLink": "复制链接",
+    "copied": "已复制！",
+    "graduationProject": "毕业设计",
+    "sourceCode": "源码",
+    "liveDemo": "在线演示",
+    "author": "作者",
+    "views": "次浏览",
+    "readingTime": "分钟阅读",
+    "updated": "更新于",
+    "frameworkAndStack": "框架与技术栈",
+    "languages": "编程语言",
+    "tools": "开发工具"
   }
 }

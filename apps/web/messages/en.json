@@ -2,7 +2,8 @@
   "Navbar": {
     "projects": "Projects",
     "skills": "Skills & Tools",
-    "experience": "Experience & Edu",
+    "experience": "Experience",
+    "education": "Education",
     "contact": "Contact",
     "talk": "Let's Talk"
   },
@@ -90,5 +91,30 @@
   "Common": {
     "close": "Close",
     "loading": "Loading..."
+  },
+  "ProjectDetail": {
+    "home": "Home",
+    "projects": "Projects",
+    "back": "Back to projects",
+    "highlights": "Key Highlights",
+    "directoryTree": "Directory Structure",
+    "techStack": "Frameworks & Tech Stack",
+    "gallery": "Gallery & Screenshots",
+    "toc": "Table of Contents",
+    "onThisPage": "On this page",
+    "share": "Share",
+    "shareProject": "Share Project",
+    "copyLink": "Copy link",
+    "copied": "Copied!",
+    "graduationProject": "Graduation Project",
+    "sourceCode": "Source Code",
+    "liveDemo": "Live Demo",
+    "author": "Author",
+    "views": "views",
+    "readingTime": "min read",
+    "updated": "Updated",
+    "frameworkAndStack": "Framework & Stack",
+    "languages": "Languages",
+    "tools": "Tools"
   }
 }

@@ -5,8 +5,12 @@ import type {
   PublicSiteProfile,
   PublicSkillGroup,
   PublicSocialLink,
+  PublicEducation,
+  PublicCertification,
+  PublicTimelineNode,
 } from "./portfolio.types";
 import { getLocale } from "next-intl/server";
+import { projects as siteProjects } from "@/data/site";
 
 export const defaultProfile: PublicSiteProfile = {
   name: "Portfolio",
@@ -109,7 +113,7 @@ export async function getPublicProjects(
 }
 
 export async function getPublicProjectBySlug(slug: string): Promise<PublicProject | null> {
-  return safeRead(async () => {
+  const dbProject = await safeRead(async () => {
     const locale = await getSafeLocale();
     const project = await prisma.project.findFirst({
       where: { slug, published: true },
@@ -121,6 +125,39 @@ export async function getPublicProjectBySlug(slug: string): Promise<PublicProjec
 
     return project ? mapProject(project, locale) : null;
   }, null as PublicProject | null);
+
+  if (dbProject) return dbProject;
+
+  const fallback = siteProjects.find((p) => p.slug === slug);
+  if (fallback) {
+    return {
+      id: fallback.slug,
+      slug: fallback.slug,
+      name: fallback.name,
+      summary: fallback.summary,
+      description: fallback.description,
+      content: fallback.content,
+      image: fallback.image,
+      screenshots: fallback.screenshots || [],
+      detailedImages: (fallback.detailedImages || []).map((img) => ({
+        url: img.url,
+        altText: img.altText || "",
+        folder: img.folder || "",
+      })),
+      directoryTree: fallback.directoryTree,
+      stack: fallback.stack || [],
+      languages: fallback.languages || [],
+      tools: fallback.tools || [],
+      role: fallback.role,
+      duration: fallback.duration,
+      teamSize: fallback.teamSize,
+      featured: false,
+      links: fallback.links || {},
+      highlights: fallback.highlights || [],
+    };
+  }
+
+  return null;
 }
 
 export async function getPublicProjectsByTag(tag: string) {
@@ -170,6 +207,53 @@ export async function getPublicExperiences(): Promise<PublicExperience[]> {
   }, []);
 }
 
+export async function getPublicEducations(): Promise<PublicEducation[]> {
+  return safeRead(async () => {
+    const locale = await getSafeLocale();
+    const educations = await prisma.education.findMany({
+      where: { visible: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    });
+
+    return educations.map((edu) => ({
+      id: edu.id,
+      title: getLoc(edu, "title", locale) || "",
+      org: getLoc(edu, "org", locale) || "",
+      period: getLoc(edu, "period", locale) || "",
+      degree: getLoc(edu, "degree", locale) || "",
+      major: getLoc(edu, "major", locale) || "",
+      gpa: edu.gpa || undefined,
+      description: getLoc(edu, "description", locale) || undefined,
+      logo: edu.logo || undefined,
+      images: (edu as any).images || [],
+      tags: (edu as any).tags || [],
+    }));
+  }, []);
+}
+
+export async function getPublicCertifications(): Promise<PublicCertification[]> {
+  return safeRead(async () => {
+    const locale = await getSafeLocale();
+    const certs = await (prisma as any).certification.findMany({
+      where: { visible: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    });
+
+    return certs.map((cert: any) => ({
+      id: cert.id,
+      title: getLoc(cert, "title", locale) || "",
+      issuer: getLoc(cert, "issuer", locale) || "",
+      date: getLoc(cert, "date", locale) || "",
+      score: cert.score || undefined,
+      url: cert.url || undefined,
+      logo: cert.logo || undefined,
+      color: cert.color || undefined,
+      images: cert.images || [],
+      tags: cert.tags || [],
+    }));
+  }, []);
+}
+
 function splitContent(value?: string | null) {
   return (value ?? "")
     .split(/\n{2,}|\r?\n/)
@@ -194,8 +278,10 @@ function mapProject(project: any, locale: string): PublicProject {
     name: getLoc(project, "title", locale) || "",
     summary: getLoc(project, "summary", locale) || "",
     description: getLoc(project, "description", locale) || undefined,
-    content: splitContent(getLoc(project, "content", locale) || getLoc(project, "description", locale) || getLoc(project, "summary", locale)),
+    content: getLoc(project, "content", locale) || undefined,
     image,
+    coverImage: project.coverImage ?? undefined,
+    showcaseImages: project.showcaseImages || [],
     screenshots,
     detailedImages,
     directoryTree: project.directoryTree ?? undefined,
@@ -214,4 +300,41 @@ function mapProject(project: any, locale: string): PublicProject {
     },
     highlights: getLoc(project, "highlights", locale) || [],
   };
+}
+
+export async function getPublicTimelineNodes(): Promise<PublicTimelineNode[]> {
+  return safeRead(async () => {
+    const locale = await getSafeLocale();
+    const nodes = await (prisma as any).timelineNode.findMany({
+      where: { visible: true },
+      orderBy: [{ date: "desc" }, { sortOrder: "asc" }],
+      include: {
+        sprints: { orderBy: { startDate: "asc" } },
+        project: {
+          include: {
+            images: { orderBy: { sortOrder: "asc" } },
+            techStacks: { include: { techStack: true } },
+          },
+        },
+      },
+    });
+
+    return nodes.map((node: any) => ({
+      id: node.id,
+      title: getLoc(node, "title", locale) || "",
+      date: node.date || "",
+      type: node.type || "MILESTONE",
+      color: node.color || undefined,
+      description: getLoc(node, "description", locale) || undefined,
+      projectId: node.projectId || undefined,
+      project: node.project ? mapProject(node.project, locale) : null,
+      sprints: node.sprints.map((sprint: any) => ({
+        id: sprint.id,
+        title: getLoc(sprint, "title", locale) || "",
+        startDate: sprint.startDate || "",
+        endDate: sprint.endDate || "",
+        description: getLoc(sprint, "description", locale) || undefined,
+      })),
+    }));
+  }, []);
 }

@@ -5,6 +5,14 @@ import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";
 import { useAdminLanguage } from "./admin-language-provider";
 import { ProjectImageUploader, ProjectImage } from "./project-image-uploader";
+import { ProjectShowcaseManager } from "./project-showcase-manager";
+import { MANUAL_PROJECT_SHOWCASE } from "@/data/projects-showcase";
+import dynamic from "next/dynamic";
+
+const RichTextEditor = dynamic(
+  () => import("./rich-text-editor").then((mod) => mod.RichTextEditor),
+  { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-xl bg-slate-100" /> }
+);
 
 type ProjectPayload = Record<string, any>;
 
@@ -18,6 +26,7 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
     sortOrder: 0,
   });
   const [status, setStatus] = useState("");
+  const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(Boolean(projectId));
   const [saving, setSaving] = useState(false);
 
@@ -30,6 +39,7 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
         const data = await response.json().catch(() => null);
         if (!response.ok) {
           setStatus(data?.message || "Không thể tải dự án.");
+          setIsError(true);
           return;
         }
 
@@ -50,15 +60,39 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
             textLists[field + "Text"] = (project[field] ?? []).join("\n");
           });
 
+          const defaultManual = MANUAL_PROJECT_SHOWCASE[project.slug];
+          
+          const initialCover =
+            project.coverImage ||
+            defaultManual?.cover ||
+            (project.projectImages && project.projectImages[0]?.imageUrl) ||
+            "";
+
+          // Khởi tạo 4 ảnh showcase: Ưu tiên DB -> manual config -> tự động lấy 4 ảnh phụ từ kho ảnh
+          let initialShowcase: string[] = [];
+          if (project.showcaseImages && project.showcaseImages.length > 0) {
+            initialShowcase = project.showcaseImages.filter(Boolean);
+          } else if (defaultManual?.thumbnails && defaultManual.thumbnails.length > 0) {
+            initialShowcase = defaultManual.thumbnails.filter(Boolean);
+          } else if (project.projectImages && project.projectImages.length > 0) {
+            const otherImages = project.projectImages
+              .map((img: any) => img.imageUrl)
+              .filter((url: string) => url && url !== initialCover);
+            initialShowcase = (otherImages.length > 0 ? otherImages : project.projectImages.map((img: any) => img.imageUrl)).slice(0, 4);
+          }
+
           setForm({
             ...project,
+            coverImage: initialCover,
             projectImages: project.projectImages || [],
             imageFolders: project.imageFolders || [],
+            showcaseImages: initialShowcase,
             ...textLists,
           });
         }
       } catch {
         setStatus("Không thể tải dự án.");
+        setIsError(true);
       } finally {
         setLoading(false);
       }
@@ -81,11 +115,13 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
     event.preventDefault();
     setSaving(true);
     setStatus("");
+    setIsError(false);
 
     // Build the payload dynamically
     const body: Record<string, any> = {
       slug: form.slug,
       coverImage: form.coverImage,
+      showcaseImages: (form.showcaseImages || []).map((s: string) => s.trim()).filter(Boolean),
       githubUrl: form.githubUrl,
       demoUrl: form.demoUrl,
       duration: form.duration,
@@ -128,14 +164,17 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
       const data = await response.json().catch(() => null);
       if (!response.ok) {
         setStatus(data?.message || "Không thể lưu dự án.");
+        setIsError(true);
         return;
       }
 
       setStatus("Đã lưu dự án.");
+      setIsError(false);
       router.push("/admin/projects");
       router.refresh();
     } catch {
       setStatus("Không thể lưu dự án.");
+      setIsError(true);
     } finally {
       setSaving(false);
     }
@@ -149,22 +188,38 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {status ? (
-        <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-4 py-3 text-sm font-semibold text-cyan-700">
+        <div className={`rounded-xl border px-4 py-3 text-sm font-bold ${isError ? "border-rose-200 bg-rose-50 text-rose-700" : "border-emerald-200 bg-emerald-50 text-emerald-700"}`}>
           {status}
         </div>
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
-        <AdminInput label={`Title ${labelSuffix}`} value={getVal("title")} onChange={(value) => updateField(getFieldKey("title"), value)} required={isEn} />
+        <AdminInput label={`Title ${labelSuffix} (Dùng dấu | để ngắt dòng)`} value={getVal("title")} onChange={(value) => updateField(getFieldKey("title"), value)} required={isEn} />
         <AdminInput label="Slug" value={form.slug || ""} onChange={(value) => updateField("slug", value)} required />
       </div>
 
       <AdminTextarea label={`Summary ${labelSuffix}`} value={getVal("summary")} onChange={(value) => updateField(getFieldKey("summary"), value)} required={isEn} rows={3} />
-      <AdminTextarea label={`Description ${labelSuffix}`} value={getVal("description")} onChange={(value) => updateField(getFieldKey("description"), value)} rows={5} />
-      <AdminTextarea label={`Content ${labelSuffix}`} value={getVal("content")} onChange={(value) => updateField(getFieldKey("content"), value)} rows={5} />
+      
+      <div className="space-y-2">
+        <span className="block text-sm font-bold text-slate-700">Description {labelSuffix} (Mô tả ngắn - Hiển thị ngoài danh sách)</span>
+        <RichTextEditor value={getVal("description")} onChange={(value) => updateField(getFieldKey("description"), value)} />
+      </div>
+      
+      <div className="space-y-2">
+        <span className="block text-sm font-bold text-slate-700">Content {labelSuffix}</span>
+        <RichTextEditor value={getVal("content")} onChange={(value) => updateField(getFieldKey("content"), value)} />
+      </div>
+
+      {/* Cấu hình Showcase Gallery (Trang Projects) */}
+      <ProjectShowcaseManager
+        coverImage={form.coverImage || ""}
+        showcaseImages={form.showcaseImages || []}
+        projectImages={form.projectImages || []}
+        onChangeCover={(value) => updateField("coverImage", value)}
+        onChangeShowcaseImages={(value) => updateField("showcaseImages", value)}
+      />
 
       <div className="grid gap-4 md:grid-cols-2">
-        <AdminInput label="Cover image URL" value={form.coverImage || ""} onChange={(value) => updateField("coverImage", value)} />
         <AdminInput label="GitHub URL" value={form.githubUrl || ""} onChange={(value) => updateField("githubUrl", value)} />
         <AdminInput label="Demo URL" value={form.demoUrl || ""} onChange={(value) => updateField("demoUrl", value)} />
         <AdminInput label={`Role ${labelSuffix}`} value={getVal("role")} onChange={(value) => updateField(getFieldKey("role"), value)} />
@@ -193,14 +248,21 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
         <AdminTextarea label="Directory tree" value={form.directoryTree || ""} onChange={(value) => updateField("directoryTree", value)} rows={8} />
       </div>
 
-      <button
-        type="submit"
-        disabled={saving}
-        className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-5 py-3 text-sm font-black text-white transition-colors hover:bg-cyan-600 disabled:opacity-60"
-      >
-        <Save className="h-4 w-4" />
-        {saving ? "Đang lưu..." : "Lưu dự án"}
-      </button>
+      <div className="flex flex-wrap items-center gap-4">
+        <button
+          type="submit"
+          disabled={saving}
+          className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-5 py-3 text-sm font-black text-white transition-colors hover:bg-cyan-600 disabled:opacity-60"
+        >
+          <Save className="h-4 w-4" />
+          {saving ? "Đang lưu..." : "Lưu dự án"}
+        </button>
+        {status ? (
+          <div className={`rounded-xl border px-4 py-3 text-sm font-bold ${isError ? "border-rose-200 bg-rose-50 text-rose-700" : "border-emerald-200 bg-emerald-50 text-emerald-700"}`}>
+            {status}
+          </div>
+        ) : null}
+      </div>
     </form>
   );
 }

@@ -3,6 +3,7 @@
     "projects": "Projets",
     "skills": "Compétences",
     "experience": "Expérience",
+    "education": "Éducation",
     "contact": "Contact",
     "talk": "Discutons"
   },
@@ -90,5 +91,30 @@
   "Common": {
     "close": "Fermer",
     "loading": "Chargement..."
+  },
+  "ProjectDetail": {
+    "home": "Accueil",
+    "projects": "Projets",
+    "back": "Retour aux projets",
+    "highlights": "Points Forts",
+    "directoryTree": "Structure des Répertoires",
+    "techStack": "Frameworks et Technologies",
+    "gallery": "Galerie et Captures",
+    "toc": "Table des Matières",
+    "onThisPage": "Sur cette page",
+    "share": "Partager",
+    "shareProject": "Partager le Projet",
+    "copyLink": "Copier le lien",
+    "copied": "Copié !",
+    "graduationProject": "Projet de Fin d'Études",
+    "sourceCode": "Code Source",
+    "liveDemo": "Démo en Direct",
+    "author": "Auteur",
+    "views": "vues",
+    "readingTime": "min de lecture",
+    "updated": "Mis à jour",
+    "frameworkAndStack": "Frameworks et Stack",
+    "languages": "Langages",
+    "tools": "Outils"
   }
 }

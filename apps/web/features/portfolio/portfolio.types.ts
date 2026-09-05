@@ -23,8 +23,10 @@ export type PublicProject = {
   name: string;
   summary: string;
   description?: string;
-  content: string[];
+  content?: string;
   image?: string;
+  coverImage?: string;
+  showcaseImages?: string[];
   screenshots: string[];
   detailedImages?: { url: string; altText: string; folder: string }[];
   directoryTree?: string;
@@ -61,4 +63,54 @@ export type PublicExperience = {
   org: string;
   period: string;
   highlights: string[];
+};
+
+export type PublicEducation = {
+  id: string;
+  title: string;
+  org: string;
+  period: string;
+  degree: string;
+  major: string;
+  gpa?: string;
+  description?: string;
+  logo?: string;
+  images: string[];
+  tags?: string[];
+};
+
+export type PublicCertification = {
+  id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  score?: string;
+  url?: string;
+  logo?: string;
+  images: string[];
+  tags?: string[];
+  color?: string;
+};
+
+export type PublicSprint = {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  description?: string;
+};
+
+export type PublicTimelineNode = {
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+  color?: string;
+  shortLabel?: string;
+  icon?: string;
+  description?: string;
+  projectId?: string;
+  project?: PublicProject | null;
+  sortOrder: number;
+  sprints: PublicSprint[];
 };

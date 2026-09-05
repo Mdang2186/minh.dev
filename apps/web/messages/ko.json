@@ -2,7 +2,8 @@
   "Navbar": {
     "projects": "프로젝트",
     "skills": "기술 및 도구",
-    "experience": "경력 및 학력",
+    "experience": "경력",
+    "education": "교육",
     "contact": "연락처",
     "talk": "대화하기"
   },
@@ -90,5 +91,30 @@
   "Common": {
     "close": "닫기",
     "loading": "로딩 중..."
+  },
+  "ProjectDetail": {
+    "home": "홈",
+    "projects": "프로젝트",
+    "back": "프로젝트로 돌아가기",
+    "highlights": "주요 특징",
+    "directoryTree": "디렉토리 구조",
+    "techStack": "프레임워크 및 기술",
+    "gallery": "갤러리 및 스크린샷",
+    "toc": "목차",
+    "onThisPage": "이 페이지의 목차",
+    "share": "공유",
+    "shareProject": "프로젝트 공유",
+    "copyLink": "링크 복사",
+    "copied": "복사됨!",
+    "graduationProject": "졸업 프로젝트",
+    "sourceCode": "소스 코드",
+    "liveDemo": "라이브 데모",
+    "author": "작성자",
+    "views": "조회수",
+    "readingTime": "분 분량",
+    "updated": "업데이트",
+    "frameworkAndStack": "프레임워크 및 스택",
+    "languages": "언어",
+    "tools": "도구"
   }
 }

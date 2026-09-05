@@ -55,6 +55,7 @@ type ProjectWithRelations = {
   languages: string[];
   tools: string[];
   imageFolders: string[];
+  showcaseImages?: string[];
   createdAt: Date;
   updatedAt: Date;
   images: Array<{
@@ -78,6 +79,7 @@ export function serializeAdminProject(project: ProjectWithRelations) {
   return {
     ...project,
     imageFolders: project.imageFolders || [],
+    showcaseImages: project.showcaseImages || [],
     techStacks: project.techStacks.map((item) => item.techStack.name),
     projectImages: project.images
       .slice()
@@ -89,5 +91,21 @@ export function serializeAdminProject(project: ProjectWithRelations) {
         folder: image.folder ?? "",
         sortOrder: image.sortOrder,
       })),
+  };
+}
+
+export function serializeAdminTimelineNode(node: any) {
+  return {
+    ...node,
+    sprints: (node.sprints || []).map((sprint: any) => ({
+      ...sprint,
+      description: sprint.description ?? null,
+      description_vi: sprint.description_vi ?? null,
+      description_ja: sprint.description_ja ?? null,
+      description_fr: sprint.description_fr ?? null,
+      description_es: sprint.description_es ?? null,
+      description_zh: sprint.description_zh ?? null,
+      description_ko: sprint.description_ko ?? null,
+    })),
   };
 }

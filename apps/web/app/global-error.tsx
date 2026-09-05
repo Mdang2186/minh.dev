@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect } from "react";
 import { Container } from "@/components/common/container";
@@ -16,8 +16,8 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="vi">
-      <body className="min-h-dvh bg-background text-foreground antialiased">
+    <html lang="vi" suppressHydrationWarning>
+      <body suppressHydrationWarning className="min-h-dvh bg-background text-foreground antialiased">
         <Container className="py-16">
           <h1 className="text-3xl font-semibold tracking-tight">Có lỗi xảy ra</h1>
           <p className="mt-3 text-muted-foreground">

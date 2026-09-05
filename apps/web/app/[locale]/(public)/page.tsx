@@ -3,47 +3,52 @@ import { Container } from "@/components/common/container";
 import { Hero } from "@/components/sections/hero";
 import { FeaturedProjects } from "@/components/sections/featured-projects";
 import { Quote } from "@/components/sections/quote";
+import { RoadmapTimeline } from "@/components/sections/roadmap-timeline";
 import { DesignFeature } from "@/components/sections/design-feature";
-import { getPublicProjects } from "@/features/portfolio/portfolio.service";
+import { getPublicProjects, getPublicTimelineNodes } from "@/features/portfolio/portfolio.service";
 import { getTranslations } from "next-intl/server";
 
 export default async function HomePage() {
     const featuredProjects = await getPublicProjects({ featured: true, limit: 3 });
+    const timelineNodes = await getPublicTimelineNodes();
     const t = await getTranslations("HomePage");
 
     return (
-        <div className="flex flex-col min-h-screen pb-20">
+        <div className="flex flex-col min-h-screen pb-10 bg-background text-foreground selection:bg-primary/30">
             <Hero />
 
-            <Container className="py-4 relative z-10">
-                {/* Quote Section */}
-                <Quote />
+            {/* Quote Section — full bleed, no shadow */}
+            <Quote />
 
-                {/* Design Feature Section */}
+            {/* My Journey — Full-Width */}
+            <div>
+                <RoadmapTimeline nodes={timelineNodes} />
+            </div>
+
+            <div className="w-full px-4 sm:px-6 relative z-10 mt-4">
+                {/* Design Feature Section — full bleed */}
                 <DesignFeature />
 
                 {/* Projects Section */}
-                <section className="space-y-10 py-20 relative max-w-7xl mx-auto">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-cyan-200/50 to-transparent"></div>
-                    <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-6 px-4">
+                <section className="space-y-6 py-8 md:py-12 relative max-w-[90rem] mx-auto mt-2">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+                    <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 px-4">
                         <div className="text-center sm:text-left">
-                            <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-2">{t("featuredWork")}</h2>
-                            <p className="text-lg text-slate-500 font-medium">{t("bestProjects")}</p>
+                            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground mb-2">{t("featuredWork")}</h2>
+                            <p className="text-base text-muted-foreground font-medium">{t("bestProjects")}</p>
                         </div>
                         <Link
                             href="/work/projects"
-                            className="group flex items-center gap-2 text-sm font-bold text-cyan-600 hover:text-cyan-700 transition-all duration-300 bg-white shadow-sm border border-cyan-100 hover:border-cyan-300 hover:shadow-md px-6 py-3 rounded-full uppercase tracking-wider"
+                            className="group flex items-center gap-2 text-xs sm:text-sm font-bold text-primary hover:text-primary-foreground transition-all duration-300 bg-white/5 hover:bg-primary/90 border border-white/10 hover:border-primary backdrop-blur-md px-5 py-2.5 rounded-full uppercase tracking-wider hover:shadow-primary/20"
                         >
                             {t("viewAll")}
                             <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
                         </Link>
                     </div>
-                    <div className="mt-8 rounded-[3rem] overflow-hidden bg-white/60 border border-white p-4 sm:p-10 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(6,182,212,0.05)] transition-shadow duration-500">
-                        <FeaturedProjects projects={featuredProjects} />
-                    </div>
+                    <FeaturedProjects projects={featuredProjects} />
                 </section>
-
-            </Container>
+            </div>
         </div>
     );
 }
+

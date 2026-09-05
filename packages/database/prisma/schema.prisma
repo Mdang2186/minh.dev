@@ -80,6 +80,7 @@ model Project {
   sortOrder      Int                @default(0)
   directoryTree  String?
   imageFolders   String[]           @default([])
+  showcaseImages String[]           @default([])
   highlights     String[]           @default([])
   languages      String[]           @default([])
   tools          String[]           @default([])
@@ -123,6 +124,7 @@ model Project {
   title_zh       String?
   images         ProjectImage[]
   techStacks     ProjectTechStack[]
+  timelineNodes  TimelineNode[]
 }
 
 model ProjectImage {
@@ -254,6 +256,150 @@ model AuditLog {
   createdAt DateTime @default(now())
 }
 
+model Education {
+  id             String   @id @default(uuid())
+  title          String
+  org            String
+  period         String
+  degree         String
+  major          String
+  gpa            String?
+  description    String?
+  logo           String?
+  images         String[] @default([])
+  tags           String[] @default([])
+  sortOrder      Int      @default(0)
+  visible        Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  title_vi       String?
+  title_es       String?
+  title_fr       String?
+  title_ja       String?
+  title_ko       String?
+  title_zh       String?
+  org_vi         String?
+  org_es         String?
+  org_fr         String?
+  org_ja         String?
+  org_ko         String?
+  org_zh         String?
+  period_vi      String?
+  period_es      String?
+  period_fr      String?
+  period_ja      String?
+  period_ko      String?
+  period_zh      String?
+  degree_vi      String?
+  degree_es      String?
+  degree_fr      String?
+  degree_ja      String?
+  degree_ko      String?
+  degree_zh      String?
+  major_vi       String?
+  major_es       String?
+  major_fr       String?
+  major_ja       String?
+  major_ko       String?
+  major_zh       String?
+  description_vi String?
+  description_es String?
+  description_fr String?
+  description_ja String?
+  description_ko String?
+  description_zh String?
+}
+
+model Certification {
+  id        String   @id @default(uuid())
+  title     String
+  issuer    String
+  date      String
+  score     String?
+  url       String?
+  logo      String?
+  images    String[] @default([])
+  tags      String[] @default([])
+  color     String?
+  sortOrder Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title_vi  String?
+  title_es  String?
+  title_fr  String?
+  title_ja  String?
+  title_ko  String?
+  title_zh  String?
+  issuer_vi String?
+  issuer_es String?
+  issuer_fr String?
+  issuer_ja String?
+  issuer_ko String?
+  issuer_zh String?
+  date_vi   String?
+  date_es   String?
+  date_fr   String?
+  date_ja   String?
+  date_ko   String?
+  date_zh   String?
+}
+
 enum UserRole {
   ADMIN
+}
+
+model TimelineNode {
+  id          String    @id @default(uuid())
+  title       String
+  date        String
+  type        String    // 'MILESTONE', 'PROJECT'
+  color       String?
+  shortLabel  String?
+  icon        String?
+  description String?
+  projectId   String?
+  project     Project?  @relation(fields: [projectId], references: [id])
+  sprints     Sprint[]
+  sortOrder   Int       @default(0)
+  visible     Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  title_vi       String?
+  description_vi String?
+  title_es       String?
+  description_es String?
+  title_fr       String?
+  description_fr String?
+  title_ja       String?
+  description_ja String?
+  title_ko       String?
+  description_ko String?
+  title_zh       String?
+  description_zh String?
+}
+
+model Sprint {
+  id             String       @id @default(uuid())
+  timelineNodeId String
+  title          String
+  startDate      String
+  endDate        String
+  description    String?
+  timelineNode   TimelineNode @relation(fields: [timelineNodeId], references: [id], onDelete: Cascade)
+  sortOrder      Int          @default(0)
+  
+  title_vi       String?
+  description_vi String?
+  title_es       String?
+  description_es String?
+  title_fr       String?
+  description_fr String?
+  title_ja       String?
+  description_ja String?
+  title_ko       String?
+  description_ko String?
+  title_zh       String?
+  description_zh String?
 }

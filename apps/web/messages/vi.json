@@ -2,7 +2,8 @@
   "Navbar": {
     "projects": "Dự án",
     "skills": "Kỹ năng & Công cụ",
-    "experience": "Kinh nghiệm & Học vấn",
+    "experience": "Kinh nghiệm",
+    "education": "Học vấn",
     "contact": "Liên hệ",
     "talk": "Trò chuyện"
   },
@@ -90,5 +91,30 @@
   "Common": {
     "close": "Đóng",
     "loading": "Đang tải..."
+  },
+  "ProjectDetail": {
+    "home": "Trang chủ",
+    "projects": "Dự án",
+    "back": "Quay lại dự án",
+    "highlights": "Tính năng nổi bật",
+    "directoryTree": "Cấu trúc thư mục",
+    "techStack": "Framework & Công nghệ",
+    "gallery": "Album ảnh & Minh họa",
+    "toc": "Mục lục nội dung",
+    "onThisPage": "Mục lục bài viết",
+    "share": "Chia sẻ dự án",
+    "shareProject": "Chia sẻ dự án",
+    "copyLink": "Sao chép liên kết",
+    "copied": "Đã sao chép!",
+    "graduationProject": "Đồ án tốt nghiệp",
+    "sourceCode": "Mã nguồn",
+    "liveDemo": "Live Demo",
+    "author": "Tác giả",
+    "views": "lượt xem",
+    "readingTime": "phút đọc",
+    "updated": "Cập nhật",
+    "frameworkAndStack": "Framework & Nền tảng",
+    "languages": "Ngôn ngữ",
+    "tools": "Công cụ"
   }
 }

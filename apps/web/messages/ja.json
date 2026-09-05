@@ -2,7 +2,8 @@
   "Navbar": {
     "projects": "プロジェクト",
     "skills": "スキルとツール",
-    "experience": "経験と学歴",
+    "experience": "経験",
+    "education": "教育",
     "contact": "お問い合わせ",
     "talk": "話しましょう"
   },
@@ -90,5 +91,30 @@
   "Common": {
     "close": "閉じる",
     "loading": "読み込み中..."
+  },
+  "ProjectDetail": {
+    "home": "ホーム",
+    "projects": "プロジェクト",
+    "back": "プロジェクトに戻る",
+    "highlights": "主な機能",
+    "directoryTree": "ディレクトリ構造",
+    "techStack": "フレームワークと技術",
+    "gallery": "ギャラリーとスクリーンショット",
+    "toc": "目次",
+    "onThisPage": "このページの目次",
+    "share": "共有",
+    "shareProject": "プロジェクトを共有",
+    "copyLink": "リンクをコピー",
+    "copied": "コピーしました！",
+    "graduationProject": "卒業制作",
+    "sourceCode": "ソースコード",
+    "liveDemo": "ライブデモ",
+    "author": "著者",
+    "views": "回閲覧",
+    "readingTime": "分で読める",
+    "updated": "更新日",
+    "frameworkAndStack": "フレームワーク・スタック",
+    "languages": "言語",
+    "tools": "ツール"
   }
 }

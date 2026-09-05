@@ -22,7 +22,7 @@ export async function searchAll(q: string): Promise<SearchResult> {
 
   const publicProjects = await getPublicProjects();
   const projects = publicProjects.filter((p) => {
-    const hay = `${p.name} ${p.summary} ${p.stack.join(" ")} ${p.content.join(" ")}`;
+    const hay = `${p.name} ${p.summary} ${p.stack.join(" ")} ${p.content || ""}`;
     return includesCI(hay, q);
   });
 

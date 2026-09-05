@@ -9,8 +9,8 @@ import { Menu, X } from "lucide-react";
 
 const navKeys = [
     { href: "/work/projects", key: "projects" },
-    { href: "/work/skills-and-tools", key: "skills" },
     { href: "/work/experience", key: "experience" },
+    { href: "/education", key: "education" },
     { href: "/work/contact", key: "contact" },
 ];
 
@@ -22,13 +22,14 @@ export function Navbar() {
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
+            setScrolled(window.scrollY > 10);
         };
-        window.addEventListener("scroll", handleScroll);
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Prevent scroll when sidebar is open
+    // Prevent scroll when mobile menu is open
     useEffect(() => {
         if (open) {
             document.body.style.overflow = "hidden";
@@ -40,22 +41,30 @@ export function Navbar() {
         };
     }, [open]);
 
+    // Close menu on route change
+    useEffect(() => {
+        setOpen(false);
+    }, [pathname]);
+
     return (
-        <div className="sticky top-0 z-50 flex justify-center w-full transition-all duration-300">
+        <>
+            {/* FIXED HEADER: ALWAYS VISIBLE ON ALL PAGES */}
             <header
                 className={cn(
-                    "w-full transition-all duration-300 bg-white border-b border-slate-200 dark:bg-slate-950 dark:border-slate-800",
-                    scrolled ? "bg-white/95 backdrop-blur-sm" : ""
+                    "fixed top-0 left-0 right-0 z-50 w-full h-14 bg-white dark:bg-slate-950 border-b border-slate-200/90 dark:border-slate-800 transition-shadow duration-200",
+                    scrolled ? "shadow-sm" : ""
                 )}
             >
-                <div className="flex items-center justify-between px-4 py-3 sm:px-6 max-w-7xl mx-auto w-full gap-2">
-                    <Link href="/" className="flex items-center gap-2 rounded-full transition-all active:scale-95 group shrink-0">
-                        <span className="text-xl sm:text-2xl font-extrabold tracking-tight flex items-center">
+                <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-full max-w-7xl mx-auto w-full gap-2">
+                    {/* Logo */}
+                    <Link href="/" className="flex items-center gap-1.5 rounded-full transition-all active:scale-95 group shrink-0">
+                        <span className="text-base sm:text-lg font-black tracking-tight flex items-center">
                             <span className="text-slate-900 dark:text-white">minh</span>
                             <span className="text-cyan-500 dark:text-cyan-400">dev</span>
                         </span>
                     </Link>
 
+                    {/* Desktop Navigation */}
                     <nav className="hidden items-center gap-1 md:flex">
                         {navKeys.map((n) => {
                             const active =
@@ -65,10 +74,10 @@ export function Navbar() {
                                     key={n.href}
                                     href={n.href}
                                     className={cn(
-                                        "rounded-full px-4 py-2 text-[14px] font-semibold transition-all duration-300 active:scale-95",
+                                        "relative group px-3.5 py-1.5 text-[13px] font-semibold transition-all duration-200 active:scale-95 rounded-lg",
                                         active
-                                            ? "bg-cyan-100/50 text-cyan-700 shadow-sm dark:bg-cyan-950/50 dark:text-cyan-400"
-                                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-800/60 dark:hover:text-white"
+                                            ? "text-cyan-600 dark:text-cyan-400 bg-cyan-50/80 dark:bg-cyan-950/40"
+                                            : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-slate-900"
                                     )}
                                 >
                                     {t(n.key)}
@@ -77,83 +86,80 @@ export function Navbar() {
                         })}
                     </nav>
 
-                    <div className="flex items-center gap-3">
+                    {/* Right Controls */}
+                    <div className="flex items-center gap-2 sm:gap-2.5">
                         <LanguageSwitcher />
                         <Link
                             href="/work/contact"
-                            className="hidden sm:inline-flex rounded-full bg-slate-800 px-6 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-cyan-500 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 active:scale-95 dark:bg-white dark:text-neutral-900"
+                            className="hidden sm:inline-flex rounded-full bg-slate-900 px-4 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-cyan-600 transition-all duration-200 active:scale-95 dark:bg-white dark:text-neutral-900"
                         >
                             {t("talk")}
                         </Link>
 
+                        {/* Hamburger Button */}
                         <button
-                            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 transition-colors"
-                            onClick={() => setOpen(true)}
-                            aria-label="Open menu"
+                            className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors"
+                            onClick={() => setOpen(!open)}
+                            aria-label={open ? "Close menu" : "Open menu"}
                         >
-                            <Menu className="h-5 w-5" />
+                            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
                         </button>
+                    </div>
+                </div>
+
+                {/* ── MOBILE MENU: 100% SOLID OPAQUE BACKGROUND, NO BLURRY BLEED-THROUGH ── */}
+                <div
+                    className={cn(
+                        "md:hidden fixed top-14 left-0 right-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-200 ease-out z-50",
+                        open
+                            ? "opacity-100 translate-y-0 pointer-events-auto visible"
+                            : "opacity-0 -translate-y-2 pointer-events-none invisible"
+                    )}
+                >
+                    <div className="px-5 py-4 space-y-1.5 max-w-lg mx-auto bg-white dark:bg-slate-900">
+                        {navKeys.map((n) => {
+                            const active = pathname === n.href || (n.href !== "/" && pathname.startsWith(n.href));
+                            return (
+                                <Link
+                                    key={n.href}
+                                    href={n.href}
+                                    onClick={() => setOpen(false)}
+                                    className={cn(
+                                        "flex items-center justify-between rounded-xl px-4 py-3 text-[15px] font-bold transition-colors",
+                                        active
+                                            ? "bg-cyan-50 text-cyan-700 dark:bg-cyan-950/70 dark:text-cyan-400"
+                                            : "text-slate-800 hover:text-cyan-600 hover:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-800"
+                                    )}
+                                >
+                                    <span>{t(n.key)}</span>
+                                    {active && <span className="w-2 h-2 rounded-full bg-cyan-500" />}
+                                </Link>
+                            );
+                        })}
+
+                        <div className="pt-3 mt-2 border-t border-slate-100 dark:border-slate-800">
+                            <Link 
+                                href="/work/contact" 
+                                onClick={() => setOpen(false)}
+                                className="w-full flex items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-cyan-600 transition-colors dark:bg-white dark:text-slate-900 shadow-sm"
+                            >
+                                {t("talk")}
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            {/* Mobile Sidebar */}
+            {/* Backdrop for click-outside */}
             {open && (
                 <div 
-                    className="fixed inset-0 z-[100] bg-black/60 transition-opacity md:hidden" 
+                    className="fixed inset-0 top-14 z-40 bg-slate-950/40 md:hidden transition-opacity duration-200" 
                     onClick={() => setOpen(false)}
                 />
             )}
 
-            <div 
-                className={cn(
-                    "fixed inset-y-0 right-0 z-[110] w-[280px] bg-white dark:bg-slate-950 p-6 shadow-2xl transition-transform duration-300 ease-in-out flex flex-col md:hidden border-l border-slate-200 dark:border-slate-800",
-                    open ? "translate-x-0" : "translate-x-full"
-                )}
-            >
-                <div className="flex items-center justify-between mb-8">
-                    <span className="text-2xl font-black tracking-tight flex items-center">
-                        <span className="text-slate-900 dark:text-white">minh</span>
-                        <span className="text-cyan-500 dark:text-cyan-400">dev</span>
-                    </span>
-                    <button
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors"
-                        onClick={() => setOpen(false)}
-                        aria-label="Close menu"
-                    >
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
-
-                <div className="flex flex-col gap-2 flex-1 overflow-y-auto">
-                    {navKeys.map((n) => {
-                        const active = pathname === n.href || (n.href !== "/" && pathname.startsWith(n.href));
-                        return (
-                            <Link
-                                key={n.href}
-                                href={n.href}
-                                onClick={() => setOpen(false)}
-                                className={cn(
-                                    "block rounded-xl px-4 py-3 text-base font-medium transition-colors hover:bg-slate-100 hover:text-cyan-600 dark:hover:bg-slate-800",
-                                    active ? "bg-cyan-50 text-cyan-600 dark:bg-cyan-950/50" : "text-slate-600 dark:text-slate-400"
-                                )}
-                            >
-                                {t(n.key)}
-                            </Link>
-                        );
-                    })}
-                </div>
-                
-                <div className="mt-auto pt-6 flex flex-col gap-4 border-t border-slate-200 dark:border-slate-800">
-                    <Link 
-                        href="/work/contact" 
-                        onClick={() => setOpen(false)}
-                        className="w-full flex items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition-colors dark:bg-white dark:text-slate-900"
-                    >
-                        {t("talk")}
-                    </Link>
-                </div>
-            </div>
-        </div>
+            {/* Fixed Navbar Spacer to ensure no page content is hidden underneath */}
+            <div className="h-14 shrink-0 w-full" aria-hidden="true" />
+        </>
     );
 }
