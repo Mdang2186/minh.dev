@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@prisma/client"],
   experimental: {
     swcPlugins: [],
+    outputFileTracingExcludes: {
+      "**/*": [
+        "public/uploads/**/*", 
+        "node_modules/typescript/**/*", 
+        "node_modules/@swc/core/**/*"
+      ],
+    },
   },
   images: {
     remotePatterns: [
