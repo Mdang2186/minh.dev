@@ -30,6 +30,9 @@ async function safeRead<T>(reader: () => Promise<T>, fallback: T): Promise<T> {
     return await reader();
   } catch (error) {
     console.warn("⚠️ Portfolio database read failed. Using fallback data.", error);
+    if (fallback === defaultProfile) {
+      return { ...fallback, intro: `DATABASE ERROR: ${error instanceof Error ? error.message : String(error)}` } as any;
+    }
     return fallback;
   }
 }
