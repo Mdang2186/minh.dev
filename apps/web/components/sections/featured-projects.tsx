@@ -67,8 +67,7 @@ function ProjectPosterCard({
   project,
   isMain,
   index,
-  onClick,
-  t
+  onClick
 }: {
   project: PublicProject;
   isMain: boolean;

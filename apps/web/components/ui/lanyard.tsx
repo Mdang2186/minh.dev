@@ -63,7 +63,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, profile }: { maxSpeed?: number; min
   const decalScale: [number, number, number] = (() => {
     const cardW = 0.72;
     const cardH = 1.1;
-    const img = texture.image;
+    const img = texture.image as any;
     if (!img || !img.width || !img.height) return [cardW, cardH, 0.02];
     const imgAspect = img.width / img.height;
     const cardAspect = cardW / cardH;
