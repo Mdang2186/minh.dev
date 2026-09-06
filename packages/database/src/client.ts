@@ -41,7 +41,7 @@ if (!targetUrl) {
 } else {
   // Use connection pooling via Neon Serverless driver + Prisma Adapter
   const pool = new Pool({ connectionString: targetUrl });
-  const adapter = new PrismaNeon(pool);
+  const adapter = new PrismaNeon(pool as any);
   
   prisma =
     globalForPrisma.prisma ??
