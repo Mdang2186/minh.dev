@@ -56,7 +56,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, profile }: { maxSpeed?: number; min
   const { nodes, materials } = useGLTF('/models/card.glb') as any;
 
   // Use texture loader which handles CORS safely
-  const texture = useTexture(profile?.avatarUrl || "/avatar1.png");
+  const texture = useTexture(profile?.avatarUrl || "/avatar1.png") as THREE.Texture;
   texture.colorSpace = THREE.SRGBColorSpace;
   
   // Calculate Decal scale to preserve image aspect ratio (no stretch)
