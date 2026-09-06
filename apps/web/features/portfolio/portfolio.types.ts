@@ -109,6 +109,7 @@ export type PublicTimelineNode = {
   shortLabel?: string;
   icon?: string;
   description?: string;
+  link?: string;
   projectId?: string;
   project?: PublicProject | null;
   sortOrder: number;

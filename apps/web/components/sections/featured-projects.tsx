@@ -11,11 +11,9 @@ import { cn } from "@/lib/cn";
 import { motion } from "framer-motion";
 import { ArrowUpRight, FolderGit2, Github } from "lucide-react";
 
-export function FeaturedProjects({ projects }: { projects: PublicProject[] }) {
+export function FeaturedProjects({ projects, emptyText }: { projects: PublicProject[], emptyText?: string }) {
   const [selectedProject, setSelectedProject] = useState<PublicProject | null>(null);
   const top = projects.slice(0, 3);
-  const t = useTranslations("FeaturedProjects");
-
   const mainProject = top[0];
   const secondaryProjects = top.slice(1);
 
@@ -31,7 +29,6 @@ export function FeaturedProjects({ projects }: { projects: PublicProject[] }) {
                 isMain={true}
                 index={0}
                 onClick={() => {}}
-                t={t}
               />
             </Link>
           )}
@@ -46,7 +43,6 @@ export function FeaturedProjects({ projects }: { projects: PublicProject[] }) {
                     isMain={false}
                     index={i + 1}
                     onClick={() => {}}
-                    t={t}
                   />
                 </Link>
               ))}
@@ -55,7 +51,7 @@ export function FeaturedProjects({ projects }: { projects: PublicProject[] }) {
         </div>
       ) : (
         <p className="text-sm text-white/40 text-center py-10">
-          {t("empty")}
+          {emptyText || "Project content is being prepared."}
         </p>
       )}
 
@@ -78,7 +74,6 @@ function ProjectPosterCard({
   isMain: boolean;
   index: number;
   onClick: () => void;
-  t: any;
 }) {
   return (
     <motion.div

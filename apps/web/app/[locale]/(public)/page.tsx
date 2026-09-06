@@ -14,6 +14,7 @@ export default async function HomePage() {
     const featuredProjects = await getPublicProjects({ featured: true, limit: 3 });
     const timelineNodes = await getPublicTimelineNodes();
     const t = await getTranslations("HomePage");
+    const tFeatured = await getTranslations("FeaturedProjects");
 
     return (
         <div className="flex flex-col min-h-screen pb-10 bg-background text-foreground selection:bg-primary/30">
@@ -47,7 +48,7 @@ export default async function HomePage() {
                             <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
                         </Link>
                     </div>
-                    <FeaturedProjects projects={featuredProjects} />
+                    <FeaturedProjects projects={featuredProjects} emptyText={tFeatured("empty")} />
                 </section>
             </div>
         </div>

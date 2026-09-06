@@ -359,6 +359,7 @@ model TimelineNode {
   shortLabel  String?
   icon        String?
   description String?
+  link        String?
   projectId   String?
   project     Project?  @relation(fields: [projectId], references: [id])
   sprints     Sprint[]

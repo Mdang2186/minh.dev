@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { PublicTimelineNode, PublicSprint } from "@/features/portfolio/portfolio.types";
 import { cn } from "@/lib/cn";
 import * as LucideIcons from "lucide-react";
+import Link from "next/link";
 
 interface RoadmapTimelineProps {
   nodes: PublicTimelineNode[];
@@ -64,6 +65,20 @@ export function RoadmapTimeline({ nodes }: RoadmapTimelineProps) {
               ? (LucideIcons as any)[node.icon]
               : LucideIcons.Star;
 
+            let targetUrl = node.link;
+            if (!targetUrl) {
+              if (node.type === "EDUCATION") {
+                targetUrl = "/work/education";
+              } else if (node.project?.slug) {
+                targetUrl = `/projects/${node.project.slug}`;
+              } else if (node.type === "PROJECT" && node.projectId) {
+                targetUrl = `/projects/${node.projectId}`; // fallback if slug is not available
+              }
+            }
+
+            const CardWrapper = targetUrl ? Link : "div";
+            const cardProps = targetUrl ? { href: targetUrl } : {};
+
             return (
               <motion.div
                 key={node.id || i}
@@ -88,12 +103,17 @@ export function RoadmapTimeline({ nodes }: RoadmapTimelineProps) {
                   </div>
                 </div>
 
-                {/* Content Card */}
                 <div className={cn(
                   "w-full md:w-1/2 pl-[60px] md:pl-0",
                   isEven ? "md:pr-[40px]" : "md:pl-[40px]"
                 )}>
-                  <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.15)] border border-slate-200/60 dark:border-slate-800 hover:-translate-y-1 hover:shadow-[0_15px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group">
+                  <CardWrapper 
+                    {...cardProps}
+                    className={cn(
+                      "block bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.15)] border border-slate-200/60 dark:border-slate-800 transition-all duration-300 group",
+                      targetUrl ? "hover:-translate-y-1 hover:shadow-[0_15px_30px_rgb(0,0,0,0.08)] cursor-pointer" : ""
+                    )}
+                  >
                     <div className="flex flex-wrap items-center gap-3 mb-4">
                       <span 
                         className="text-[10px] md:text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800/50"
@@ -139,7 +159,7 @@ export function RoadmapTimeline({ nodes }: RoadmapTimelineProps) {
                         ))}
                       </div>
                     )}
-                  </div>
+                  </CardWrapper>
                 </div>
               </motion.div>
             );

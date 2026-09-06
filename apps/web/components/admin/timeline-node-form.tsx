@@ -126,6 +126,7 @@ export function TimelineNodeForm({ nodeId }: { nodeId?: string }) {
         <AdminInput label={`Title ${labelSuffix}`} value={getVal("title")} onChange={(value) => updateField(getFieldKey("title"), value)} required={isEn} />
         <AdminInput label="Date (vd: Q3 2026, Oct 2026)" value={form.date || ""} onChange={(value) => updateField("date", value)} required />
         <AdminInput label="Type (MILESTONE, PROJECT)" value={form.type || ""} onChange={(value) => updateField("type", value)} />
+        <AdminInput label="Link (URL chuyển hướng)" value={form.link || ""} onChange={(value) => updateField("link", value)} />
         <AdminInput label={`Short Label ${labelSuffix}`} value={getVal("shortLabel")} onChange={(value) => updateField(getFieldKey("shortLabel"), value)} />
         <AdminIconSelect label="Icon" value={form.icon || ""} onChange={(value) => updateField("icon", value)} />
         <AdminColorPicker label="Color" value={form.color || ""} onChange={(value) => updateField("color", value)} />

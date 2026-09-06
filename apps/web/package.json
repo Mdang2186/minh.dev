@@ -13,6 +13,9 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@minh-dev/database": "*",
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
+    "@react-three/rapier": "^2.2.0",
     "@supabase/supabase-js": "^2.98.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tiptap/core": "^3.22.5",
@@ -34,6 +37,7 @@
     "jose": "^6.1.2",
     "lucide-react": "^0.540.0",
     "mammoth": "^1.12.0",
+    "meshline": "^3.3.1",
     "mini-svg-data-uri": "^1.4.4",
     "next": "16.1.6",
     "next-intl": "^4.13.0",
@@ -46,6 +50,7 @@
     "react-pdf": "^10.4.1",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "three": "^0.185.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {

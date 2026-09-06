@@ -11,6 +11,7 @@ import type {
 } from "./portfolio.types";
 import { getLocale } from "next-intl/server";
 import { projects as siteProjects } from "@/data/site";
+import { unstable_cache } from "next/cache";
 
 export const defaultProfile: PublicSiteProfile = {
   name: "Portfolio",
@@ -110,13 +111,6 @@ export async function getPublicProjects(
         content_ja: true,
         content_ko: true,
         content_zh: true,
-        description: true,
-        description_vi: true,
-        description_es: true,
-        description_fr: true,
-        description_ja: true,
-        description_ko: true,
-        description_zh: true,
       },
       include: {
         images: { orderBy: { sortOrder: "asc" }, select: { imageUrl: true, altText: true, folder: true, sortOrder: true } },
@@ -342,6 +336,7 @@ export async function getPublicTimelineNodes(): Promise<PublicTimelineNode[]> {
       type: node.type || "MILESTONE",
       color: node.color || undefined,
       description: getLoc(node, "description", locale) || undefined,
+      link: node.link || undefined,
       projectId: node.projectId || undefined,
       project: node.project ? mapProject(node.project, locale) : null,
       sprints: node.sprints.map((sprint: any) => ({

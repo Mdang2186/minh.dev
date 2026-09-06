@@ -4,6 +4,7 @@ import { FaFacebook, FaGithub, FaInstagram, FaLinkedinIn } from "react-icons/fa"
 import { Code, Paintbrush } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { ResumeModalWrapper } from "@/components/ui/resume-modal-wrapper";
+import { Lanyard } from "@/components/ui/lanyard";
 import { getPublicSiteProfile, getPublicSocialLinks } from "@/features/portfolio/portfolio.service";
 import { getTranslations } from "next-intl/server";
 
@@ -22,7 +23,7 @@ export async function Hero() {
   ]);
 
   return (
-    <section className="bg-white relative overflow-hidden pt-8 sm:pt-10 lg:pt-14 pb-8 sm:pb-10">
+    <section className="bg-white relative pt-8 sm:pt-10 lg:pt-14 pb-8 sm:pb-10">
       <Container className="relative z-10 w-full">
         <div className="flex flex-col lg:flex-row items-center w-full gap-8 lg:gap-8">
           <div className="lg:w-1/2 flex flex-col items-start w-full relative z-10">
@@ -34,7 +35,7 @@ export async function Hero() {
               <span className="text-xs font-bold tracking-widest uppercase">{t("hello")}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-[64px] font-black mb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-indigo-600 to-cyan-600 leading-[1.15] tracking-[-0.02em] pb-1">
+            <h1 className="text-3xl sm:text-5xl lg:text-[64px] font-black mb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-indigo-600 to-cyan-600 leading-[1.15] tracking-[-0.02em] py-1 md:py-2">
               {profile.name}
             </h1>
 
@@ -76,20 +77,9 @@ export async function Hero() {
             </div>
           </div>
 
-          <div className="lg:w-1/2 flex justify-center lg:justify-end relative z-10 w-full mb-8 lg:mb-0">
-            <div className="relative">
-              <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[460px] lg:h-[460px] rounded-full p-2.5 relative overflow-hidden bg-white border border-slate-200">
-                <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden bg-slate-50 border border-slate-100">
-                  <Image src={profile.avatarUrl} alt={profile.name} width={460} height={460} className="w-full h-full object-cover object-[65%_35%] transition-transform duration-700 hover:scale-105" priority />
-                </div>
-              </div>
-
-              <div className="absolute top-6 -right-2 sm:top-12 sm:-right-6 w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-2xl flex items-center justify-center rotate-[15deg] transition-all duration-300 hover:scale-110 hover:rotate-6 border border-slate-200 shadow-sm">
-                <Code className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500" />
-              </div>
-              <div className="absolute bottom-12 left-0 sm:bottom-16 sm:-left-4 w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-2xl flex items-center justify-center -rotate-[15deg] transition-all duration-300 hover:scale-110 hover:-rotate-6 border border-slate-200 shadow-sm">
-                <Paintbrush className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-500" />
-              </div>
+          <div className="lg:w-1/2 flex justify-center lg:justify-end relative z-10 w-full mb-8 lg:mb-0 h-[500px] lg:h-[650px] pointer-events-auto cursor-grab active:cursor-grabbing">
+            <div className="absolute inset-x-0 -top-14 bottom-0 z-20">
+               <Lanyard position={[0, 0, 9]} gravity={[0, -40, 0]} fov={20} profile={profile} />
             </div>
           </div>
         </div>

@@ -320,6 +320,7 @@ export const timelineNodeSchema = z.object({
   shortLabel: nullableString,
   icon: nullableString,
   description: nullableString,
+  link: nullableString,
   description_vi: nullableString,
   description_ja: nullableString,
   description_fr: nullableString,

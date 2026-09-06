@@ -46,6 +46,8 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
+
+
   const parseProjectTitle = (rawName: string) => {
     if (rawName.includes('|')) {
       const parts = rawName.split('|').map(s => s.trim()).filter(Boolean);
