@@ -12,7 +12,10 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function getDatasourceUrl(): string | undefined {
-  let url = process.env.DATABASE_URL;
+  let url = process.env.DATABASE_URL?.trim();
+  if (url && url.startsWith('"') && url.endsWith('"')) {
+    url = url.slice(1, -1).trim();
+  }
   if (!url) return undefined;
   
   // For Neon serverless adapter, we SHOULD use the pooler URL for better performance
