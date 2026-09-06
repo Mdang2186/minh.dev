@@ -74,7 +74,6 @@ function ProjectPosterCard({
   isMain: boolean;
   index: number;
   onClick: () => void;
-  t: any;
 }) {
   return (
     <motion.div
