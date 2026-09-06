@@ -76,7 +76,7 @@ export function RoadmapTimeline({ nodes }: RoadmapTimelineProps) {
               }
             }
 
-            const CardWrapper = targetUrl ? Link : "div";
+            const CardWrapper = (targetUrl ? Link : "div") as any;
             const cardProps = targetUrl ? { href: targetUrl } : {};
 
             return (
