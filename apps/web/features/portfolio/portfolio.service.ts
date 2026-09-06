@@ -61,20 +61,24 @@ function getLoc(obj: any, base: string, locale: string) {
 export async function getPublicSiteProfile(): Promise<PublicSiteProfile> {
   return safeRead(async () => {
     const locale = await getSafeLocale();
-    const profile = await prisma.siteProfile.findFirst({ orderBy: { updatedAt: "desc" } });
-    if (!profile) return defaultProfile;
+    try {
+      const profile = await prisma.siteProfile.findFirst({ orderBy: { updatedAt: "desc" } });
+      if (!profile) return defaultProfile;
 
-    return {
-      name: getLoc(profile, "name", locale) || "",
-      role: getLoc(profile, "role", locale) || "",
-      headline: getLoc(profile, "headline", locale) || "",
-      intro: getLoc(profile, "intro", locale) || "",
-      location: getLoc(profile, "location", locale) || "",
-      email: profile.email ?? "",
-      phone: profile.phone ?? "",
-      avatarUrl: profile.avatarUrl ?? defaultProfile.avatarUrl,
-      resumeUrl: profile.resumeUrl ?? defaultProfile.resumeUrl,
-    };
+      return {
+        name: getLoc(profile, "name", locale) || "",
+        role: getLoc(profile, "role", locale) || "",
+        headline: getLoc(profile, "headline", locale) || "",
+        intro: getLoc(profile, "intro", locale) || "",
+        location: getLoc(profile, "location", locale) || "",
+        email: profile.email ?? "",
+        phone: profile.phone ?? "",
+        avatarUrl: profile.avatarUrl ?? defaultProfile.avatarUrl,
+        resumeUrl: profile.resumeUrl ?? defaultProfile.resumeUrl,
+      };
+    } catch (err: any) {
+      throw new Error(`DB QUERY ERROR. process.env.DATABASE_URL is: '${process.env.DATABASE_URL}'. Original error: ${err.message}`);
+    }
   }, defaultProfile);
 }
 

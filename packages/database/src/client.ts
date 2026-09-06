@@ -41,14 +41,22 @@ if (!targetUrl) {
 } else {
   // Use connection pooling via Neon Serverless driver + Prisma Adapter
   const pool = new Pool({ connectionString: targetUrl });
-  const adapter = new PrismaNeon(pool as any);
+  pool.on('error', (err) => console.error('Neon pool error:', err));
   
-  prisma =
-    globalForPrisma.prisma ??
-    new PrismaClient({
-      adapter,
-      log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-    });
+  if (!targetUrl) throw new Error("targetUrl is completely empty in the else block!");
+  const maskedUrl = targetUrl.replace(/:[^:@]*@/, ':***@');
+  
+  try {
+    const adapter = new PrismaNeon(pool as any);
+    prisma =
+      globalForPrisma.prisma ??
+      new PrismaClient({
+        adapter,
+        log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+      });
+  } catch (err: any) {
+    throw new Error(`PrismaNeon Init Error (URL: ${maskedUrl}): ${err.message}`);
+  }
 }
 
 globalForPrisma.prisma = prisma;
