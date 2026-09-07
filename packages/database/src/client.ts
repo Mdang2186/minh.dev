@@ -1,10 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { Pool, neonConfig } from "@neondatabase/serverless";
-import { PrismaNeon } from "@prisma/adapter-neon";
-import ws from "ws";
-
-// Setup Neon config to use WebSockets in Node.js environment
-neonConfig.webSocketConstructor = ws;
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
@@ -27,35 +21,21 @@ function getDatasourceUrl(): string | undefined {
   return url;
 }
 
-const targetUrl = getDatasourceUrl();
-
-// Disconnect and remove stale cached client from globalThis if URL changed or stale
-if (globalForPrisma.prisma && globalForPrisma.prismaUrl !== targetUrl) {
-  try {
-    globalForPrisma.prisma.$disconnect().catch(() => {});
-  } catch {}
-  delete globalForPrisma.prisma;
+function initPrisma() {
+  return new PrismaClient({
+    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+  });
 }
 
-let prisma: PrismaClient;
-
-if (!targetUrl) {
-  prisma = globalForPrisma.prisma ?? new PrismaClient();
-} else {
-  // Use connection pooling via Neon Serverless driver + Prisma Adapter
-  const pool = new Pool({ connectionString: targetUrl });
-  const adapter = new PrismaNeon(pool as any);
-  
-  prisma =
-    globalForPrisma.prisma ??
-    new PrismaClient({
-      adapter,
-      log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-    });
-}
-
-globalForPrisma.prisma = prisma;
-globalForPrisma.prismaUrl = targetUrl;
+// Lazy initialization using a Proxy
+const prisma = new Proxy({} as PrismaClient, {
+  get(target, prop) {
+    if (!globalForPrisma.prisma) {
+      globalForPrisma.prisma = initPrisma();
+    }
+    return (globalForPrisma.prisma as any)[prop];
+  }
+});
 
 export { prisma };
 
