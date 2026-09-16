@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { UploadCloud, Check, FileText, Loader2, Eye, X } from "lucide-react";
+import { UploadCloud, Check, FileText, Loader2, Eye, X, Trash } from "lucide-react";
 
 interface FileSelectorProps {
   label: string;
@@ -74,6 +74,29 @@ export function FileSelector({ label, type, value, onChange, required }: FileSel
     }
   };
 
+  const handleDelete = async (fileUrl: string) => {
+    if (!confirm("Bạn có chắc chắn muốn xoá file này?")) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/admin/files?url=${encodeURIComponent(fileUrl)}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        if (value === fileUrl) {
+          onChange(""); // Clear selection if deleted file was selected
+        }
+        await fetchFiles();
+      } else {
+        alert("Xoá thất bại");
+      }
+    } catch (err) {
+      alert("Xoá thất bại");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="block space-y-2">
       <div className="flex items-center justify-between">
@@ -122,6 +145,17 @@ export function FileSelector({ label, type, value, onChange, required }: FileSel
                   title="Xem trước"
                 >
                   <Eye className="w-4 h-4" />
+                </button>
+                <button 
+                  type="button"
+                  className="pointer-events-auto flex items-center justify-center p-2 bg-white/90 rounded-full hover:bg-red-50 text-red-500 shadow-sm transition-transform hover:scale-110" 
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    handleDelete(fileUrl);
+                  }}
+                  title="Xoá"
+                >
+                  <Trash className="w-4 h-4" />
                 </button>
               </div>
 

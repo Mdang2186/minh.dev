@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
 import { useGLTF, useTexture, Environment, Lightformer, Decal } from '@react-three/drei';
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier';
@@ -20,7 +20,7 @@ export function Lanyard({ position = [0, 0, 7.5], gravity = [0, -40, 0], fov = 2
     <div className="relative z-10 w-full h-full flex justify-center items-center transform scale-100 origin-center min-h-[600px]">
       <Canvas
         camera={{ position: position, fov: fov }}
-        gl={{ alpha: transparent }}
+        gl={{ alpha: transparent, toneMapping: THREE.NoToneMapping }}
         onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)}
       >
         <ambientLight intensity={1.5} />
@@ -59,22 +59,93 @@ function Band({ maxSpeed = 50, minSpeed = 0, profile }: { maxSpeed?: number; min
   const texture = useTexture(profile?.avatarUrl || "/avatar1.png") as THREE.Texture;
   texture.colorSpace = THREE.SRGBColorSpace;
   
-  // Calculate Decal scale to preserve image aspect ratio (no stretch)
-  const decalScale: [number, number, number] = (() => {
-    const cardW = 0.72;
-    const cardH = 1.1;
+  // Calculate card dimensions to perfectly match image aspect ratio without rounded corners
+  const { cardW, cardH } = (() => {
+    const fixedH = 1.1; // Total physical height
     const img = texture.image as any;
-    if (!img || !img.width || !img.height) return [cardW, cardH, 0.02];
+    if (!img || !img.width || !img.height) return { cardW: 0.72, cardH: fixedH };
+    
     const imgAspect = img.width / img.height;
-    const cardAspect = cardW / cardH;
-    if (imgAspect > cardAspect) {
-      // Image is wider - fit to card width, shrink height
-      return [cardW, cardW / imgAspect, 0.02];
-    } else {
-      // Image is taller - fit to card height, shrink width
-      return [cardH * imgAspect, cardH, 0.02];
-    }
+    
+    // Width is perfectly proportional to height based on image aspect ratio
+    return {
+      cardW: fixedH * imgAspect,
+      cardH: fixedH
+    };
   })();
+
+  const roundedRectGeo = useMemo(() => {
+    const shape = new THREE.Shape();
+    const width = cardW;
+    const height = cardH;
+    const radius = 0.03;
+    const x = -width / 2;
+    const y = -height / 2;
+    shape.moveTo(x, y + radius);
+    shape.lineTo(x, y + height - radius);
+    shape.quadraticCurveTo(x, y + height, x + radius, y + height);
+    shape.lineTo(x + width - radius, y + height);
+    shape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+    shape.lineTo(x + width, y + radius);
+    shape.quadraticCurveTo(x + width, y, x + width - radius, y);
+    shape.lineTo(x + radius, y);
+    shape.quadraticCurveTo(x, y, x, y + radius);
+    
+    const geo = new THREE.ShapeGeometry(shape);
+    const uvAttribute = geo.attributes.uv;
+    for (let i = 0; i < uvAttribute.count; i++) {
+      const u = (uvAttribute.getX(i) - x) / width;
+      const v = (uvAttribute.getY(i) - y) / height;
+      uvAttribute.setXY(i, u, v);
+    }
+    return geo;
+  }, [cardW, cardH]);
+
+  const smokeTexture = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    // Linear gradient for longitudinal stripes (varying along Y axis, which maps to V width on MeshLine)
+    const gradient = ctx.createLinearGradient(0, 0, 0, 512);
+    
+    // Kẻ sọc xanh xám đen trắng, phối như màu khói (blue, grey, black, white, smoky blend)
+    gradient.addColorStop(0, '#000000'); // black edge
+    gradient.addColorStop(0.15, '#334155'); // dark grey
+    gradient.addColorStop(0.3, '#94a3b8'); // light grey
+    gradient.addColorStop(0.45, '#ffffff'); // white stripe
+    gradient.addColorStop(0.6, '#93c5fd'); // light blue
+    gradient.addColorStop(0.75, '#2563eb'); // blue
+    gradient.addColorStop(0.9, '#1e293b'); // dark grey
+    gradient.addColorStop(1, '#000000'); // black edge
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 512, 512);
+
+    // Add a smoky noise/blur layer
+    ctx.globalAlpha = 0.4;
+    for (let i = 0; i < 40; i++) {
+      ctx.fillStyle = Math.random() > 0.5 ? '#ffffff' : '#000000';
+      ctx.beginPath();
+      ctx.arc(
+        Math.random() * 512,
+        Math.random() * 512,
+        Math.random() * 50 + 20,
+        0,
+        Math.PI * 2
+      );
+      ctx.filter = 'blur(12px)';
+      ctx.fill();
+    }
+
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.anisotropy = 16;
+    return tex;
+  }, []);
 
   const [curve] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]));
   const [dragged, drag] = useState<THREE.Vector3 | false>(false);
@@ -127,6 +198,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, profile }: { maxSpeed?: number; min
   });
 
   (curve as any).curveType = 'chordal';
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
   return (
     <>
@@ -159,17 +231,14 @@ function Band({ maxSpeed = 50, minSpeed = 0, profile }: { maxSpeed?: number; min
               }
             }}
           >
-            <mesh geometry={nodes.card.geometry}>
-              <meshPhysicalMaterial color="#f8f8f8" clearcoat={0.3} clearcoatRoughness={0.5} roughness={0.9} metalness={0} />
-              <Decal position={[0, 0.55, 0.011]} rotation={[0, 0, 0]} scale={decalScale}>
-                <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} polygonOffsetUnits={-1} />
-              </Decal>
-              <Decal position={[0, 0.55, -0.011]} rotation={[0, Math.PI, 0]} scale={decalScale}>
-                <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} polygonOffsetUnits={-1} />
-              </Decal>
+            <mesh position={[0, 0.55, 0]} geometry={roundedRectGeo}>
+              <meshBasicMaterial map={texture} side={THREE.DoubleSide} transparent />
             </mesh>
-            <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
-            <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
+            
+            <group position={[0, 1.1, 0]} scale={0.6}>
+              <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} position={[0, -1.1, 0]} />
+              <mesh geometry={nodes.clamp.geometry} material={materials.metal} position={[0, -1.1, 0]} />
+            </group>
           </group>
         </RigidBody>
       </group>
@@ -178,9 +247,12 @@ function Band({ maxSpeed = 50, minSpeed = 0, profile }: { maxSpeed?: number; min
         <meshLineGeometry />
         {/* @ts-ignore */}
         <meshLineMaterial
-          color="#0f172a"
+          color="white"
           depthTest={false}
           resolution={isSmall ? [1000, 2000] : [1000, 1000]}
+          useMap
+          map={smokeTexture || texture}
+          repeat={[-4, 1]}
           lineWidth={1.2}
         />
       </mesh>

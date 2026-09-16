@@ -77,8 +77,8 @@ export async function Hero() {
             </div>
           </div>
 
-          <div className="lg:w-1/2 flex justify-center lg:justify-end relative z-10 w-full mb-8 lg:mb-0 h-[500px] lg:h-[650px] pointer-events-auto cursor-grab active:cursor-grabbing">
-            <div className="absolute inset-x-0 -top-14 bottom-0 z-20">
+          <div className="lg:w-1/2 flex justify-center lg:justify-end relative z-0 w-full mb-8 lg:mb-0 min-h-[600px] lg:h-[650px] pointer-events-auto cursor-grab active:cursor-grabbing [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_100%)] lg:[mask-image:none]">
+            <div className="absolute inset-x-0 -top-14 bottom-0 z-0">
                <Lanyard position={[0, 0, 9]} gravity={[0, -40, 0]} fov={20} profile={profile} />
             </div>
           </div>

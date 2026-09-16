@@ -92,3 +92,35 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Upload failed.", details: error.message || String(error) }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const url = searchParams.get("url");
+
+    if (!url) {
+      return NextResponse.json({ error: "Missing url parameter" }, { status: 400 });
+    }
+
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const { del } = await import("@vercel/blob");
+      await del(url);
+      return NextResponse.json({ success: true });
+    } else {
+      const fs = await import("fs/promises");
+      const path = await import("path");
+      
+      // url is something like /uploads/avatars/filename.png
+      if (url.startsWith("/uploads/")) {
+        const localPath = path.join(process.cwd(), "public", url.split('?')[0]);
+        await fs.unlink(localPath).catch(() => {});
+        return NextResponse.json({ success: true });
+      } else {
+        return NextResponse.json({ error: "Invalid local url" }, { status: 400 });
+      }
+    }
+  } catch (error: any) {
+    console.error("Delete error:", error);
+    return NextResponse.json({ error: "Delete failed", details: error.message }, { status: 500 });
+  }
+}
