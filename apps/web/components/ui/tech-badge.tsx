@@ -72,7 +72,7 @@ export function getTechIcon(name: string) {
   return techIconMap[key] ?? null;
 }
 
-export function TechBadge({ name, className = "" }: { name: string; className?: string }) {
+export function TechBadge({ name, className = "", iconOnlyOnMobile = false }: { name: string; className?: string; iconOnlyOnMobile?: boolean }) {
   const tech = getTechIcon(name);
 
   return (
@@ -86,7 +86,7 @@ export function TechBadge({ name, className = "" }: { name: string; className?: 
       {tech ? (
         <tech.icon style={{ color: tech.color }} className="w-3.5 h-3.5 flex-shrink-0" />
       ) : null}
-      {name}
+      <span className={iconOnlyOnMobile ? "hidden lg:inline" : ""}>{name}</span>
     </span>
   );
 }
