@@ -88,67 +88,80 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                     key={project.slug}
                     className="grid grid-cols-1 lg:grid-cols-12 lg:gap-x-12 relative group"
                   >
-                    {/* Hàng 1: TITLE & DATE */}
-                    <div className={`flex flex-col justify-end mb-4 lg:mb-10
+                    {/* Hàng 1: TITLE, NUMBER & META */}
+                    <div className={`flex flex-col lg:justify-end mb-4 lg:mb-10
                       lg:col-span-8 lg:row-start-1 order-1 lg:order-none
                       ${isEven ? 'lg:col-start-5 lg:items-end lg:text-right' : 'lg:col-start-1 lg:items-start lg:text-left'}
                     `}>
-                      <div className={`flex items-center gap-3 mb-2 ${isEven ? 'lg:flex-row-reverse' : ''}`}>
-                        <span className="text-xs sm:text-sm font-bold tracking-[0.15em] text-slate-400 dark:text-slate-500 uppercase">
+                      <div className={`flex items-center justify-center lg:justify-start gap-3 mb-2 ${isEven ? 'lg:flex-row-reverse' : ''}`}>
+                        <span className="text-[10px] sm:text-xs lg:text-sm font-bold tracking-[0.15em] text-slate-400 dark:text-slate-500 uppercase text-center lg:text-left w-full lg:w-auto">
                           {project.featured ? "FEATURED PROJECT" : "PROJECT SHOWCASE"}
                         </span>
                       </div>
-                      <h2
-                        className="text-3xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.1] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 py-1"
-                        style={{ fontFamily: '"Anton", sans-serif' }}
-                      >
-                        <Link href={`/projects/${project.slug}`} className="hover:opacity-80 transition-opacity drop-shadow-sm">
-                          {line1}
-                        </Link>
-                      </h2>
+                      
+                      <div className={`flex items-baseline justify-center lg:justify-start gap-3 lg:gap-4 ${isEven ? 'lg:flex-row-reverse' : ''} text-center lg:text-left`}>
+                          <h2
+                            className="text-3xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.1] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 py-1"
+                            style={{ fontFamily: '"Anton", sans-serif' }}
+                          >
+                            <Link href={`/projects/${project.slug}`} className="hover:opacity-80 transition-opacity drop-shadow-sm">
+                              {line1}
+                            </Link>
+                          </h2>
+                          {/* NUMBER shown on mobile inline with title, hidden on lg where it has its own column */}
+                          <span
+                            className="lg:hidden text-4xl sm:text-6xl leading-none tracking-wider select-none drop-shadow-md bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 shrink-0"
+                            style={{ fontFamily: '"Anton", sans-serif' }}
+                          >
+                            {numStr}.
+                          </span>
+                      </div>
+
                       {line2 && (
-                        <span className="text-[11px] sm:text-sm lg:text-[15px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                        <span className="text-[10px] sm:text-xs lg:text-[15px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block text-center lg:text-left mt-1 lg:mt-0 px-2 lg:px-0">
                           {line2}
                         </span>
                       )}
-                      {project.duration && (
-                        <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 mt-3 rounded-full border border-slate-200 dark:border-slate-700/50 bg-slate-50/80 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 shadow-sm ${isEven ? 'lg:flex-row-reverse' : ''}`}>
-                          <Calendar className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
-                          <span className="text-[11px] sm:text-[13px] font-semibold">{project.duration}</span>
-                        </div>
-                      )}
+                      
+                      <div className={`flex flex-wrap items-center justify-center lg:justify-start gap-1.5 mt-2.5 lg:mt-3 text-[9px] sm:text-[11px] lg:text-[12px] font-bold text-slate-400 uppercase tracking-wider ${isEven ? 'lg:flex-row-reverse lg:justify-end' : ''} px-2 lg:px-0`}>
+                          {project.duration && <span>{project.duration}</span>}
+                          {(project.duration && (project.role || project.teamSize)) && <span className="text-sky-500">•</span>}
+                          {project.role && <span className="text-sky-600">{project.role}</span>}
+                          {(project.role && project.teamSize) && <span className="text-sky-500">•</span>}
+                          {project.teamSize && <span>{project.teamSize}</span>}
+                      </div>
                     </div>
 
-                    {/* Hàng 1.5: NUMBER & ROLE */}
-                    <div className={`flex flex-col justify-end mb-6 lg:mb-10
-                      lg:col-span-4 lg:row-start-1 order-2 lg:order-none
+                    {/* Hàng 1.5: NUMBER for Desktop Only */}
+                    <div className={`hidden lg:flex flex-col justify-end mb-6 lg:mb-10
+                      lg:col-span-4 lg:row-start-1 order-none
                       ${isEven ? 'lg:col-start-1 lg:items-start lg:text-left' : 'lg:col-start-9 lg:items-end lg:text-right'}
                     `}>
-                      <div className="overflow-visible flex items-baseline gap-4 lg:block">
+                      <div className="overflow-visible flex items-baseline gap-4 block">
                         <span
-                          className="text-[72px] sm:text-[100px] lg:text-[160px] xl:text-[200px] leading-[0.8] tracking-wider select-none drop-shadow-md bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-sky-500 dark:from-white dark:to-sky-400"
+                          className="text-[160px] xl:text-[200px] leading-[0.8] tracking-wider select-none drop-shadow-md bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-sky-500 dark:from-white dark:to-sky-400"
                           style={{ fontFamily: '"Anton", sans-serif' }}
                         >
                           {numStr}
                         </span>
-                        <span className="text-[10px] sm:text-xs lg:text-[13px] font-bold text-slate-600 dark:text-sky-400 uppercase tracking-widest leading-snug mt-1 lg:mt-2 lg:block flex-1">
-                          {project.role || "DEVELOPER"}
-                        </span>
                       </div>
                     </div>
 
-                    {/* Hàng 2: DESCRIPTION & GALLERY */}
+                    {/* Hàng 2: DESCRIPTION */}
                     <div className={`flex flex-col justify-start mb-6 lg:mb-8
-                      lg:col-span-6 lg:row-start-2 order-4 lg:order-none
+                      lg:col-span-6 lg:row-start-2 order-2 lg:order-none
                       ${isEven ? 'lg:col-start-7' : 'lg:col-start-1'}
                     `}>
-                      <div className={`prose prose-slate dark:prose-invert max-w-none 
-                        prose-headings:font-bold prose-headings:text-slate-800 dark:prose-headings:text-slate-100 prose-headings:mb-3
-                        prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:text-xs sm:prose-p:text-[13px] lg:prose-p:text-[14px]
-                        prose-blockquote:border-l-4 prose-blockquote:border-slate-800 dark:prose-blockquote:border-sky-500 
-                        prose-blockquote:bg-slate-50 dark:prose-blockquote:bg-slate-800/50 prose-blockquote:py-3 prose-blockquote:px-4 
-                        prose-blockquote:text-slate-700 dark:prose-blockquote:text-slate-200 prose-blockquote:font-medium prose-blockquote:not-italic prose-blockquote:rounded-r-lg
-                        prose-li:text-xs sm:prose-li:text-[13px] lg:prose-li:text-[14px] prose-li:text-slate-600 dark:prose-li:text-slate-300 prose-li:marker:text-slate-800 dark:prose-li:marker:text-sky-500
+                      <div className={`prose prose-slate dark:prose-invert prose-sm sm:prose-base max-w-none break-words [overflow-wrap:anywhere] overflow-hidden
+                        prose-headings:font-bold prose-headings:text-slate-900 dark:prose-headings:text-slate-100 prose-headings:tracking-tight prose-headings:text-left prose-headings:break-words
+                        prose-h1:text-xl sm:prose-h1:text-2xl lg:prose-h1:text-[26px] prose-h1:font-black prose-h1:leading-snug prose-h1:mb-3
+                        prose-h2:text-base sm:prose-h2:text-lg lg:prose-h2:text-xl prose-h2:font-bold prose-h2:mt-5 prose-h2:mb-3
+                        prose-h3:text-sm sm:prose-h3:text-base lg:prose-h3:text-[17px] prose-h3:font-bold prose-h3:mt-4 prose-h3:mb-2
+                        prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-[1.75] sm:prose-p:leading-[1.8] prose-p:text-[14px] sm:prose-p:text-[14.5px] prose-p:mb-4 prose-p:text-left sm:prose-p:text-justify
+                        prose-a:text-cyan-600 hover:text-cyan-700 font-semibold
+                        prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-bold
+                        prose-blockquote:border-l-4 prose-blockquote:border-cyan-500 prose-blockquote:bg-cyan-50/40 dark:prose-blockquote:bg-slate-800/50 prose-blockquote:text-[13.5px] sm:prose-blockquote:text-[14px] prose-blockquote:py-2.5 prose-blockquote:px-4 prose-blockquote:my-3.5 prose-blockquote:rounded-r-xl prose-blockquote:not-italic prose-blockquote:text-slate-800 dark:prose-blockquote:text-slate-200
+                        prose-li:text-[14px] sm:prose-li:text-[14.5px] prose-li:my-1
                         ${isEven ? 'text-left' : 'text-left'}
                       `}>
                         {project.description ? (
@@ -160,7 +173,7 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                     </div>
 
                     <div className={`flex flex-col items-center justify-start mb-6 lg:mb-8
-                      lg:col-span-6 lg:row-start-2 order-3 lg:order-none
+                      lg:col-span-6 lg:row-start-2 order-5 lg:order-none mt-6 lg:mt-0
                       ${isEven ? 'lg:col-start-1' : 'lg:col-start-7'}
                     `}>
                       <ProjectGalleryLayout project={project} onOpenZoom={setSelectedImage} />
@@ -168,10 +181,10 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
 
                     {/* Hàng 3: TECH STACK & BUTTONS */}
                     <div className={`flex items-start
-                      lg:col-span-6 lg:row-start-3 order-5 lg:order-none
+                      lg:col-span-6 lg:row-start-3 order-3 lg:order-none
                       ${isEven ? 'lg:col-start-7 lg:justify-end' : 'lg:col-start-1 lg:justify-start'}
                     `}>
-                      <div className={`flex flex-wrap items-center gap-2 ${isEven ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`flex flex-wrap items-center gap-2 ${isEven ? 'lg:justify-end' : 'lg:justify-start'}`}>
                         {visibleStack.map((s) => (
                           <TechBadge key={s} name={s} className="px-3 py-1 text-[11px] lg:text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700" />
                         ))}
@@ -183,8 +196,8 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                       </div>
                     </div>
 
-                    <div className={`flex flex-wrap items-start gap-3 mt-4 lg:mt-0
-                      lg:col-span-6 lg:row-start-3 order-6 lg:order-none
+                    <div className={`flex flex-wrap items-start justify-center lg:justify-start gap-3 mt-4 lg:mt-0
+                      lg:col-span-6 lg:row-start-3 order-4 lg:order-none
                       ${isEven ? 'lg:col-start-1 lg:justify-start' : 'lg:col-start-7 lg:justify-end'}
                     `}>
                       {project.links?.github && (
