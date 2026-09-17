@@ -99,7 +99,7 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                         </span>
                       </div>
                       
-                      <div className={`flex items-baseline justify-between lg:justify-start gap-3 lg:gap-4 ${isEven ? 'lg:flex-row-reverse' : ''} text-left`}>
+                      <div className={`flex flex-wrap items-baseline justify-center lg:justify-start gap-x-3 gap-y-1 lg:gap-4 ${isEven ? 'lg:flex-row-reverse' : ''} text-center lg:text-left`}>
                           <h2
                             className="text-3xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.1] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 py-1"
                             style={{ fontFamily: '"Anton", sans-serif' }}
