@@ -101,7 +101,7 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                       
                       <div className={`flex items-baseline justify-start gap-3 lg:gap-4 ${isEven ? 'lg:flex-row-reverse' : ''} text-left`}>
                           <h2
-                            className="text-3xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.1] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 py-1"
+                            className="text-3xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.25] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 pt-3 pb-1"
                             style={{ fontFamily: '"Anton", sans-serif' }}
                           >
                             <Link href={`/projects/${project.slug}`} className="hover:opacity-80 transition-opacity drop-shadow-sm flex items-start lg:inline-flex lg:items-baseline text-left">
