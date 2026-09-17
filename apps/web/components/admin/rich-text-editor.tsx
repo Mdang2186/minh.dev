@@ -358,7 +358,7 @@ export function RichTextEditor({ value, onChange, placeholder }: RichTextEditorP
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-700 prose-p:leading-[1.8] prose-a:text-cyan-600 hover:prose-a:text-cyan-700 prose-img:rounded-xl prose-img:shadow-sm prose-img:border prose-img:border-slate-200 prose-strong:text-slate-900 min-h-[250px] p-6 focus:outline-none',
+        class: 'prose prose-sm md:prose-base prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-700 prose-p:leading-[1.8] prose-a:text-cyan-600 hover:prose-a:text-cyan-700 prose-img:rounded-xl prose-img:shadow-sm prose-img:border prose-img:border-slate-200 prose-strong:text-slate-900 min-h-[250px] p-4 md:p-6 focus:outline-none',
       },
       handlePaste: (view, event, slice) => {
         const items = event.clipboardData?.items;

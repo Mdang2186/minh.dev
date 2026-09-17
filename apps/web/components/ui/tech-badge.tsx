@@ -6,9 +6,10 @@ import {
   SiFigma, SiAdobephotoshop, SiAdobeillustrator, SiCanva,
   SiNextdotjs, SiNodedotjs,
   SiBootstrap, SiJquery, SiVuedotjs, SiAngular, SiPython, SiFlutter, SiAmazon,
+  SiNestjs, SiTurborepo
 } from "react-icons/si";
 import { TbBrandCSharp, TbBrandVscode, TbBrandVisualStudio, TbFileTypeSql } from "react-icons/tb";
-import { FaJava, FaPhp } from "react-icons/fa";
+import { FaJava, FaPhp, FaCubes } from "react-icons/fa";
 import type { IconType } from "react-icons";
 import { cn } from "@/lib/cn";
 
@@ -65,6 +66,9 @@ const techIconMap: Record<string, { icon: IconType; color: string }> = {
   "photoshop": { icon: SiAdobephotoshop, color: "#31A8FF" },
   "illustrator": { icon: SiAdobeillustrator, color: "#FF9A00" },
   "canva": { icon: SiCanva, color: "#00C4CC" },
+  "nestjs": { icon: SiNestjs, color: "#E0234E" },
+  "turborepo": { icon: SiTurborepo, color: "#EF4444" },
+  "microservices": { icon: FaCubes, color: "#3B82F6" },
 };
 
 export function getTechIcon(name: string) {
