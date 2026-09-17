@@ -101,7 +101,7 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                       
                       <div className={`flex items-baseline justify-start gap-3 lg:gap-4 ${isEven ? 'lg:flex-row-reverse' : ''} text-left`}>
                           <h2
-                            className="text-3xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.25] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 pt-3 pb-1"
+                            className="text-3xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.3] lg:leading-[1.4] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 py-3 lg:py-4"
                             style={{ fontFamily: '"Anton", sans-serif' }}
                           >
                             <Link href={`/projects/${project.slug}`} className="hover:opacity-80 transition-opacity drop-shadow-sm flex items-start lg:inline-flex lg:items-baseline text-left">
@@ -133,7 +133,7 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                     `}>
                       <div className="overflow-visible flex items-baseline gap-4 block">
                         <span
-                          className="text-[160px] xl:text-[200px] leading-[0.8] tracking-wider select-none drop-shadow-md bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-sky-500 dark:from-white dark:to-sky-400"
+                          className="text-[160px] xl:text-[200px] leading-[0.95] tracking-wider select-none drop-shadow-md bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 pt-6 pb-2"
                           style={{ fontFamily: '"Anton", sans-serif' }}
                         >
                           {numStr}
