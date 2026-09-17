@@ -72,21 +72,25 @@ export function getTechIcon(name: string) {
   return techIconMap[key] ?? null;
 }
 
-export function TechBadge({ name, className = "", iconOnlyOnMobile = false }: { name: string; className?: string; iconOnlyOnMobile?: boolean }) {
+export function TechBadge({ name, className = "", iconOnly = false }: { name: string; className?: string; iconOnly?: boolean }) {
   const tech = getTechIcon(name);
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200",
+        "inline-flex items-center gap-1.5 rounded-lg font-bold bg-slate-100 text-slate-700 border border-slate-200",
         "dark:bg-slate-800/80 dark:text-slate-300 dark:border-slate-700",
+        iconOnly ? "p-1.5 justify-center" : "px-2.5 py-1 text-[11px]",
         className
       )}
+      title={iconOnly ? name : undefined}
     >
       {tech ? (
-        <tech.icon style={{ color: tech.color }} className="w-3.5 h-3.5 flex-shrink-0" />
-      ) : null}
-      <span className={iconOnlyOnMobile ? "hidden lg:inline" : ""}>{name}</span>
+        <tech.icon style={{ color: tech.color }} className={cn("flex-shrink-0", iconOnly ? "w-4 h-4 sm:w-5 sm:h-5" : "w-3.5 h-3.5")} />
+      ) : (
+        iconOnly ? <span className="px-1 text-[10px]">{name.slice(0, 2).toUpperCase()}</span> : null
+      )}
+      {!iconOnly && name}
     </span>
   );
 }

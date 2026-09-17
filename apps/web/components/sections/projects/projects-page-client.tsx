@@ -90,16 +90,16 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                   >
                     {/* Hàng 1: TITLE, NUMBER & META */}
                     <div className={`flex flex-col lg:justify-end mb-4 lg:mb-10
-                      lg:col-span-8 lg:row-start-1 order-1 lg:order-none items-end lg:items-start text-right lg:text-left
+                      lg:col-span-8 lg:row-start-1 order-1 lg:order-none
                       ${isEven ? 'lg:col-start-5 lg:items-end lg:text-right' : 'lg:col-start-1 lg:items-start lg:text-left'}
                     `}>
-                      <div className={`flex items-center justify-end lg:justify-start gap-3 mb-2 w-full ${isEven ? 'lg:flex-row-reverse' : ''}`}>
-                        <span className="text-[10px] sm:text-xs lg:text-sm font-bold tracking-[0.15em] text-slate-400 dark:text-slate-500 uppercase">
+                      <div className={`flex items-center justify-center lg:justify-start gap-3 mb-2 ${isEven ? 'lg:flex-row-reverse' : ''}`}>
+                        <span className="text-[10px] sm:text-xs lg:text-sm font-bold tracking-[0.15em] text-slate-400 dark:text-slate-500 uppercase text-center lg:text-left w-full lg:w-auto">
                           {project.featured ? "FEATURED PROJECT" : "PROJECT SHOWCASE"}
                         </span>
                       </div>
                       
-                      <div className={`flex items-baseline justify-end lg:justify-start gap-3 lg:gap-4 ${isEven ? 'lg:flex-row-reverse' : ''} w-full`}>
+                      <div className={`flex items-baseline justify-between lg:justify-start gap-3 lg:gap-4 ${isEven ? 'lg:flex-row-reverse' : ''} text-left`}>
                           <h2
                             className="text-3xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.1] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 py-1"
                             style={{ fontFamily: '"Anton", sans-serif' }}
@@ -118,12 +118,12 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                       </div>
 
                       {line2 && (
-                        <span className="text-[10px] sm:text-xs lg:text-[15px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block mt-1 lg:mt-0 px-2 lg:px-0 w-full">
+                        <span className="text-[10px] sm:text-xs lg:text-[15px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block text-center lg:text-left mt-1 lg:mt-0 px-2 lg:px-0">
                           {line2}
                         </span>
                       )}
                       
-                      <div className={`flex flex-wrap items-center justify-end lg:justify-start gap-1.5 mt-2.5 lg:mt-3 text-[9px] sm:text-[11px] lg:text-[12px] font-bold text-slate-400 uppercase tracking-wider ${isEven ? 'lg:flex-row-reverse lg:justify-end' : ''} px-2 lg:px-0 w-full`}>
+                      <div className={`flex flex-wrap items-center justify-center lg:justify-start gap-1.5 mt-2.5 lg:mt-3 text-[9px] sm:text-[11px] lg:text-[12px] font-bold text-slate-400 uppercase tracking-wider ${isEven ? 'lg:flex-row-reverse lg:justify-end' : ''} px-2 lg:px-0`}>
                           {project.duration && <span>{project.duration}</span>}
                           {(project.duration && (project.role || project.teamSize)) && <span className="text-sky-500">•</span>}
                           {project.role && <span className="text-sky-600">{project.role}</span>}
@@ -147,7 +147,15 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                       </div>
                     </div>
 
-                    {/* Hàng 2: DESCRIPTION */}
+                    {/* GALLERY (Order 2 on mobile) */}
+                    <div className={`flex flex-col items-center justify-start mb-6 lg:mb-8
+                      lg:col-span-6 lg:row-start-2 order-2 lg:order-none
+                      ${isEven ? 'lg:col-start-1' : 'lg:col-start-7'}
+                    `}>
+                      <ProjectGalleryLayout project={project} onOpenZoom={setSelectedImage} />
+                    </div>
+
+                    {/* Hàng 2: DESCRIPTION (Order 3 on mobile) */}
                     <div className={`flex flex-col justify-start mb-6 lg:mb-8
                       lg:col-span-6 lg:row-start-2 order-3 lg:order-none
                       ${isEven ? 'lg:col-start-7' : 'lg:col-start-1'}
@@ -162,7 +170,7 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                         prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-bold
                         prose-blockquote:border-l-4 prose-blockquote:border-cyan-500 prose-blockquote:bg-cyan-50/40 dark:prose-blockquote:bg-slate-800/50 prose-blockquote:text-[13.5px] sm:prose-blockquote:text-[14px] prose-blockquote:py-2.5 prose-blockquote:px-4 prose-blockquote:my-3.5 prose-blockquote:rounded-r-xl prose-blockquote:not-italic prose-blockquote:text-slate-800 dark:prose-blockquote:text-slate-200
                         prose-li:text-[14px] sm:prose-li:text-[14.5px] prose-li:my-1
-                        text-left
+                        ${isEven ? 'lg:text-left' : 'lg:text-left'} text-left
                       `}>
                         {project.description ? (
                           <div dangerouslySetInnerHTML={{ __html: project.description }} />
@@ -172,13 +180,6 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                       </div>
                     </div>
 
-                    <div className={`flex flex-col items-center justify-start mb-6 lg:mb-8
-                      lg:col-span-6 lg:row-start-2 order-2 lg:order-none
-                      ${isEven ? 'lg:col-start-1' : 'lg:col-start-7'}
-                    `}>
-                      <ProjectGalleryLayout project={project} onOpenZoom={setSelectedImage} />
-                    </div>
-
                     {/* Hàng 3: TECH STACK & BUTTONS */}
                     <div className={`flex items-start
                       lg:col-span-6 lg:row-start-3 order-4 lg:order-none
@@ -186,7 +187,10 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                     `}>
                       <div className={`flex flex-wrap items-center gap-2 ${isEven ? 'lg:justify-end' : 'lg:justify-start'}`}>
                         {visibleStack.map((s) => (
-                          <TechBadge key={s} name={s} iconOnlyOnMobile={true} className="px-2 lg:px-3 py-1 text-[11px] lg:text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700" />
+                          <>
+                            <TechBadge key={`mobile-${s}`} name={s} iconOnly={true} className="lg:hidden" />
+                            <TechBadge key={`desktop-${s}`} name={s} className="hidden lg:inline-flex px-3 py-1 text-[11px] lg:text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700" />
+                          </>
                         ))}
                         {hiddenStackCount > 0 && (
                           <span className="px-2.5 py-1 text-[11px] lg:text-xs font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full border border-slate-300 dark:border-slate-600">
