@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { Save, Plus, Trash2 } from "lucide-react";
 import { useAdminLanguage } from "./admin-language-provider";
 import { MapPin, Globe, Code2, BookOpen, Star, MessageCircle, Plane, Radar, Mail, LucideIcon } from "lucide-react";

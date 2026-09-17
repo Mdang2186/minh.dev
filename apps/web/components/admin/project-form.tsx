@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { Save } from "lucide-react";
 import { useAdminLanguage } from "./admin-language-provider";
 import { ProjectImageUploader, ProjectImage } from "./project-image-uploader";

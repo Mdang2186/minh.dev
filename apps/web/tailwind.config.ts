@@ -18,7 +18,7 @@ const config: Config = {
       colors: {
         black: {
           DEFAULT: "#000",
-          100: "#000319", // Màu nền chính (Dark Blue/Black)
+          100: "#000000", // Màu nền chính (Dark Black)
           200: "rgba(17, 25, 40, 0.75)",
           300: "rgba(255, 255, 255, 0.125)",
         },

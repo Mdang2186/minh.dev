@@ -4,11 +4,52 @@ import { Briefcase } from "lucide-react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { InteractiveExperience } from "@/components/sections/interactive-experience";
-import type { PublicExperience, PublicProject } from "@/features/portfolio/portfolio.types";
+import type { PublicExperience, PublicProject, PublicTimelineNode } from "@/features/portfolio/portfolio.types";
 import { useTranslations } from "next-intl";
 
-export function ExperiencePageClient({ experiences, projects }: { experiences: PublicExperience[], projects: PublicProject[] }) {
+export function ExperiencePageClient({ 
+  experiences, 
+  projects, 
+  timelineNodes = [] 
+}: { 
+  experiences: PublicExperience[], 
+  projects: PublicProject[],
+  timelineNodes?: PublicTimelineNode[]
+}) {
   const t = useTranslations("ExperiencePage");
+
+  // Map timelineNodes to ExperienceData structure (Option B)
+  const mappedExperiences = timelineNodes.map(node => {
+    const highlights: string[] = [];
+    let description = undefined;
+    
+    if (node.description) {
+      const parts = node.description.split(/\n{1,}|\r?\n/).map(p => p.trim()).filter(Boolean);
+      if (parts.length > 0) {
+        description = parts[0]; // First line is description
+        // The rest are lessons learned / highlights
+        for (let i = 1; i < parts.length; i++) {
+          let line = parts[i];
+          if (line.startsWith("- ")) line = line.substring(2);
+          else if (line.startsWith("-")) line = line.substring(1);
+          highlights.push(line);
+        }
+      }
+    }
+
+    // Default values to fallback on if timeline node fields are missing
+    return {
+      id: node.id,
+      title: node.shortLabel || node.type || "Milestone", // Displayed as Role / Tag
+      org: node.title || "Timeline Node", // Displayed as Organization / Title
+      period: node.date || "Ongoing", // Displayed as Period
+      description: description,
+      highlights: highlights,
+      sprints: node.sprints || [],
+      projectId: node.projectId || node.project?.id, // Passing projectId for links
+      projectSlug: node.project?.slug
+    };
+  });
 
   return (
     <Container className="py-16 md:py-24">
@@ -23,11 +64,11 @@ export function ExperiencePageClient({ experiences, projects }: { experiences: P
               <span className="p-3 bg-cyan-500/10 rounded-2xl text-cyan-600 dark:text-cyan-400">
                 <Briefcase className="h-8 w-8" />
               </span>
-              Professional Experience
+              My Journey & Experience
             </motion.h1>
 
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              My designated roles and specialized responsibilities in projects, focusing on frontend development, UI/UX design, and team efficiency.
+              My designated roles, milestones, and specialized responsibilities in projects, focusing on frontend development, UI/UX design, and team efficiency.
             </p>
           </div>
         </div>
@@ -38,8 +79,8 @@ export function ExperiencePageClient({ experiences, projects }: { experiences: P
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            {experiences.length ? (
-              <InteractiveExperience experiences={experiences} projects={projects} />
+            {mappedExperiences.length > 0 ? (
+              <InteractiveExperience experiences={mappedExperiences} projects={projects} />
             ) : (
               <div className="rounded-3xl border border-slate-200 bg-white/70 p-10 text-center text-slate-500 shadow-sm">
                 {t("empty")}

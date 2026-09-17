@@ -58,10 +58,7 @@ export function Navbar() {
                 <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-full max-w-7xl mx-auto w-full gap-2">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-1.5 rounded-full transition-all active:scale-95 group shrink-0">
-                        <span className="text-base sm:text-lg font-black tracking-tight flex items-center">
-                            <span className="text-slate-900 dark:text-white">minh</span>
-                            <span className="text-cyan-500 dark:text-cyan-400">dev</span>
-                        </span>
+                        <img src="/images/logoDCM.png" alt="Logo" className="h-8 sm:h-9 w-auto object-contain" />
                     </Link>
 
                     {/* Desktop Navigation */}

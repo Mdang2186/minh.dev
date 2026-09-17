@@ -1,32 +1,28 @@
 import Link from "next/link";
 import { Container } from "@/components/common/container";
+import { TopHero } from "@/components/sections/top-hero";
 import { Hero } from "@/components/sections/hero";
 import { FeaturedProjects } from "@/components/sections/featured-projects";
 import { Quote } from "@/components/sections/quote";
-import { RoadmapTimeline } from "@/components/sections/roadmap-timeline";
 import { DesignFeature } from "@/components/sections/design-feature";
-import { getPublicProjects, getPublicTimelineNodes } from "@/features/portfolio/portfolio.service";
+import { getPublicProjects, getPublicSocialLinks } from "@/features/portfolio/portfolio.service";
 import { getTranslations } from "next-intl/server";
 
 export const revalidate = 3600; // Cache data for 1 hour
 
 export default async function HomePage() {
     const featuredProjects = await getPublicProjects({ featured: true, limit: 3 });
-    const timelineNodes = await getPublicTimelineNodes();
+    const socials = await getPublicSocialLinks();
     const t = await getTranslations("HomePage");
     const tFeatured = await getTranslations("FeaturedProjects");
 
     return (
         <div className="flex flex-col min-h-screen pb-10 bg-background text-foreground selection:bg-primary/30">
+            <TopHero socials={socials} />
             <Hero />
 
             {/* Quote Section — full bleed, no shadow */}
             <Quote />
-
-            {/* My Journey — Full-Width */}
-            <div>
-                <RoadmapTimeline nodes={timelineNodes} />
-            </div>
 
             <div className="w-full px-4 sm:px-6 relative z-10 mt-4">
                 {/* Design Feature Section — full bleed */}

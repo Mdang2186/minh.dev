@@ -4,63 +4,58 @@
 
 @layer base {
     :root {
-        /* luoi.dev Inspired Light Theme */
-        --background: 75 33% 98%;
-        /* Is #F8FAF0 (Warm off-white) */
-        --foreground: 240 10% 10%;
-        /* Dark Zinc */
+        /* Beige & Gold Inspired Light Theme */
+        --background: 43 33% 95%; /* Beige/Warm off-white */
+        --foreground: 0 0% 10%; /* Dark text */
 
         --card: 0 0% 100%;
-        --card-foreground: 240 10% 10%;
+        --card-foreground: 0 0% 10%;
 
         --popover: 0 0% 100%;
-        --popover-foreground: 240 10% 10%;
+        --popover-foreground: 0 0% 10%;
 
-        --primary: 270 50% 40%;
-        /* Deep Purple */
+        --primary: 41 94% 43%; /* Gold #D69707 */
         --primary-foreground: 0 0% 100%;
 
-        --secondary: 240 5% 96%;
-        --secondary-foreground: 240 5.9% 10%;
+        --secondary: 43 20% 90%;
+        --secondary-foreground: 0 0% 10%;
 
-        --muted: 240 4.8% 95.9%;
-        --muted-foreground: 240 3.8% 46.1%;
+        --muted: 43 15% 90%;
+        --muted-foreground: 0 0% 45%;
 
-        --accent: 75 33% 90%;
-        --accent-foreground: 240 5.9% 10%;
+        --accent: 41 94% 43%;
+        --accent-foreground: 0 0% 100%;
 
         --destructive: 0 84.2% 60.2%;
         --destructive-foreground: 0 0% 98%;
 
-        --border: 240 5.9% 88%;
-        /* Slightly darker border for visibility on light bg */
-        --input: 240 5.9% 90%;
-        --ring: 270 50% 40%;
+        --border: 0 0% 85%;
+        --input: 0 0% 85%;
+        --ring: 41 94% 43%;
         --radius: 0.5rem;
-        /* Clean, slightly sharper radius */
     }
 
     .dark {
-        --background: 230 100% 5%; /* Deep Blue-Black #000319 */
-        --foreground: 210 20% 98%;
-        --card: 230 60% 8%; /* Slightly lighter deep blue for cards */
-        --card-foreground: 210 20% 98%;
-        --popover: 230 60% 8%;
-        --popover-foreground: 210 20% 98%;
-        --primary: 210 100% 50%; /* Pure bright blue */
-        --primary-foreground: 210 20% 98%;
-        --secondary: 230 30% 15%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 230 30% 15%;
-        --muted-foreground: 215 20% 65%;
-        --accent: 230 30% 20%;
-        --accent-foreground: 0 0% 98%;
+        --background: 0 0% 2%; /* Pure Black Background */
+        --foreground: 0 0% 98%; /* White text */
+        --card: 0 0% 6%; /* Very dark gray for cards */
+        --card-foreground: 0 0% 98%;
+        --popover: 0 0% 6%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 41 94% 43%; /* Gold #D69707 */
+        --primary-foreground: 0 0% 10%; /* Dark text on gold */
+        --secondary: 0 0% 10%;
+        --secondary-foreground: 41 94% 43%;
+        --muted: 0 0% 12%;
+        --muted-foreground: 0 0% 65%;
+        --accent: 41 94% 43%;
+        --accent-foreground: 0 0% 10%;
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 0 0% 98%;
-        --border: 230 30% 20%;
-        --input: 230 30% 20%;
-        --ring: 210 100% 50%;
-        --radius: 1.5rem; /* Larger rounded corners by default */
+        --border: 0 0% 15%;
+        --input: 0 0% 15%;
+        --ring: 41 94% 43%;
+        --radius: 1.5rem;
     }
 }
 
@@ -102,30 +97,30 @@
 
     /* Original Portfolio Match CSS */
     .hero-bg-color {
-        background-color: #0A0A1B;
+        background-color: #000000;
     }
 
     .text-gradient {
-        background: linear-gradient(90deg, #145ddb, #1c4bc4);
+        background: linear-gradient(90deg, #d69707, #f5c542);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
     .bg-gradient {
-        background: linear-gradient(90deg, #145ddb, #1c4bc4);
+        background: linear-gradient(90deg, #d69707, #f5c542);
     }
 
     .border-gradient {
         border: 2px solid transparent;
-        background: linear-gradient(#0A0A1B, #0A0A1B) padding-box,
-            linear-gradient(90deg, #145ddb, #1c4bc4) border-box;
+        background: linear-gradient(#000000, #000000) padding-box,
+            linear-gradient(90deg, #d69707, #f5c542) border-box;
     }
 
     .border-gradient-light {
         border: 2px solid transparent;
         background: linear-gradient(#ffffff, #ffffff) padding-box,
-            linear-gradient(90deg, #145ddb, #1c4bc4) border-box;
+            linear-gradient(90deg, #d69707, #f5c542) border-box;
     }
 
     .glitch-effect {
@@ -187,8 +182,8 @@
     }
 
     .btn-primary-custom {
-        background: linear-gradient(90deg, #145ddb, #1c4bc4);
-        color: white;
+        background: linear-gradient(90deg, #d69707, #f5c542);
+        color: #000;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -202,7 +197,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
         transition: all 0.6s ease;
         z-index: -1;
     }
@@ -213,33 +208,33 @@
 
     .btn-outline-custom {
         border: 2px solid transparent;
-        background: linear-gradient(#0A0A1B, #0A0A1B) padding-box,
-            linear-gradient(90deg, #145ddb, #1c4bc4) border-box;
+        background: linear-gradient(#000000, #000000) padding-box,
+            linear-gradient(90deg, #d69707, #f5c542) border-box;
         transition: all 0.3s ease;
-        color: white;
+        color: #d69707;
     }
 
     .btn-outline-custom:hover {
-        background: linear-gradient(#0A0A1B, #0A0A1B) padding-box,
-            linear-gradient(90deg, #1c4bc4, #145ddb) border-box;
+        background: linear-gradient(#000000, #000000) padding-box,
+            linear-gradient(90deg, #f5c542, #d69707) border-box;
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 20px rgba(214, 151, 7, 0.2);
     }
 
     .btn-outline-custom-light {
         border: 2px solid transparent;
         background: linear-gradient(#ffffff, #ffffff) padding-box,
-            linear-gradient(90deg, #145ddb, #1c4bc4) border-box;
+            linear-gradient(90deg, #d69707, #f5c542) border-box;
         transition: all 0.3s ease;
-        color: #0f172a;
+        color: #d69707;
     }
 
     .btn-outline-custom-light:hover {
         background: linear-gradient(#ffffff, #ffffff) padding-box,
-            linear-gradient(90deg, #1c4bc4, #145ddb) border-box;
-        color: white;
+            linear-gradient(90deg, #f5c542, #d69707) border-box;
+        color: #000;
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 20px rgba(214, 151, 7, 0.2);
     }
 
     .hover-scale {

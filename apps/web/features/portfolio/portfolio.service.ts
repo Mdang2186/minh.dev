@@ -324,7 +324,7 @@ export async function getPublicTimelineNodes(): Promise<PublicTimelineNode[]> {
     const locale = await getSafeLocale();
     const nodes = await (prisma as any).timelineNode.findMany({
       where: { visible: true },
-      orderBy: [{ date: "desc" }, { sortOrder: "asc" }],
+      orderBy: [{ sortOrder: "asc" }],
       include: {
         sprints: { orderBy: { startDate: "asc" } },
         project: {

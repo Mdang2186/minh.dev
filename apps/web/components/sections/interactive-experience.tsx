@@ -5,15 +5,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Briefcase, Calendar, ChevronRight, X, Github, Code2, Layers, Wrench, Users, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PublicProject } from "@/features/portfolio/portfolio.types";
+import { Link } from "@/i18n/routing";
 
 type ExperienceHighlight = string;
+
+export interface SprintData {
+    id?: string;
+    title: string;
+    startDate?: string;
+    endDate?: string;
+    description?: string;
+}
 
 export interface ExperienceData {
     id: string;
     title: string;
     org: string;
     period: string;
+    description?: string;
     highlights: ExperienceHighlight[];
+    sprints?: SprintData[];
+    projectId?: string;
+    projectSlug?: string;
 }
 
 interface InteractiveExperienceProps {
@@ -24,7 +37,6 @@ interface InteractiveExperienceProps {
 export function InteractiveExperience({ experiences, projects = [] }: InteractiveExperienceProps) {
     const [activeIndex, setActiveIndex] = useState<number>(-1);
     const [isMobile, setIsMobile] = useState(false);
-    const [selectedProject, setSelectedProject] = useState<PublicProject | null>(null);
 
     // Check if we are on mobile to change behavior
     useEffect(() => {
@@ -121,7 +133,6 @@ export function InteractiveExperience({ experiences, projects = [] }: Interactiv
                                                 <ExperienceDetailCard 
                                                     exp={activeExp} 
                                                     project={activeProject}
-                                                    onViewDetails={() => setSelectedProject(activeProject ?? null)} 
                                                     className="shadow-xl ring-1 ring-slate-900/5"
                                                 />
                                             </div>
@@ -151,33 +162,22 @@ export function InteractiveExperience({ experiences, projects = [] }: Interactiv
                                     exp={activeExp} 
                                     className="h-full" 
                                     project={activeProject}
-                                    onViewDetails={() => setSelectedProject(activeProject ?? null)}
                                 />
                             </motion.div>
                         </AnimatePresence>
                     </div>
                 </div>
             )}
-            
-            <AnimatePresence>
-                {selectedProject && (
-                    <ProjectDetailModal 
-                        project={selectedProject} 
-                        role={activeExp.title}
-                        onClose={() => setSelectedProject(null)} 
-                    />
-                )}
-            </AnimatePresence>
         </div>
     );
 }
 
-function ExperienceDetailCard({ exp, className, project, onViewDetails }: { exp: ExperienceData, className?: string, project?: PublicProject, onViewDetails: () => void }) {
+function ExperienceDetailCard({ exp, className, project }: { exp: ExperienceData, className?: string, project?: PublicProject }) {
     return (
         <div className={cn(
-            "p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col relative overflow-hidden group cursor-pointer",
+            "p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col relative overflow-hidden",
             className
-        )} onClick={project ? onViewDetails : undefined}>
+        )}>
 
             <div className="flex flex-col space-y-4 pb-6 border-b border-cyan-500/20 relative z-10">
                 <div className="flex justify-between items-start gap-4">
@@ -205,43 +205,114 @@ function ExperienceDetailCard({ exp, className, project, onViewDetails }: { exp:
             </div>
 
             <div className="pt-7 flex-1 relative z-10">
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-5 flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-cyan-500" /> Key Responsibilities & Features
-                </h4>
-                <ul className="space-y-3 text-[14px] sm:text-[15px] leading-relaxed text-slate-700 dark:text-slate-300">
-                    {exp.highlights.map((highlight, index) => {
-                        const parts = highlight.split(':');
-                        const hasColon = parts.length > 1;
+                {exp.description && (
+                    <div className="mb-6">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-cyan-500" /> Mô tả kinh nghiệm
+                        </h4>
+                        <p className="text-[14px] sm:text-[15px] leading-relaxed text-slate-700 dark:text-slate-300">
+                            {exp.description}
+                        </p>
+                    </div>
+                )}
+            
+                {exp.highlights.length > 0 && (
+                    <>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-5 flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-cyan-500" /> Bài học & Đóng góp
+                        </h4>
+                        <ul className="space-y-3 text-[14px] sm:text-[15px] leading-relaxed text-slate-700 dark:text-slate-300">
+                            {exp.highlights.map((highlight, index) => {
+                                const parts = highlight.split(':');
+                                const hasColon = parts.length > 1;
 
-                        return (
-                            <motion.li
-                                key={index}
-                                initial={{ opacity: 0, y: 5 }}
+                                return (
+                                    <motion.li
+                                        key={index}
+                                        initial={{ opacity: 0, y: 5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                                        className="flex items-start gap-3 py-1"
+                                    >
+                                        <span className="mt-2 w-1.5 h-1.5 shrink-0 rounded-full bg-slate-400 dark:bg-slate-500" />
+                                        <span className="flex-1">
+                                            {hasColon ? (
+                                                <>
+                                                    <span className="font-bold text-slate-900 dark:text-cyan-300">{parts[0]}:</span>
+                                                    <span className="text-slate-600 dark:text-slate-300">{parts.slice(1).join(':')}</span>
+                                                </>
+                                            ) : (
+                                                <span>{highlight}</span>
+                                            )}
+                                        </span>
+                                    </motion.li>
+                                );
+                            })}
+                        </ul>
+                    </>
+                )}
+
+                {exp.sprints && exp.sprints.length > 0 && (
+                    <div className="mt-8 space-y-8">
+                        {exp.sprints.map((sprint, idx) => (
+                            <motion.div 
+                                key={idx}
+                                initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.3, delay: index * 0.1 }}
-                                className="flex items-start gap-3 py-1"
+                                transition={{ duration: 0.3, delay: idx * 0.15 }}
                             >
-                                <span className="mt-2 w-1.5 h-1.5 shrink-0 rounded-full bg-slate-400 dark:bg-slate-500" />
-                                <span className="flex-1">
-                                    {hasColon ? (
-                                        <>
-                                            <span className="font-bold text-slate-900 dark:text-cyan-300">{parts[0]}:</span>
-                                            <span className="text-slate-600 dark:text-slate-300">{parts.slice(1).join(':')}</span>
-                                        </>
-                                    ) : (
-                                        <span>{highlight}</span>
+                                <h4 className="text-base font-bold text-slate-900 dark:text-white flex flex-wrap items-center gap-2 mb-3">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" /> 
+                                    <span>{sprint.title}</span>
+                                    {(sprint.startDate || sprint.endDate) && (
+                                        <span className="text-[11px] font-bold bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md text-slate-500 whitespace-nowrap">
+                                            {sprint.startDate} {sprint.endDate ? `- ${sprint.endDate}` : ''}
+                                        </span>
                                     )}
-                                </span>
-                            </motion.li>
-                        );
-                    })}
-                </ul>
+                                </h4>
+                                {sprint.description && (
+                                    <ul className="space-y-3 text-[14px] sm:text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 ml-2 border-l-2 border-slate-100 dark:border-slate-800 pl-4">
+                                        {sprint.description.split(/\r?\n/).filter(Boolean).map((line, i) => {
+                                            // Make bullet point styles
+                                            let content = line.trim();
+                                            if (content.startsWith("- ")) content = content.substring(2);
+                                            else if (content.startsWith("-")) content = content.substring(1);
+                                            
+                                            const parts = content.split(':');
+                                            const hasColon = parts.length > 1;
+
+                                            return (
+                                                <li key={i} className="flex items-start gap-3 py-1">
+                                                    <span className="mt-2 w-1.5 h-1.5 shrink-0 rounded-full bg-slate-300 dark:bg-slate-600" />
+                                                    <span className="flex-1">
+                                                        {hasColon ? (
+                                                            <>
+                                                                <span className="font-bold text-slate-800 dark:text-slate-200">{parts[0]}:</span>
+                                                                <span className="text-slate-600 dark:text-slate-400">{parts.slice(1).join(':')}</span>
+                                                            </>
+                                                        ) : (
+                                                            <span>{content}</span>
+                                                        )}
+                                                    </span>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                )}
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
                 
-                {project && (
-                    <div className="mt-6 text-center">
-                        <span className="inline-flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold text-sm bg-cyan-50 dark:bg-cyan-900/30 px-4 py-2 rounded-xl group-hover:bg-cyan-100 dark:group-hover:bg-cyan-900/50 transition-colors">
+                {exp.projectSlug && (
+                    <div className="mt-8 text-center">
+                        <Link 
+                            href={`/projects/${exp.projectSlug}`}
+                            className="inline-flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold text-sm bg-cyan-50 dark:bg-cyan-900/30 px-5 py-2.5 rounded-xl group-hover:bg-cyan-100 dark:group-hover:bg-cyan-900/50 transition-colors"
+                            onClick={(e) => e.stopPropagation()} // Prevent triggering parent onClick if any
+                        >
                             Nhấn để xem chi tiết dự án <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                        </span>
+                        </Link>
                     </div>
                 )}
             </div>
@@ -250,172 +321,3 @@ function ExperienceDetailCard({ exp, className, project, onViewDetails }: { exp:
     );
 }
 
-function ProjectDetailModal({ project, role, onClose }: { project: PublicProject, role: string, onClose: () => void }) {
-    // Prevent scrolling on body when modal is open
-    useEffect(() => {
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, []);
-
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm" onClick={onClose}>
-            <motion.div 
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden"
-            >
-                {/* Header */}
-                <div className="p-6 sm:p-8 border-b border-slate-100 shrink-0">
-                    <button 
-                        onClick={onClose}
-                        className="absolute top-6 right-6 p-2 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 rounded-full transition-colors"
-                    >
-                        <X size={20} />
-                    </button>
-
-                    <div className="inline-flex items-center gap-2 mb-4">
-                        <span className="px-3 py-1 rounded-full bg-cyan-50 text-cyan-600 text-[11px] font-black tracking-wider uppercase border border-cyan-100 flex items-center gap-1.5">
-                            <Briefcase size={12} /> {role}
-                        </span>
-                    </div>
-
-                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight pr-12">
-                        {project.name}
-                    </h2>
-
-                    <div className="flex flex-wrap gap-3 mt-5">
-                        {project.duration && (
-                            <div className="flex items-center gap-2 text-sm font-bold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                                <Clock size={16} className="text-cyan-500" /> {project.duration}
-                            </div>
-                        )}
-                        {project.teamSize && (
-                            <div className="flex items-center gap-2 text-sm font-bold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                                <Users size={16} className="text-cyan-500" /> {project.teamSize}
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Body */}
-                <div className="p-6 sm:p-8 overflow-y-auto flex-1">
-                    <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-                        
-                        {/* Left Content (2/3) */}
-                        <div className="lg:col-span-2 space-y-8">
-                            {/* Summary */}
-                            <section>
-                                <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" /> Tổng quan dự án
-                                </h3>
-                                <p className="text-slate-700 leading-relaxed font-medium">
-                                    {project.summary}
-                                </p>
-                            </section>
-
-                            {/* Highlights */}
-                            {project.highlights && project.highlights.length > 0 && (
-                                <section>
-                                    <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" /> Tính năng nổi bật
-                                    </h3>
-                                    <ul className="space-y-4">
-                                        {project.highlights.map((highlight, idx) => {
-                                            const parts = highlight.split(':');
-                                            const hasColon = parts.length > 1;
-                                            return (
-                                                <li key={idx} className="flex gap-3 text-slate-700 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
-                                                    <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
-                                                    <span className="leading-relaxed text-[15px]">
-                                                        {hasColon ? (
-                                                            <>
-                                                                <span className="font-bold text-slate-900">{parts[0]}:</span>
-                                                                <span>{parts.slice(1).join(':')}</span>
-                                                            </>
-                                                        ) : highlight}
-                                                    </span>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </section>
-                            )}
-                        </div>
-
-                        {/* Right Content (1/3) */}
-                        <div className="space-y-8 lg:border-l border-slate-100 lg:pl-8">
-                            {project.stack && project.stack.length > 0 && (
-                                <section>
-                                    <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                        <Layers size={14} className="text-cyan-500" /> Framework & Tech Stack
-                                    </h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {project.stack.map(tag => (
-                                            <span key={tag} className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-xl shadow-sm">{tag}</span>
-                                        ))}
-                                    </div>
-                                </section>
-                            )}
-
-                            {project.languages && project.languages.length > 0 && (
-                                <section>
-                                    <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                        <Code2 size={14} className="text-cyan-500" /> Ngôn ngữ lập trình
-                                    </h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {project.languages.map(tag => (
-                                            <span key={tag} className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-xl shadow-sm">{tag}</span>
-                                        ))}
-                                    </div>
-                                </section>
-                            )}
-
-                            {project.tools && project.tools.length > 0 && (
-                                <section>
-                                    <h3 className="text-[13px] font-black text-cyan-600 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                        <Wrench size={14} className="text-cyan-500" /> Công cụ & Môi trường
-                                    </h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {project.tools.map(tag => (
-                                            <span key={tag} className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-xl shadow-sm">{tag}</span>
-                                        ))}
-                                    </div>
-                                </section>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Footer */}
-                {project.links && (project.links.repo || project.links.demo) && (
-                    <div className="p-4 sm:p-6 border-t border-slate-100 bg-slate-50 shrink-0 flex justify-end gap-3">
-                        {project.links.repo && (
-                            <a 
-                                href={project.links.repo} 
-                                target="_blank" 
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95"
-                            >
-                                <Github size={18} /> Source Code
-                            </a>
-                        )}
-                        {project.links.demo && (
-                            <a 
-                                href={project.links.demo} 
-                                target="_blank" 
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95"
-                            >
-                                Demo
-                            </a>
-                        )}
-                    </div>
-                )}
-            </motion.div>
-        </div>
-    );
-}
