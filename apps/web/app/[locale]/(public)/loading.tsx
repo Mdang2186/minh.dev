@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function Loading() {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/80 backdrop-blur-md">
       <style dangerouslySetInnerHTML={{
         __html: `
         .three-body {
@@ -22,7 +22,7 @@ export default function Loading() {
           <div className="three-body__dot"></div>
           <div className="three-body__dot"></div>
         </div>
-        <div className="text-sky-400 font-medium tracking-widest uppercase text-sm animate-pulse">
+        <div className="text-cyan-600 font-bold tracking-widest uppercase text-sm animate-pulse">
           Loading Data...
         </div>
       </motion.div>
