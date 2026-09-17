@@ -88,16 +88,18 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                     key={project.slug}
                     className="grid grid-cols-1 lg:grid-cols-12 lg:gap-x-12 relative group"
                   >
-                    {/* Hàng 1: TITLE & NUMBER */}
-                    <div className={`flex flex-col justify-end mb-6 lg:mb-10
+                    {/* Hàng 1: TITLE & DATE */}
+                    <div className={`flex flex-col justify-end mb-4 lg:mb-10
                       lg:col-span-8 lg:row-start-1 order-1 lg:order-none
                       ${isEven ? 'lg:col-start-5 lg:items-end lg:text-right' : 'lg:col-start-1 lg:items-start lg:text-left'}
                     `}>
-                      <span className="text-xs sm:text-sm font-bold tracking-[0.15em] text-slate-400 dark:text-slate-500 mb-2 uppercase">
-                        {project.featured ? "FEATURED PROJECT" : "PROJECT SHOWCASE"}
-                      </span>
+                      <div className={`flex items-center gap-3 mb-2 ${isEven ? 'lg:flex-row-reverse' : ''}`}>
+                        <span className="text-xs sm:text-sm font-bold tracking-[0.15em] text-slate-400 dark:text-slate-500 uppercase">
+                          {project.featured ? "FEATURED PROJECT" : "PROJECT SHOWCASE"}
+                        </span>
+                      </div>
                       <h2
-                        className="text-4xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.1] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 py-1"
+                        className="text-3xl sm:text-5xl lg:text-6xl xl:text-[72px] uppercase leading-[1.1] tracking-wide mb-2 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-sky-500 dark:from-white dark:to-sky-400 py-1"
                         style={{ fontFamily: '"Anton", sans-serif' }}
                       >
                         <Link href={`/projects/${project.slug}`} className="hover:opacity-80 transition-opacity drop-shadow-sm">
@@ -105,33 +107,34 @@ export function ProjectsPageClient({ projects }: { projects: PublicProject[] }) 
                         </Link>
                       </h2>
                       {line2 && (
-                        <span className="text-xs sm:text-sm lg:text-[15px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                        <span className="text-[11px] sm:text-sm lg:text-[15px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                           {line2}
                         </span>
                       )}
                       {project.duration && (
-                        <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 mt-4 rounded-full border border-slate-200 dark:border-slate-700/50 bg-slate-50/80 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 shadow-sm ${isEven ? 'flex-row-reverse' : ''}`}>
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 mt-3 rounded-full border border-slate-200 dark:border-slate-700/50 bg-slate-50/80 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 shadow-sm ${isEven ? 'lg:flex-row-reverse' : ''}`}>
                           <Calendar className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
-                          <span className="text-xs sm:text-[13px] font-semibold">{project.duration}</span>
+                          <span className="text-[11px] sm:text-[13px] font-semibold">{project.duration}</span>
                         </div>
                       )}
                     </div>
 
+                    {/* Hàng 1.5: NUMBER & ROLE */}
                     <div className={`flex flex-col justify-end mb-6 lg:mb-10
                       lg:col-span-4 lg:row-start-1 order-2 lg:order-none
                       ${isEven ? 'lg:col-start-1 lg:items-start lg:text-left' : 'lg:col-start-9 lg:items-end lg:text-right'}
                     `}>
-                      <div className="overflow-visible">
+                      <div className="overflow-visible flex items-baseline gap-4 lg:block">
                         <span
-                          className="text-[100px] sm:text-[130px] lg:text-[160px] xl:text-[200px] leading-none tracking-wider select-none drop-shadow-md bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-sky-500 dark:from-white dark:to-sky-400"
+                          className="text-[72px] sm:text-[100px] lg:text-[160px] xl:text-[200px] leading-[0.8] tracking-wider select-none drop-shadow-md bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-sky-500 dark:from-white dark:to-sky-400"
                           style={{ fontFamily: '"Anton", sans-serif' }}
                         >
                           {numStr}
                         </span>
+                        <span className="text-[10px] sm:text-xs lg:text-[13px] font-bold text-slate-600 dark:text-sky-400 uppercase tracking-widest leading-snug mt-1 lg:mt-2 lg:block flex-1">
+                          {project.role || "DEVELOPER"}
+                        </span>
                       </div>
-                      <span className="text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-600 dark:text-sky-400 uppercase tracking-widest leading-snug mt-1">
-                        {project.role || "DEVELOPER"}
-                      </span>
                     </div>
 
                     {/* Hàng 2: DESCRIPTION & GALLERY */}
