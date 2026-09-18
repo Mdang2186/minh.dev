@@ -1,98 +1,141 @@
 import { NextResponse } from "next/server";
-import { put, list } from "@vercel/blob";
+import { put, list, del } from "@vercel/blob";
 
+// Max file sizes
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;  // 5MB
+const MAX_RESUME_SIZE = 10 * 1024 * 1024; // 10MB
+
+const VALID_TYPES = ["avatar", "resume", "project", "education", "certification"] as const;
+type UploadType = (typeof VALID_TYPES)[number];
+
+function validateType(type: string | null): type is UploadType {
+  return VALID_TYPES.includes(type as UploadType);
+}
+
+function getBlobToken(): string | null {
+  return process.env.BLOB_READ_WRITE_TOKEN ?? null;
+}
+
+// ──────────────────────────────────────────────
+// GET  /api/admin/files?type=...
+// ──────────────────────────────────────────────
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
 
-  if (type !== "avatar" && type !== "resume" && type !== "project" && type !== "education" && type !== "certification") {
+  if (!validateType(type)) {
     return NextResponse.json({ error: "Invalid type parameter" }, { status: 400 });
   }
 
-  try {
-    if (process.env.BLOB_READ_WRITE_TOKEN) {
-      // List blobs from Vercel Blob
-      const { blobs } = await list({
-        prefix: `${type}s/`,
-      });
+  const token = getBlobToken();
 
-      const fileUrls = blobs.map((blob) => blob.url);
-      return NextResponse.json({ files: fileUrls });
-    } else {
-      // Local fallback
-      const fs = await import("fs/promises");
-      const path = await import("path");
-      const uploadDir = path.join(process.cwd(), "public", "uploads", `${type}s`);
-      
-      try {
-        const files = await fs.readdir(uploadDir);
-        const fileUrls = files.map(f => `/uploads/${type}s/${f}`);
-        return NextResponse.json({ files: fileUrls });
-      } catch (err) {
-        return NextResponse.json({ files: [] }); // Dir might not exist yet
-      }
+  if (token) {
+    try {
+      const { blobs } = await list({ prefix: `${type}s/`, token });
+      return NextResponse.json({ files: blobs.map((b) => b.url) });
+    } catch (error: any) {
+      console.error("Vercel Blob list error:", error);
+      return NextResponse.json(
+        { error: "Failed to list files.", details: error?.message },
+        { status: 500 }
+      );
     }
-  } catch (error) {
-    console.error("Failed to list files from Blob:", error);
+  }
+
+  // ── Local dev fallback ──
+  try {
+    const fs = await import("fs/promises");
+    const path = await import("path");
+    const uploadDir = path.join(process.cwd(), "public", "uploads", `${type}s`);
+    try {
+      const files = await fs.readdir(uploadDir);
+      return NextResponse.json({ files: files.map((f) => `/uploads/${type}s/${f}`) });
+    } catch {
+      return NextResponse.json({ files: [] });
+    }
+  } catch {
     return NextResponse.json({ files: [] });
   }
 }
 
+// ──────────────────────────────────────────────
+// POST /api/admin/files   (multipart/form-data: file, type)
+// ──────────────────────────────────────────────
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
-    const type = formData.get("type") as string;
+    const type = formData.get("type") as string | null;
 
     if (!file) {
       return NextResponse.json({ error: "No file received." }, { status: 400 });
     }
-
-    if (type !== "avatar" && type !== "resume" && type !== "project" && type !== "education" && type !== "certification") {
+    if (!validateType(type)) {
       return NextResponse.json({ error: "Invalid type" }, { status: 400 });
     }
 
-    // Create safe filename
-    const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.'));
-    const ext = file.name.substring(file.name.lastIndexOf('.'));
-    const basename = nameWithoutExt ? nameWithoutExt.replace(/[^a-zA-Z0-9_-]/g, "_") : "file";
-    
-    // Store in folders based on type
-    const filename = `${type}s/${basename}-${Date.now()}${ext}`;
+    // ── File size validation ──
+    const maxSize = type === "resume" ? MAX_RESUME_SIZE : MAX_IMAGE_SIZE;
+    if (file.size > maxSize) {
+      return NextResponse.json(
+        { error: `File quá lớn. Tối đa ${maxSize / 1024 / 1024}MB.` },
+        { status: 413 }
+      );
+    }
 
-    // Upload to Vercel Blob if token exists, otherwise save locally
-    if (process.env.BLOB_READ_WRITE_TOKEN) {
-      const blob = await put(filename, file, {
-        access: 'public',
+    // ── File type validation ──
+    if (type === "resume" && !file.type.includes("pdf")) {
+      return NextResponse.json(
+        { error: "Resume chỉ hỗ trợ định dạng PDF." },
+        { status: 400 }
+      );
+    }
+    if (type !== "resume" && !file.type.startsWith("image/")) {
+      return NextResponse.json(
+        { error: "Chỉ hỗ trợ file ảnh (image/*)." },
+        { status: 400 }
+      );
+    }
+
+    // ── Build safe filename ──
+    const ext = file.name.includes(".") ? file.name.substring(file.name.lastIndexOf(".")) : "";
+    const nameWithoutExt = file.name.replace(/\.[^.]+$/, "");
+    const basename = nameWithoutExt.replace(/[^a-zA-Z0-9_-]/g, "_") || "file";
+    const storagePath = `${type}s/${basename}-${Date.now()}${ext}`;
+
+    const token = getBlobToken();
+
+    if (token) {
+      // ── Vercel Blob upload ──
+      const blob = await put(storagePath, file, {
+        access: "public",
         addRandomSuffix: false,
+        token,
       });
       return NextResponse.json({ url: blob.url });
-    } else {
-      // Local fallback for development
-      const fs = await import("fs/promises");
-      const path = await import("path");
-      
-      const uploadDir = path.join(process.cwd(), "public", "uploads", `${type}s`);
-      await fs.mkdir(uploadDir, { recursive: true });
-      
-      const localFilePath = path.join(uploadDir, `${basename}-${Date.now()}${ext}`);
-      
-      // Convert File to Buffer
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      
-      await fs.writeFile(localFilePath, buffer);
-      
-      // Return public URL path
-      const publicUrl = `/uploads/${type}s/${path.basename(localFilePath)}`;
-      return NextResponse.json({ url: publicUrl });
     }
+
+    // ── Local dev fallback ──
+    const fs = await import("fs/promises");
+    const path = await import("path");
+    const uploadDir = path.join(process.cwd(), "public", "uploads", `${type}s`);
+    await fs.mkdir(uploadDir, { recursive: true });
+    const localPath = path.join(uploadDir, `${basename}-${Date.now()}${ext}`);
+    await fs.writeFile(localPath, Buffer.from(await file.arrayBuffer()));
+    return NextResponse.json({ url: `/uploads/${type}s/${path.basename(localPath)}` });
+
   } catch (error: any) {
     console.error("Upload error:", error);
-    return NextResponse.json({ error: "Upload failed.", details: error.message || String(error) }, { status: 500 });
+    return NextResponse.json(
+      { error: "Upload failed.", details: error?.message || String(error) },
+      { status: 500 }
+    );
   }
 }
 
+// ──────────────────────────────────────────────
+// DELETE /api/admin/files?url=<public-url>
+// ──────────────────────────────────────────────
 export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -102,25 +145,29 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Missing url parameter" }, { status: 400 });
     }
 
-    if (process.env.BLOB_READ_WRITE_TOKEN) {
-      const { del } = await import("@vercel/blob");
-      await del(url);
+    const token = getBlobToken();
+
+    if (token) {
+      await del(url, { token });
       return NextResponse.json({ success: true });
-    } else {
+    }
+
+    // ── Local dev fallback ──
+    if (url.startsWith("/uploads/")) {
       const fs = await import("fs/promises");
       const path = await import("path");
-      
-      // url is something like /uploads/avatars/filename.png
-      if (url.startsWith("/uploads/")) {
-        const localPath = path.join(process.cwd(), "public", url.split('?')[0]);
-        await fs.unlink(localPath).catch(() => {});
-        return NextResponse.json({ success: true });
-      } else {
-        return NextResponse.json({ error: "Invalid local url" }, { status: 400 });
-      }
+      const localPath = path.join(process.cwd(), "public", url.split("?")[0]);
+      await fs.unlink(localPath).catch(() => {});
+      return NextResponse.json({ success: true });
     }
+
+    return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
+
   } catch (error: any) {
     console.error("Delete error:", error);
-    return NextResponse.json({ error: "Delete failed", details: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Delete failed.", details: error?.message },
+      { status: 500 }
+    );
   }
 }

@@ -58,9 +58,8 @@ function getLoc(obj: any, base: string, locale: string) {
   return locVal ? locVal : obj[base];
 }
 
-export async function getPublicSiteProfile(): Promise<PublicSiteProfile> {
+async function _getPublicSiteProfile(locale: string): Promise<PublicSiteProfile> {
   return safeRead(async () => {
-    const locale = await getSafeLocale();
     try {
       const profile = await prisma.siteProfile.findFirst({ orderBy: { updatedAt: "desc" } });
       if (!profile) return defaultProfile;
@@ -82,27 +81,41 @@ export async function getPublicSiteProfile(): Promise<PublicSiteProfile> {
   }, defaultProfile);
 }
 
-export async function getPublicSocialLinks(): Promise<PublicSocialLink[]> {
-  return safeRead(async () => {
-    const links = await prisma.socialLink.findMany({
-      where: { visible: true },
-      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-    });
-
-    return links.map((link) => ({
-      id: link.id,
-      name: link.name,
-      url: link.url,
-      iconUrl: link.iconUrl,
-    }));
-  }, []);
+export async function getPublicSiteProfile(): Promise<PublicSiteProfile> {
+  const locale = await getSafeLocale();
+  const cached = unstable_cache(
+    () => _getPublicSiteProfile(locale),
+    ["public-site-profile", locale],
+    { revalidate: 3600, tags: ["portfolio", "profile"] }
+  );
+  return cached();
 }
 
-export async function getPublicProjects(
+export const getPublicSocialLinks = unstable_cache(
+  async (): Promise<PublicSocialLink[]> => {
+    return safeRead(async () => {
+      const links = await prisma.socialLink.findMany({
+        where: { visible: true },
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      });
+
+      return links.map((link) => ({
+        id: link.id,
+        name: link.name,
+        url: link.url,
+        iconUrl: link.iconUrl,
+      }));
+    }, []);
+  },
+  ["public-social-links"],
+  { revalidate: 3600, tags: ["portfolio", "social-links"] }
+);
+
+async function _getPublicProjects(
+  locale: string,
   options: { featured?: boolean; limit?: number } = {}
 ): Promise<PublicProject[]> {
   return safeRead(async () => {
-    const locale = await getSafeLocale();
     const projects = await prisma.project.findMany({
       where: {
         published: true,
@@ -127,6 +140,19 @@ export async function getPublicProjects(
 
     return projects.map((p) => mapProject(p, locale));
   }, [] as PublicProject[]);
+}
+
+export async function getPublicProjects(
+  options: { featured?: boolean; limit?: number } = {}
+): Promise<PublicProject[]> {
+  const locale = await getSafeLocale();
+  const cacheKey = `public-projects-${locale}-featured:${options.featured ?? "all"}-limit:${options.limit ?? "all"}`;
+  const cached = unstable_cache(
+    () => _getPublicProjects(locale, options),
+    [cacheKey],
+    { revalidate: 3600, tags: ["portfolio", "projects"] }
+  );
+  return cached();
 }
 
 export async function getPublicProjectBySlug(slug: string): Promise<PublicProject | null> {
@@ -186,89 +212,109 @@ export async function getPublicProjectsByTag(tag: string) {
 }
 
 export async function getPublicSkillGroups(): Promise<PublicSkillGroup[]> {
-  return safeRead(async () => {
-    const locale = await getSafeLocale();
-    const groups = await prisma.skillGroup.findMany({
-      orderBy: { sortOrder: "asc" },
-      include: { skills: { orderBy: { sortOrder: "asc" } } },
-    });
+  const locale = await getSafeLocale();
+  const cached = unstable_cache(
+    async () => safeRead(async () => {
+      const groups = await prisma.skillGroup.findMany({
+        orderBy: { sortOrder: "asc" },
+        include: { skills: { orderBy: { sortOrder: "asc" } } },
+      });
 
-    return groups.map((group) => ({
-      id: group.id,
-      title: getLoc(group, "title", locale) || "",
-      skills: group.skills.map((skill) => ({
-        id: skill.id,
-        name: getLoc(skill, "name", locale) || "",
-        level: skill.level,
-        iconUrl: skill.iconUrl,
-      })),
-    }));
-  }, []);
+      return groups.map((group) => ({
+        id: group.id,
+        title: getLoc(group, "title", locale) || "",
+        skills: group.skills.map((skill) => ({
+          id: skill.id,
+          name: getLoc(skill, "name", locale) || "",
+          level: skill.level,
+          iconUrl: skill.iconUrl,
+        })),
+      }));
+    }, []),
+    ["public-skill-groups", locale],
+    { revalidate: 3600, tags: ["portfolio", "skills"] }
+  );
+  return cached();
 }
 
 export async function getPublicExperiences(): Promise<PublicExperience[]> {
-  return safeRead(async () => {
-    const locale = await getSafeLocale();
-    const experiences = await prisma.experience.findMany({
-      where: { visible: true },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-    });
+  const locale = await getSafeLocale();
+  const cached = unstable_cache(
+    async () => safeRead(async () => {
+      const experiences = await prisma.experience.findMany({
+        where: { visible: true },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      });
 
-    return experiences.map((experience) => ({
-      id: experience.id,
-      title: getLoc(experience, "title", locale) || "",
-      org: getLoc(experience, "org", locale) || "",
-      period: getLoc(experience, "time", locale) || "",
-      highlights: getLoc(experience, "details", locale) || [],
-    }));
-  }, []);
+      return experiences.map((experience) => ({
+        id: experience.id,
+        title: getLoc(experience, "title", locale) || "",
+        org: getLoc(experience, "org", locale) || "",
+        period: getLoc(experience, "time", locale) || "",
+        highlights: getLoc(experience, "details", locale) || [],
+      }));
+    }, []),
+    ["public-experiences", locale],
+    { revalidate: 3600, tags: ["portfolio", "experiences"] }
+  );
+  return cached();
 }
 
 export async function getPublicEducations(): Promise<PublicEducation[]> {
-  return safeRead(async () => {
-    const locale = await getSafeLocale();
-    const educations = await prisma.education.findMany({
-      where: { visible: true },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-    });
+  const locale = await getSafeLocale();
+  const cached = unstable_cache(
+    async () => safeRead(async () => {
+      const educations = await prisma.education.findMany({
+        where: { visible: true },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      });
 
-    return educations.map((edu) => ({
-      id: edu.id,
-      title: getLoc(edu, "title", locale) || "",
-      org: getLoc(edu, "org", locale) || "",
-      period: getLoc(edu, "period", locale) || "",
-      degree: getLoc(edu, "degree", locale) || "",
-      major: getLoc(edu, "major", locale) || "",
-      gpa: edu.gpa || undefined,
-      description: getLoc(edu, "description", locale) || undefined,
-      logo: edu.logo || undefined,
-      images: (edu as any).images || [],
-      tags: (edu as any).tags || [],
-    }));
-  }, []);
+      return educations.map((edu) => ({
+        id: edu.id,
+        title: getLoc(edu, "title", locale) || "",
+        org: getLoc(edu, "org", locale) || "",
+        period: getLoc(edu, "period", locale) || "",
+        degree: getLoc(edu, "degree", locale) || "",
+        major: getLoc(edu, "major", locale) || "",
+        gpa: edu.gpa || undefined,
+        description: getLoc(edu, "description", locale) || undefined,
+        logo: edu.logo || undefined,
+        images: (edu as any).images || [],
+        tags: (edu as any).tags || [],
+      }));
+    }, []),
+    ["public-educations", locale],
+    { revalidate: 3600, tags: ["portfolio", "educations"] }
+  );
+  return cached();
 }
 
 export async function getPublicCertifications(): Promise<PublicCertification[]> {
-  return safeRead(async () => {
-    const locale = await getSafeLocale();
-    const certs = await (prisma as any).certification.findMany({
-      where: { visible: true },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-    });
+  const locale = await getSafeLocale();
+  const cached = unstable_cache(
+    async () => safeRead(async () => {
+      const certs = await (prisma as any).certification.findMany({
+        where: { visible: true },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      });
 
-    return certs.map((cert: any) => ({
-      id: cert.id,
-      title: getLoc(cert, "title", locale) || "",
-      issuer: getLoc(cert, "issuer", locale) || "",
-      date: getLoc(cert, "date", locale) || "",
-      score: cert.score || undefined,
-      url: cert.url || undefined,
-      logo: cert.logo || undefined,
-      color: cert.color || undefined,
-      images: cert.images || [],
-      tags: cert.tags || [],
-    }));
-  }, []);
+      return certs.map((cert: any) => ({
+        id: cert.id,
+        title: getLoc(cert, "title", locale) || "",
+        issuer: getLoc(cert, "issuer", locale) || "",
+        date: getLoc(cert, "date", locale) || "",
+        score: cert.score || undefined,
+        url: cert.url || undefined,
+        logo: cert.logo || undefined,
+        color: cert.color || undefined,
+        images: cert.images || [],
+        tags: cert.tags || [],
+      }));
+    }, []),
+    ["public-certifications", locale],
+    { revalidate: 3600, tags: ["portfolio", "certifications"] }
+  );
+  return cached();
 }
 
 function splitContent(value?: string | null) {
@@ -320,39 +366,44 @@ function mapProject(project: any, locale: string): PublicProject {
 }
 
 export async function getPublicTimelineNodes(): Promise<PublicTimelineNode[]> {
-  return safeRead(async () => {
-    const locale = await getSafeLocale();
-    const nodes = await (prisma as any).timelineNode.findMany({
-      where: { visible: true },
-      orderBy: [{ sortOrder: "asc" }],
-      include: {
-        sprints: { orderBy: { startDate: "asc" } },
-        project: {
-          include: {
-            images: { orderBy: { sortOrder: "asc" } },
-            techStacks: { include: { techStack: true } },
+  const locale = await getSafeLocale();
+  const cached = unstable_cache(
+    async () => safeRead(async () => {
+      const nodes = await (prisma as any).timelineNode.findMany({
+        where: { visible: true },
+        orderBy: [{ sortOrder: "asc" }],
+        include: {
+          sprints: { orderBy: { startDate: "asc" } },
+          project: {
+            include: {
+              images: { orderBy: { sortOrder: "asc" } },
+              techStacks: { include: { techStack: true } },
+            },
           },
         },
-      },
-    });
+      });
 
-    return nodes.map((node: any) => ({
-      id: node.id,
-      title: getLoc(node, "title", locale) || "",
-      date: node.date || "",
-      type: node.type || "MILESTONE",
-      color: node.color || undefined,
-      description: getLoc(node, "description", locale) || undefined,
-      link: node.link || undefined,
-      projectId: node.projectId || undefined,
-      project: node.project ? mapProject(node.project, locale) : null,
-      sprints: node.sprints.map((sprint: any) => ({
-        id: sprint.id,
-        title: getLoc(sprint, "title", locale) || "",
-        startDate: sprint.startDate || "",
-        endDate: sprint.endDate || "",
-        description: getLoc(sprint, "description", locale) || undefined,
-      })),
-    }));
-  }, []);
+      return nodes.map((node: any) => ({
+        id: node.id,
+        title: getLoc(node, "title", locale) || "",
+        date: node.date || "",
+        type: node.type || "MILESTONE",
+        color: node.color || undefined,
+        description: getLoc(node, "description", locale) || undefined,
+        link: node.link || undefined,
+        projectId: node.projectId || undefined,
+        project: node.project ? mapProject(node.project, locale) : null,
+        sprints: node.sprints.map((sprint: any) => ({
+          id: sprint.id,
+          title: getLoc(sprint, "title", locale) || "",
+          startDate: sprint.startDate || "",
+          endDate: sprint.endDate || "",
+          description: getLoc(sprint, "description", locale) || undefined,
+        })),
+      }));
+    }, []),
+    ["public-timeline-nodes", locale],
+    { revalidate: 3600, tags: ["portfolio", "timeline"] }
+  );
+  return cached();
 }
