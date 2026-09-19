@@ -39,9 +39,10 @@ interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  folder?: string;
 }
 
-const MenuBar = ({ editor }: { editor: Editor | null }) => {
+const MenuBar = ({ editor, folder }: { editor: Editor | null, folder?: string }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
 
@@ -58,6 +59,9 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", "project"); // Use the existing project type in vercel blob
+      if (folder) {
+        formData.append("folder", folder);
+      }
 
       const response = await fetch("/api/admin/files", {
         method: "POST",
@@ -333,7 +337,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   );
 };
 
-export function RichTextEditor({ value, onChange, placeholder }: RichTextEditorProps) {
+export function RichTextEditor({ value, onChange, placeholder, folder }: RichTextEditorProps) {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -435,7 +439,7 @@ export function RichTextEditor({ value, onChange, placeholder }: RichTextEditorP
 
   return (
     <div className="w-full rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden focus-within:border-cyan-500 focus-within:ring-4 focus-within:ring-cyan-500/10 transition-all">
-      <MenuBar editor={editor} />
+      <MenuBar editor={editor} folder={folder} />
       <div className="max-h-[600px] overflow-y-auto custom-scrollbar bg-slate-50/30">
         <EditorContent editor={editor} />
       </div>

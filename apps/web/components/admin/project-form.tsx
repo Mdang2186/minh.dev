@@ -202,12 +202,12 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
       
       <div className="space-y-2">
         <span className="block text-sm font-bold text-slate-700">Description {labelSuffix} (Mô tả ngắn - Hiển thị ngoài danh sách)</span>
-        <RichTextEditor value={getVal("description")} onChange={(value) => updateField(getFieldKey("description"), value)} />
+        <RichTextEditor value={getVal("description")} onChange={(value) => updateField(getFieldKey("description"), value)} folder={form.slug || "drafts"} />
       </div>
       
       <div className="space-y-2">
         <span className="block text-sm font-bold text-slate-700">Content {labelSuffix}</span>
-        <RichTextEditor value={getVal("content")} onChange={(value) => updateField(getFieldKey("content"), value)} />
+        <RichTextEditor value={getVal("content")} onChange={(value) => updateField(getFieldKey("content"), value)} folder={form.slug || "drafts"} />
       </div>
 
       {/* Cấu hình Showcase Gallery (Trang Projects) */}

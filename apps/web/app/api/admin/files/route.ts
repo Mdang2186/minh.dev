@@ -108,10 +108,18 @@ export async function POST(req: Request) {
     }
 
     // ── Build safe filename ──
+    const folder = formData.get("folder") as string | null;
     const ext = file.name.includes(".") ? file.name.substring(file.name.lastIndexOf(".")) : "";
     const nameWithoutExt = file.name.replace(/\.[^.]+$/, "");
     const basename = nameWithoutExt.replace(/[^a-zA-Z0-9_-]/g, "_") || "file";
-    const storagePath = `${type}s/${basename}-${Date.now()}${ext}`;
+    
+    // Support project specific folders
+    let storagePath = `${type}s/${basename}-${Date.now()}${ext}`;
+    if (folder) {
+      // sanitize folder name
+      const safeFolder = folder.replace(/[^a-zA-Z0-9_-]/g, "_");
+      storagePath = `${type}s/${safeFolder}/${basename}-${Date.now()}${ext}`;
+    }
 
     if (hasBlobConfigured()) {
       // ── Vercel Blob upload ──
