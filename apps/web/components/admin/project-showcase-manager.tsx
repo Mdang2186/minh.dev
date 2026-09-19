@@ -20,7 +20,8 @@ interface ProjectShowcaseManagerProps {
   showcaseImages: string[];
   projectImages: ProjectImage[];
   onChangeCover: (url: string) => void;
-  onChangeShowcaseImages: (urls: string[]) => void;
+  onChangeShowcaseImages: (images: string[]) => void;
+  projectSlug?: string;
 }
 
 export function ProjectShowcaseManager({
@@ -29,6 +30,7 @@ export function ProjectShowcaseManager({
   projectImages,
   onChangeCover,
   onChangeShowcaseImages,
+  projectSlug,
 }: ProjectShowcaseManagerProps) {
   const [uploading, setUploading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
@@ -87,6 +89,9 @@ export function ProjectShowcaseManager({
     const formData = new FormData();
     formData.append("file", file);
     formData.append("type", "project");
+    if (projectSlug) {
+      formData.append("folder", projectSlug);
+    }
 
     try {
       const res = await fetch("/api/admin/files", {

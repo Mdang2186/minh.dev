@@ -217,6 +217,7 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
         projectImages={form.projectImages || []}
         onChangeCover={(value) => updateField("coverImage", value)}
         onChangeShowcaseImages={(value) => updateField("showcaseImages", value)}
+        projectSlug={form.slug || "drafts"}
       />
 
       <div className="grid gap-4 md:grid-cols-2">

@@ -63,6 +63,10 @@ const MenuBar = ({ editor, folder }: { editor: Editor | null, folder?: string })
         formData.append("folder", folder);
       }
 
+      if (folder) {
+        formData.append("folder", folder);
+      }
+
       const response = await fetch("/api/admin/files", {
         method: "POST",
         body: formData,
@@ -378,6 +382,10 @@ export function RichTextEditor({ value, onChange, placeholder, folder }: RichTex
               formData.append("file", file);
               formData.append("type", "project");
 
+              if (folder) {
+                formData.append("folder", folder);
+              }
+
               fetch("/api/admin/files", {
                 method: "POST",
                 body: formData,
@@ -409,6 +417,10 @@ export function RichTextEditor({ value, onChange, placeholder, folder }: RichTex
             const formData = new FormData();
             formData.append("file", file);
             formData.append("type", "project");
+
+            if (folder) {
+              formData.append("folder", folder);
+            }
 
             fetch("/api/admin/files", {
               method: "POST",
