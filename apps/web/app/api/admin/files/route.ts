@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { put, list, del } from "@vercel/blob";
 
 // Max file sizes
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;  // 5MB
-const MAX_RESUME_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024;  // 10MB (increased from 5MB)
+const MAX_RESUME_SIZE = 15 * 1024 * 1024; // 15MB
 
 const VALID_TYPES = ["avatar", "resume", "project", "education", "certification"] as const;
 type UploadType = (typeof VALID_TYPES)[number];
@@ -17,10 +17,21 @@ function getBlobToken(): string | null {
 }
 
 // ──────────────────────────────────────────────
-// GET  /api/admin/files?type=...
+// GET  /api/admin/files?type=... OR ?health=1
 // ──────────────────────────────────────────────
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
+
+  // Health check endpoint to debug token issues
+  if (searchParams.get("health") === "1") {
+    const token = getBlobToken();
+    return NextResponse.json({
+      hasToken: !!token,
+      tokenPrefix: token ? token.substring(0, 20) + "..." : null,
+      env: process.env.NODE_ENV,
+    });
+  }
+
   const type = searchParams.get("type");
 
   if (!validateType(type)) {
@@ -78,7 +89,7 @@ export async function POST(req: Request) {
     const maxSize = type === "resume" ? MAX_RESUME_SIZE : MAX_IMAGE_SIZE;
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: `File quá lớn. Tối đa ${maxSize / 1024 / 1024}MB.` },
+        { error: `File quá lớn. Tối đa ${maxSize / 1024 / 1024}MB cho loại "${type}".` },
         { status: 413 }
       );
     }
@@ -107,12 +118,35 @@ export async function POST(req: Request) {
 
     if (token) {
       // ── Vercel Blob upload ──
-      const blob = await put(storagePath, file, {
-        access: "public",
-        addRandomSuffix: false,
-        token,
-      });
-      return NextResponse.json({ url: blob.url });
+      try {
+        const blob = await put(storagePath, file, {
+          access: "public",
+          addRandomSuffix: false,
+          token,
+        });
+        return NextResponse.json({ url: blob.url });
+      } catch (blobError: any) {
+        console.error("Vercel Blob PUT error:", blobError);
+        return NextResponse.json(
+          {
+            error: "Upload lên Vercel Blob thất bại.",
+            details: blobError?.message || String(blobError),
+          },
+          { status: 500 }
+        );
+      }
+    }
+
+    // ── Production without token — return clear error ──
+    if (process.env.NODE_ENV === "production") {
+      console.error("BLOB_READ_WRITE_TOKEN is not set in production environment!");
+      return NextResponse.json(
+        {
+          error: "Storage chưa được cấu hình. BLOB_READ_WRITE_TOKEN không được tìm thấy.",
+          hint: "Vào Vercel Dashboard → Storage → Connect Blob Store với project này.",
+        },
+        { status: 503 }
+      );
     }
 
     // ── Local dev fallback ──
@@ -148,7 +182,10 @@ export async function DELETE(req: Request) {
     const token = getBlobToken();
 
     if (token) {
-      await del(url, { token });
+      // Only attempt blob deletion if URL is a blob URL
+      if (url.includes("blob.vercel-storage.com") || url.includes("public.blob.vercel-storage.com")) {
+        await del(url, { token });
+      }
       return NextResponse.json({ success: true });
     }
 
