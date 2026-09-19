@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { put, list, del } from "@vercel/blob";
 
 // Max file sizes
-const MAX_IMAGE_SIZE = 10 * 1024 * 1024;  // 10MB (increased from 5MB)
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024;  // 10MB
 const MAX_RESUME_SIZE = 15 * 1024 * 1024; // 15MB
 
 const VALID_TYPES = ["avatar", "resume", "project", "education", "certification"] as const;
@@ -16,18 +16,31 @@ function getBlobToken(): string | null {
   return process.env.BLOB_READ_WRITE_TOKEN ?? null;
 }
 
+/**
+ * Returns true when Vercel Blob can be used.
+ * Supports two auth modes:
+ *   1. OIDC (recommended): project is connected via Vercel Dashboard → Storage.
+ *      BLOB_STORE_ID is injected automatically, no explicit token needed.
+ *   2. Token: legacy BLOB_READ_WRITE_TOKEN env var.
+ */
+function isBlobAvailable(): boolean {
+  return !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+}
+
 // ──────────────────────────────────────────────
 // GET  /api/admin/files?type=... OR ?health=1
 // ──────────────────────────────────────────────
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
-  // Health check endpoint to debug token issues
+  // Health check endpoint to debug auth config
   if (searchParams.get("health") === "1") {
     const token = getBlobToken();
     return NextResponse.json({
+      blobAvailable: isBlobAvailable(),
+      authMode: token ? "token" : process.env.BLOB_STORE_ID ? "oidc" : "none",
       hasToken: !!token,
-      tokenPrefix: token ? token.substring(0, 20) + "..." : null,
+      hasStoreId: !!process.env.BLOB_STORE_ID,
       env: process.env.NODE_ENV,
     });
   }
@@ -38,11 +51,13 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Invalid type parameter" }, { status: 400 });
   }
 
-  const token = getBlobToken();
-
-  if (token) {
+  // ── Vercel Blob: support both OIDC (no token) and token auth ──
+  if (isBlobAvailable()) {
     try {
-      const { blobs } = await list({ prefix: `${type}s/`, token });
+      const token = getBlobToken();
+      // OIDC mode: call without token; SDK uses BLOB_STORE_ID automatically
+      const listOptions = token ? { prefix: `${type}s/`, token } : { prefix: `${type}s/` };
+      const { blobs } = await list(listOptions);
       return NextResponse.json({ files: blobs.map((b) => b.url) });
     } catch (error: any) {
       console.error("Vercel Blob list error:", error);
@@ -114,16 +129,17 @@ export async function POST(req: Request) {
     const basename = nameWithoutExt.replace(/[^a-zA-Z0-9_-]/g, "_") || "file";
     const storagePath = `${type}s/${basename}-${Date.now()}${ext}`;
 
-    const token = getBlobToken();
-
-    if (token) {
-      // ── Vercel Blob upload ──
+    // ── Vercel Blob: support OIDC (BLOB_STORE_ID) and token (BLOB_READ_WRITE_TOKEN) ──
+    if (isBlobAvailable()) {
       try {
-        const blob = await put(storagePath, file, {
+        const token = getBlobToken();
+        // OIDC mode: omit token; SDK picks up BLOB_STORE_ID and uses OIDC auth
+        const putOptions: Parameters<typeof put>[2] = {
           access: "public",
           addRandomSuffix: false,
-          token,
-        });
+          ...(token ? { token } : {}),
+        };
+        const blob = await put(storagePath, file, putOptions);
         return NextResponse.json({ url: blob.url });
       } catch (blobError: any) {
         console.error("Vercel Blob PUT error:", blobError);
@@ -137,12 +153,12 @@ export async function POST(req: Request) {
       }
     }
 
-    // ── Production without token — return clear error ──
+    // ── No blob configured — return clear error on production ──
     if (process.env.NODE_ENV === "production") {
-      console.error("BLOB_READ_WRITE_TOKEN is not set in production environment!");
+      console.error("Vercel Blob not configured: BLOB_STORE_ID and BLOB_READ_WRITE_TOKEN are both missing!");
       return NextResponse.json(
         {
-          error: "Storage chưa được cấu hình. BLOB_READ_WRITE_TOKEN không được tìm thấy.",
+          error: "Storage chưa được cấu hình.",
           hint: "Vào Vercel Dashboard → Storage → Connect Blob Store với project này.",
         },
         { status: 503 }
@@ -179,13 +195,28 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Missing url parameter" }, { status: 400 });
     }
 
-    const token = getBlobToken();
-
-    if (token) {
-      // Only attempt blob deletion if URL is a blob URL
-      if (url.includes("blob.vercel-storage.com") || url.includes("public.blob.vercel-storage.com")) {
-        await del(url, { token });
+    // ── Vercel Blob delete: support OIDC and token ──
+    if (isBlobAvailable() && (url.includes("blob.vercel-storage.com"))) {
+      try {
+        const token = getBlobToken();
+        // OIDC mode: omit token
+        if (token) {
+          await del(url, { token });
+        } else {
+          await del(url);
+        }
+        return NextResponse.json({ success: true });
+      } catch (delError: any) {
+        console.error("Vercel Blob DELETE error:", delError);
+        return NextResponse.json(
+          { error: "Xoá file thất bại.", details: delError?.message },
+          { status: 500 }
+        );
       }
+    }
+
+    if (isBlobAvailable()) {
+      // Non-blob URL but blob is configured — just return success (local path from old data)
       return NextResponse.json({ success: true });
     }
 
