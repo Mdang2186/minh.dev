@@ -21,7 +21,7 @@ export function FloatingContactButton() {
   const tooltipText = locale === "vi" ? "Nhắn tin nhanh" : "Let's Talk";
 
   return (
-    <div className="fixed bottom-20 left-4 sm:bottom-8 sm:left-8 z-40 flex items-center gap-2.5 select-none font-sans">
+    <div className="fixed bottom-20 right-4 sm:bottom-8 sm:right-8 z-40 flex flex-row-reverse items-center gap-2.5 select-none font-sans">
       {/* Circular floating action button with pulse badge (matching user reference) */}
       <Link
         href="/work/contact"
@@ -40,11 +40,11 @@ export function FloatingContactButton() {
         </span>
       </Link>
 
-      {/* Speech bubble tooltip on the right with pointer arrow pointing left (Image 2 style) */}
+      {/* Speech bubble tooltip on the left with pointer arrow pointing right */}
       {!dismissTooltip && (
-        <div className="relative flex items-center bg-white dark:bg-slate-900 text-slate-800 dark:text-white pl-3 pr-2.5 py-1.5 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 text-xs font-semibold tracking-tight transition-all duration-300 animate-in fade-in slide-in-from-left-2">
-          {/* Arrow pointer pointing left towards the circular button */}
-          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-white dark:bg-slate-900 rotate-45 border-b border-l border-slate-100 dark:border-slate-800" />
+        <div className="relative flex items-center bg-white dark:bg-slate-900 text-slate-800 dark:text-white pl-3 pr-2.5 py-1.5 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 text-xs font-semibold tracking-tight transition-all duration-300 animate-in fade-in slide-in-from-right-2">
+          {/* Arrow pointer pointing right towards the circular button */}
+          <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-white dark:bg-slate-900 rotate-45 border-t border-r border-slate-100 dark:border-slate-800" />
           <Link href="/work/contact" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors whitespace-nowrap">
             {tooltipText}
           </Link>

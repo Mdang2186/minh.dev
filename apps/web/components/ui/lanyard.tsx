@@ -20,8 +20,23 @@ export function Lanyard({ position = [0, 0, 7.5], gravity = [0, -40, 0], fov = 2
     <div className="relative z-10 w-full h-full flex justify-center items-center transform scale-100 origin-center min-h-[600px]">
       <Canvas
         camera={{ position: position, fov: fov }}
-        gl={{ alpha: transparent, toneMapping: THREE.NoToneMapping }}
-        onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)}
+        gl={{
+          alpha: transparent,
+          toneMapping: THREE.NoToneMapping,
+          powerPreference: "high-performance",
+          antialias: true,
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1);
+          // Handle WebGL context loss gracefully
+          const canvas = gl.domElement;
+          canvas.addEventListener('webglcontextlost', (e) => {
+            e.preventDefault();
+          }, false);
+          canvas.addEventListener('webglcontextrestored', () => {
+            gl.setSize(canvas.width, canvas.height);
+          }, false);
+        }}
       >
         <ambientLight intensity={1.5} />
         <Physics gravity={gravity as any} timeStep={1 / 60}>
@@ -235,10 +250,8 @@ function Band({ maxSpeed = 50, minSpeed = 0, profile }: { maxSpeed?: number; min
               <meshBasicMaterial map={texture} side={THREE.DoubleSide} transparent />
             </mesh>
             
-            <group position={[0, 1.1, 0]} scale={0.6}>
-              <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} position={[0, -1.1, 0]} />
-              <mesh geometry={nodes.clamp.geometry} material={materials.metal} position={[0, -1.1, 0]} />
-            </group>
+            <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
+            <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
           </group>
         </RigidBody>
       </group>

@@ -1,0 +1,35 @@
+﻿# ============================================================
+# .vercelignore — Exclude files from Vercel deployment upload
+# ============================================================
+
+# User-uploaded content — served via Vercel Blob on production
+# These MUST NOT be bundled into the deployment (saves ~85 MB/deploy)
+public/uploads/
+
+# Legacy/duplicate avatar files committed to git
+public/avatar1.png
+public/avatar12.png
+public/avatar.jpg
+public/avatars/
+
+# Old CV PDFs committed to git root (served via Blob now)
+public/Frontend_Eng CV_DoCongMinh.pdf
+public/Frontend_Vie CV_DoCongMinh.pdf
+
+# Old project image folders (served via Blob now)
+public/projects/
+
+# Development & build artifacts
+node_modules/
+.next/
+.turbo/
+.git/
+*.log
+.DS_Store
+.env
+.env.local
+
+# Scratch/temp files
+scratch/
+curl_output.txt
+curl_output2.txt

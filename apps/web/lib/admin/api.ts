@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "@minh-dev/database";
 import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "./session";
+import { revalidatePath } from "next/cache";
 
 export async function requireAdminUser() {
   const cookieStore = await cookies();
@@ -49,6 +50,7 @@ export async function writeAuditLog(input: {
 }) {
   try {
     await prisma.auditLog.create({ data: input });
+    revalidatePath("/", "layout");
   } catch (error) {
     console.error("Failed to write audit log", error);
   }

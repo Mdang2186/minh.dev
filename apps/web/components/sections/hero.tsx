@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/common/container";
 import { ResumeModalWrapper } from "@/components/ui/resume-modal-wrapper";
-import { Lanyard } from "@/components/ui/lanyard";
+import { LanyardClient } from "@/components/ui/lanyard-client";
 import { SocialLinks } from "@/components/ui/social-links";
 import { getPublicSiteProfile, getPublicSocialLinks, getPublicEducations, getPublicCertifications } from "@/features/portfolio/portfolio.service";
 import { getTranslations } from "next-intl/server";
@@ -174,7 +174,7 @@ export async function Hero() {
           {/* RIGHT: Lanyard Card — shifted down */}
           <div className="lg:w-5/12 flex justify-center lg:justify-end relative z-0 w-full min-h-[580px] lg:h-[700px] pointer-events-auto cursor-grab active:cursor-grabbing [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_100%)] pt-10 lg:pt-16">
             <div className="absolute inset-x-0 top-0 bottom-0 z-0">
-              <Lanyard position={[0, 0, 9]} gravity={[0, -40, 0]} fov={20} profile={profile} />
+              <LanyardClient position={[0, 0, 9]} gravity={[0, -40, 0]} fov={20} profile={profile} />
             </div>
           </div>
 

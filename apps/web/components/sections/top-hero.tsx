@@ -216,7 +216,7 @@ export function TopHero({ socials = [] }: { socials?: any[] }) {
             }}
           >
             <Image
-              src="/uploads/avatars/first_page.png"
+              src="/images/first_page.png"
               fill
               className="object-contain object-bottom drop-shadow-2xl"
               alt="Do Cong Minh"

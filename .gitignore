@@ -1,4 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+﻿# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies (all levels)
 **/node_modules
@@ -44,10 +44,10 @@ next-env.d.ts
 # Turbo
 .turbo/
 
-# Sentry (nếu có dùng)
+# Sentry
 .sentry-debug-log
 
-# Các file cache tạm thời khác
+# Cache files
 .cache/
 *.sst
 *.zst
@@ -60,3 +60,15 @@ project.json
 
 # Embedded git repos / skills folders
 ui-ux-pro-max-skill/
+
+# ============================================================
+# User-uploaded media — served via Vercel Blob on production.
+# These files are large and must NOT be committed to git.
+# ============================================================
+apps/web/public/uploads/
+apps/web/public/avatar.jpg
+apps/web/public/avatar1.png
+apps/web/public/avatar12.png
+apps/web/public/avatars/
+apps/web/public/projects/
+apps/web/public/Frontend_*.pdf

@@ -35,6 +35,7 @@ import {
 import { TechBadge } from "@/components/ui/tech-badge";
 import { cn } from "@/lib/cn";
 import type { PublicProject } from "@/features/portfolio/portfolio.types";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 interface TocSubItem {
     id: string;
@@ -1027,111 +1028,159 @@ export function ProjectDetailView({ project }: ProjectDetailViewProps) {
 
             {/* LIGHTBOX FOR IMAGES: TRÀN TOÀN MÀN HÌNH (PORTAL TO BODY, PHỦ QUA NAVBAR, VỪA KHUNG KHÔNG BỊ KHUẤT) */}
             {mounted && activeImageIndex !== null && allImages[activeImageIndex] && createPortal(
-                <div 
-                    className="fixed inset-0 z-[99999] w-screen h-screen bg-white/98 backdrop-blur-md flex flex-col justify-between p-3 sm:p-5 select-none cursor-default overflow-hidden"
-                    onClick={() => { setActiveImageIndex(null); setIsZoomed(false); }}
+                <TransformWrapper
+                    key={activeImageIndex}
+                    initialScale={1}
+                    minScale={0.5}
+                    maxScale={5}
+                    centerOnInit={true}
+                    wheel={{ step: 0.1 }}
+                    doubleClick={{ step: 0.5 }}
                 >
-                    {/* Header bar controls */}
-                    <div 
-                        className="w-full flex items-center justify-between shrink-0 z-30 pb-2 border-b border-slate-100" 
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <div className="flex items-center gap-2">
-                            <span className="bg-slate-900 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xs">
-                                {activeImageIndex + 1} / {allImages.length}
-                            </span>
-                            {allImages[activeImageIndex].folder && (
-                                <span className="hidden sm:inline-block bg-slate-100 text-slate-700 border border-slate-200/80 px-3 py-1 rounded-full text-xs font-semibold">
-                                    {allImages[activeImageIndex].folder}
-                                </span>
-                            )}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <button 
-                                type="button"
-                                onClick={() => setIsZoomed(!isZoomed)}
-                                className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all cursor-pointer active:scale-95" 
-                                title={isZoomed ? "Thu nhỏ" : "Phóng to"}
-                            >
-                                {isZoomed ? <ZoomOut className="w-5 h-5" /> : <ZoomIn className="w-5 h-5" />}
-                            </button>
-                            <button 
-                                type="button"
-                                onClick={() => { setActiveImageIndex(null); setIsZoomed(false); }}
-                                className="p-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white transition-all cursor-pointer shadow-md active:scale-95" 
-                                title="Đóng (Esc)"
-                                aria-label="Đóng"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Main Image Viewport: TRÀN MÀN HÌNH, VỪA VẶN, KHÔNG BỊ KHUẤT */}
-                    <div className="flex-1 w-full min-h-0 flex items-center justify-center relative p-2 overflow-hidden">
-                        {/* Navigation Prev */}
-                        {allImages.length > 1 && (
-                            <button 
-                                type="button"
-                                onClick={(e) => { 
-                                    e.stopPropagation(); 
-                                    setActiveImageIndex((activeImageIndex - 1 + allImages.length) % allImages.length); 
-                                    setIsZoomed(false); 
-                                }}
-                                className="absolute left-2 sm:left-4 z-20 p-3 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-xl border border-slate-200/80 transition-all cursor-pointer hover:scale-110 active:scale-95"
-                                title="Ảnh trước"
-                            >
-                                <ChevronLeft className="w-6 h-6" />
-                            </button>
-                        )}
-
-                        {/* Center Image Viewport: Nhấp vào vùng trống bất kỳ để đóng popup */}
+                    {({ zoomIn, zoomOut }) => (
                         <div 
-                            className={`w-full h-full flex items-center justify-center ${isZoomed ? 'overflow-auto custom-scrollbar' : ''}`}
+                            className="fixed inset-0 z-[99999] w-screen h-screen bg-white/98 backdrop-blur-md flex flex-col p-3 sm:p-5 select-none overflow-hidden gap-3 text-slate-900"
+                            onClick={() => { setActiveImageIndex(null); setIsZoomed(false); }}
                         >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img 
-                                src={allImages[activeImageIndex].url} 
-                                alt={allImages[activeImageIndex].altText || "Image preview"} 
-                                onClick={(e) => { 
-                                    e.stopPropagation(); 
-                                    setIsZoomed(!isZoomed); 
-                                }}
-                                className={`transition-all duration-200 ${
-                                    isZoomed 
-                                        ? 'max-w-none max-h-none cursor-zoom-out rounded-lg shadow-2xl' 
-                                        : 'max-w-full max-h-full w-auto h-auto object-contain cursor-zoom-in rounded-xl shadow-2xl border border-slate-200/60'
-                                }`} 
-                            />
-                        </div>
-
-                        {/* Navigation Next */}
-                        {allImages.length > 1 && (
-                            <button 
-                                type="button"
-                                onClick={(e) => { 
-                                    e.stopPropagation(); 
-                                    setActiveImageIndex((activeImageIndex + 1) % allImages.length); 
-                                    setIsZoomed(false); 
-                                }}
-                                className="absolute right-2 sm:right-4 z-20 p-3 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-xl border border-slate-200/80 transition-all cursor-pointer hover:scale-110 active:scale-95"
-                                title="Ảnh tiếp theo"
+                            {/* Header bar controls */}
+                            <div 
+                                className="w-full flex items-center justify-between shrink-0 z-30 pb-2 border-b border-slate-100" 
+                                onClick={(e) => e.stopPropagation()}
                             >
-                                <ChevronRight className="w-6 h-6" />
-                            </button>
-                        )}
-                    </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="bg-slate-900 text-white px-3 py-1 rounded-full text-xs font-bold shadow-xs">
+                                        {activeImageIndex + 1} / {allImages.length}
+                                    </span>
+                                    {allImages[activeImageIndex].folder && (
+                                        <span className="hidden sm:inline-block bg-slate-100 text-slate-700 border border-slate-200/80 px-3 py-1 rounded-full text-xs font-semibold">
+                                            {allImages[activeImageIndex].folder}
+                                        </span>
+                                    )}
+                                </div>
 
-                    {/* Bottom Caption Bar */}
-                    {allImages[activeImageIndex].altText && !isZoomed && (
-                        <div className="shrink-0 pt-2 text-center" onClick={(e) => e.stopPropagation()}>
-                            <span className="inline-block text-xs sm:text-sm font-semibold text-slate-800 bg-white/95 px-5 py-1.5 rounded-full border border-slate-200/80 shadow-xs max-w-2xl truncate">
-                                {allImages[activeImageIndex].altText}
-                            </span>
+                                <div className="flex items-center gap-2">
+                                    <button 
+                                        type="button"
+                                        onClick={() => zoomIn()}
+                                        className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all cursor-pointer active:scale-95" 
+                                        title="Phóng to"
+                                    >
+                                        <ZoomIn className="w-5 h-5" />
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => zoomOut()}
+                                        className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all cursor-pointer active:scale-95" 
+                                        title="Thu nhỏ"
+                                    >
+                                        <ZoomOut className="w-5 h-5" />
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => { setActiveImageIndex(null); setIsZoomed(false); }}
+                                        className="p-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white transition-all cursor-pointer shadow-md active:scale-95" 
+                                        title="Đóng (Esc)"
+                                        aria-label="Đóng"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 w-full min-h-0 flex flex-col md:flex-row gap-4 relative">
+                                {/* Main Image Viewport */}
+                                <div className="flex-1 min-w-0 min-h-0 flex flex-col relative overflow-hidden bg-slate-50/50 rounded-2xl border border-slate-100/80">
+                                    <div className="flex-1 w-full min-h-0 flex items-center justify-center relative p-2 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                                        {/* Navigation Prev */}
+                                        {allImages.length > 1 && (
+                                            <button 
+                                                type="button"
+                                                onClick={(e) => { 
+                                                    e.stopPropagation(); 
+                                                    setActiveImageIndex((activeImageIndex - 1 + allImages.length) % allImages.length); 
+                                                }}
+                                                className="absolute left-2 sm:left-4 z-[99] p-3 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-xl border border-slate-200/80 transition-all cursor-pointer hover:scale-110 active:scale-95 hidden md:flex"
+                                                title="Ảnh trước"
+                                            >
+                                                <ChevronLeft className="w-6 h-6" />
+                                            </button>
+                                        )}
+
+                                        {/* Center Image Viewport */}
+                                        <div className="w-full h-full flex items-center justify-center relative">
+                                            <TransformComponent 
+                                                wrapperClass="!w-full !h-full" 
+                                                contentClass="!w-full !h-full flex items-center justify-center"
+                                            >
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img 
+                                                    src={allImages[activeImageIndex].url} 
+                                                    alt={allImages[activeImageIndex].altText || "Image preview"} 
+                                                    className="max-w-full max-h-full w-auto h-auto object-contain rounded-xl shadow-xl pointer-events-auto"
+                                                />
+                                            </TransformComponent>
+                                        </div>
+
+                                        {/* Navigation Next */}
+                                        {allImages.length > 1 && (
+                                            <button 
+                                                type="button"
+                                                onClick={(e) => { 
+                                                    e.stopPropagation(); 
+                                                    setActiveImageIndex((activeImageIndex + 1) % allImages.length); 
+                                                }}
+                                                className="absolute right-2 sm:right-4 z-[99] p-3 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-xl border border-slate-200/80 transition-all cursor-pointer hover:scale-110 active:scale-95 hidden md:flex"
+                                                title="Ảnh tiếp theo"
+                                            >
+                                                <ChevronRight className="w-6 h-6" />
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Bottom Caption Bar */}
+                                    {allImages[activeImageIndex].altText && (
+                                        <div className="shrink-0 p-3 text-center border-t border-slate-100/80 bg-white/50" onClick={(e) => e.stopPropagation()}>
+                                            <span className="inline-block text-xs sm:text-sm font-semibold text-slate-800 bg-white px-5 py-1.5 rounded-full border border-slate-200/80 shadow-xs max-w-2xl truncate">
+                                                {allImages[activeImageIndex].altText}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Thumbnail Sidebar */}
+                                {allImages.length > 1 && (
+                                    <div 
+                                        className="md:w-36 lg:w-44 shrink-0 flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto md:overflow-x-hidden custom-scrollbar p-1 z-[99]"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {allImages.map((img, idx) => {
+                                            const isActive = idx === activeImageIndex;
+                                            return (
+                                                <button
+                                                    key={idx}
+                                                    type="button"
+                                                    onClick={() => { setActiveImageIndex(idx); setIsZoomed(false); }}
+                                                    className={`relative shrink-0 w-24 h-20 md:w-full md:h-24 lg:h-28 rounded-xl overflow-hidden border-2 transition-all cursor-pointer bg-slate-100 ${
+                                                        isActive 
+                                                            ? "border-cyan-500 shadow-md ring-2 ring-cyan-500/20" 
+                                                            : "border-transparent opacity-60 hover:opacity-100 hover:shadow-sm"
+                                                    }`}
+                                                >
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img
+                                                        src={img.url}
+                                                        alt={img.altText || `Thumbnail ${idx + 1}`}
+                                                        className="w-full h-full object-cover pointer-events-none"
+                                                    />
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
-                </div>,
+                </TransformWrapper>,
                 document.body
             )}
         </div>

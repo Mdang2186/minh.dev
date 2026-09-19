@@ -27,8 +27,11 @@ export async function Footer() {
             <Link className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" href="/work/projects">
               Projects
             </Link>
-            <Link className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" href="/work/skills-and-tools">
-              Skills
+            <Link className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" href="/work/experience">
+              Experience
+            </Link>
+            <Link className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" href="/work/education">
+              Education
             </Link>
             <Link className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" href="/work/contact">
               Contact
@@ -50,7 +53,7 @@ export async function Footer() {
           <div className="flex items-center gap-2 text-[11px] text-slate-400 dark:text-slate-500 shrink-0">
             <span>© {new Date().getFullYear()} {profile.name}</span>
             <span>•</span>
-            <Link href="/admin/login" className="opacity-50 transition hover:opacity-100 hover:text-cyan-600">
+            <Link href="/admin/login" className="text-transparent selection:text-transparent">
               Admin
             </Link>
           </div>
