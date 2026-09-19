@@ -241,6 +241,7 @@ export function ProjectForm({ projectId }: { projectId?: string }) {
           imageFolders={form.imageFolders || []}
           onChangeImages={(images) => updateField("projectImages", images)} 
           onChangeFolders={(folders) => updateField("imageFolders", folders)} 
+          projectSlug={form.slug || "drafts"}
         />
         <AdminTextarea label={`Highlights ${labelSuffix} (mỗi dòng một ý)`} value={form[getFieldKey("highlights") + "Text"] || ""} onChange={(value) => updateField(getFieldKey("highlights") + "Text", value)} rows={8} />
         <AdminTextarea label="Languages (mỗi dòng một item)" value={form.languagesText || ""} onChange={(value) => updateField("languagesText", value)} rows={8} />

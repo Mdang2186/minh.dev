@@ -157,11 +157,23 @@ export async function POST(req: Request) {
     // ── Local dev fallback ──
     const fs = await import("fs/promises");
     const path = await import("path");
-    const uploadDir = path.join(process.cwd(), "public", "uploads", `${type}s`);
+    
+    let uploadDir = path.join(process.cwd(), "public", "uploads", `${type}s`);
+    if (folder) {
+      const safeFolder = folder.replace(/[^a-zA-Z0-9_-]/g, "_");
+      uploadDir = path.join(uploadDir, safeFolder);
+    }
+    
     await fs.mkdir(uploadDir, { recursive: true });
-    const localPath = path.join(uploadDir, `${basename}-${Date.now()}${ext}`);
+    const finalFilename = `${basename}-${Date.now()}${ext}`;
+    const localPath = path.join(uploadDir, finalFilename);
     await fs.writeFile(localPath, Buffer.from(await file.arrayBuffer()));
-    return NextResponse.json({ url: `/uploads/${type}s/${path.basename(localPath)}` });
+    
+    const urlPath = folder 
+      ? `/uploads/${type}s/${folder.replace(/[^a-zA-Z0-9_-]/g, "_")}/${finalFilename}`
+      : `/uploads/${type}s/${finalFilename}`;
+      
+    return NextResponse.json({ url: urlPath });
 
   } catch (error: any) {
     console.error("Upload error:", error);

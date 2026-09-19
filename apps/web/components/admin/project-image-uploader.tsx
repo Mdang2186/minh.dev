@@ -34,6 +34,7 @@ interface ProjectImageUploaderProps {
   imageFolders: string[];
   onChangeImages: (images: ProjectImage[]) => void;
   onChangeFolders: (folders: string[]) => void;
+  projectSlug?: string;
 }
 
 const getImagesWithIds = (images: ProjectImage[]) => 
@@ -91,7 +92,14 @@ function SortableImageItem({
   );
 }
 
-export function ProjectImageUploader({ label, images, imageFolders, onChangeImages, onChangeFolders }: ProjectImageUploaderProps) {
+export function ProjectImageUploader({ 
+  label, 
+  images, 
+  imageFolders, 
+  onChangeImages, 
+  onChangeFolders,
+  projectSlug 
+}: ProjectImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
@@ -173,6 +181,12 @@ export function ProjectImageUploader({ label, images, imageFolders, onChangeImag
         const formData = new FormData();
         formData.append("file", file);
         formData.append("type", "project");
+        if (projectSlug) {
+          // If there's an internal path, append it too? Actually let's just stick to the project slug for now, 
+          // or projectSlug + internal path
+          const fullFolder = currentPath ? `${projectSlug}/${currentPath}` : projectSlug;
+          formData.append("folder", fullFolder);
+        }
         const response = await fetch("/api/admin/files", { method: "POST", body: formData });
         if (!response.ok) throw new Error("Upload failed");
         const data = await response.json();
