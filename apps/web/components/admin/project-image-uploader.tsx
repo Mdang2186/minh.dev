@@ -228,9 +228,24 @@ export function ProjectImageUploader({
     }
   };
 
-  const removeImage = (id: string) => {
+  const removeImage = async (id: string) => {
+    const imgToDelete = imagesWithIds.find(img => img.id === id);
+    if (!imgToDelete) return;
+    
+    // First, remove from UI for quick feedback
     const newImages = imagesWithIds.filter(img => img.id !== id);
     onChangeImages(newImages.map(img => { const { id, ...rest } = img; return rest; }));
+
+    // Then, attempt to delete from backend (Vercel Blob / Local Storage)
+    if (imgToDelete.imageUrl) {
+      try {
+        await fetch(`/api/admin/files?url=${encodeURIComponent(imgToDelete.imageUrl)}`, {
+          method: "DELETE"
+        });
+      } catch (err) {
+        console.error("Failed to delete physical file", err);
+      }
+    }
   };
 
   const handleCreateFolder = () => {
@@ -244,16 +259,30 @@ export function ProjectImageUploader({
     }
   };
 
-  const handleDeleteFolder = (folderPath: string) => {
+  const handleDeleteFolder = async (folderPath: string) => {
     if (!confirm(`Bạn có chắc muốn xoá thư mục "${folderPath}" và toàn bộ dữ liệu bên trong?`)) return;
     
+    // Find all images that will be deleted
+    const imagesToDelete = images.filter(img => (img.folder || "") === folderPath || (img.folder || "").startsWith(`${folderPath}/`));
+
     // Remove all folders that start with this path
     const newFolders = imageFolders.filter(f => f !== folderPath && !f.startsWith(`${folderPath}/`));
     onChangeFolders(newFolders);
 
-    // Remove all images inside this folder or subfolders
+    // Remove all images inside this folder or subfolders from UI
     const newImages = images.filter(img => (img.folder || "") !== folderPath && !(img.folder || "").startsWith(`${folderPath}/`));
     onChangeImages(newImages);
+
+    // Attempt to delete physical files
+    for (const img of imagesToDelete) {
+      if (img.imageUrl) {
+        try {
+          await fetch(`/api/admin/files?url=${encodeURIComponent(img.imageUrl)}`, { method: "DELETE" });
+        } catch (e) {
+          console.error("Failed to delete", img.imageUrl, e);
+        }
+      }
+    }
   };
 
   const handleRenameFolder = (folderPath: string) => {

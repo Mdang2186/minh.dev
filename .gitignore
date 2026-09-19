@@ -1,4 +1,4 @@
-﻿# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies (all levels)
 **/node_modules
@@ -66,9 +66,5 @@ ui-ux-pro-max-skill/
 # These files are large and must NOT be committed to git.
 # ============================================================
 apps/web/public/uploads/
-apps/web/public/avatar.jpg
-apps/web/public/avatar1.png
-apps/web/public/avatar12.png
-apps/web/public/avatars/
 apps/web/public/projects/
 apps/web/public/Frontend_*.pdf
